@@ -24,6 +24,7 @@ Read the documents in order. Each builds on concepts from the previous ones.
 | 13 | [Modular Features](13_modular_features.md) | Optional features guide (need 6) |
 | 14 | [Reference Shell](14_reference_shell_and_posix.md) | POSIX standard and bash reference notes |
 | 15 | [Review Report](15_review_report.md) | Architecture review findings and fixes applied |
+| 16 | [Background Knowledge](16_background_knowledge.md) | Books, tutorials, and key concepts for the team |
 
 ## Architecture Summary
 
