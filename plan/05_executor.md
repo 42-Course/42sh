@@ -102,13 +102,22 @@ execute_pipeline(shell, ast):
     for i in 0..n-2:
         pipe(pipes[i])
 
+    # Pipeline PGID: all processes in a pipeline share ONE process group.
+    # The first child's PID becomes the PGID.
+    # IMPORTANT: setpgid must be called in BOTH parent AND child to avoid
+    # the race where the parent tries to set the group before the child
+    # exists, or the child tries to join before the parent has recorded it.
+    pgid = 0  # will be set to first child's PID
+
     # Fork each command
     pids[n]
     for i in 0..n-1:
         pids[i] = fork()
         if pids[i] == 0:  # child
+            # Process group setup (child side)
+            if pgid == 0: pgid = getpid()     # first child creates the group
+            setpgid(getpid(), pgid)           # join the pipeline's group
             setup signals to default
-            setup process group
 
             # Wire pipe fds
             if i > 0:        dup2(pipes[i-1][0], STDIN)
@@ -138,14 +147,26 @@ execute_pipeline(shell, ast):
                 status = executor_execute(shell, cmd_ast)
                 exit(status)
 
+        # Parent side: also call setpgid (race avoidance)
+        if pgid == 0: pgid = pids[i]         # first child's PID = PGID
+        setpgid(pids[i], pgid)               # may fail if child already exec'd — that's ok
+
     # Parent: close all pipe fds
     for i in 0..n-2:
         close(pipes[i][0])
         close(pipes[i][1])
 
+    # Give terminal to pipeline's process group (for foreground jobs)
+    if interactive and foreground:
+        tcsetpgrp(terminal_fd, pgid)
+
     # Wait for all children
     for i in 0..n-1:
         waitpid(pids[i], &status, 0)
+
+    # Take terminal back
+    if interactive and foreground:
+        tcsetpgrp(terminal_fd, shell_pgid)
 
     # Return exit status of LAST command (bash behavior)
     return exit_status_of(pids[n-1])

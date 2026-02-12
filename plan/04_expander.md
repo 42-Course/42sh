@@ -188,7 +188,7 @@ expand_dollar(shell, input, pos, in_double_quote):
     return value if not NULL, else ""
 ```
 
-### Braced Parameters: `${VAR}`
+### Braced Parameters: `${VAR}`, `${?}`, `${#param}`, ...
 
 ```
 expand_braced(shell, input, pos):
@@ -197,13 +197,23 @@ expand_braced(shell, input, pos):
     content = characters read
     skip '}'
 
-    # Basic: just a name
+    # Special parameters inside braces: ${?}, ${$}, ${0}
+    if content is "?":
+        return itoa(shell->last_exit_status)
+    if content is "$":
+        return itoa(getpid())
+    if content is "0":
+        return shell name ("42sh")
+
+    # Basic: just a variable name
     if content is a valid identifier:
         return var_get_value(shell, content) or ""
 
     # Modular: ${param:-word}, ${#param}, etc.
     # Parse the operator and dispatch to format handler
 ```
+
+**Note:** The subject explicitly requires `${?}`. The braced path must handle special parameters before checking for identifiers, because `?` is not a valid identifier name.
 
 ### Modular Parameter Formats
 
@@ -340,8 +350,13 @@ expand_command(shell, cmd):
     update cmd->argc
 
     # Expand assignment values (single string, no splitting)
-    for each assignment in cmd->assignments:
-        assignment->value = expand_word(shell, assignment->value)
+    # cmd->assignments is char** of "NAME=VALUE" strings
+    for each assignment_str in cmd->assignments:
+        find first '=' in assignment_str
+        name = substring before '='
+        raw_value = substring after '='
+        expanded_value = expand_word(shell, raw_value)
+        rebuild assignment_str as "name=expanded_value"
 
     # Expand redirection targets (single string, no splitting/globbing)
     for each redir in cmd->redirs:

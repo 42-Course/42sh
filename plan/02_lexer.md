@@ -88,11 +88,15 @@ Single-character operators:
     "&"   → TOK_AMPERSAND
     ">"   → TOK_REDIR_OUT
     "<"   → TOK_REDIR_IN
-    "("   → TOK_LPAREN
-    ")"   → TOK_RPAREN
-    "{"   → TOK_LBRACE (only if first word of command)
-    "}"   → TOK_RBRACE (only if first word of command)
+    "("   → TOK_LPAREN    (operator — breaks words, even inside a word)
+    ")"   → TOK_RPAREN    (operator — breaks words)
     "\n"  → TOK_NEWLINE
+
+NOT operators (reserved words — handled by parser):
+    "{"   → tokenized as TOK_WORD with value "{"
+    "}"   → tokenized as TOK_WORD with value "}"
+    These are only special when they appear as a standalone word
+    at the start of a command. "echo {a,b}" → WORD("echo") WORD("{a,b}").
 ```
 
 ## IO Number Detection

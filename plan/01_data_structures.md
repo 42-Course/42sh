@@ -25,10 +25,11 @@ typedef enum e_token_type
     TOK_REDIR_DUP_OUT,      // >&
 
     // Grouping (modular)
-    TOK_LPAREN,             // (
-    TOK_RPAREN,             // )
-    TOK_LBRACE,             // {
-    TOK_RBRACE,             // }
+    TOK_LPAREN,             // (   — operator, breaks words
+    TOK_RPAREN,             // )   — operator, breaks words
+    // NOTE: { and } are NOT token types. They are reserved words:
+    // the lexer produces TOK_WORD with value "{" or "}".
+    // The parser recognizes them in command position.
 
     // Special
     TOK_EOF,                // End of input

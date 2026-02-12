@@ -27,26 +27,29 @@ int parser_collect_heredocs(t_shell *shell, t_ast *ast);
 
 ```
 complete_command : list
-                 | list '&'
-                 | list ';'
                  ;
 
-list             : list ';' and_or
+list             : list separator and_or
                  | and_or
                  ;
 
-and_or           : and_or '&&' pipeline
-                 | and_or '||' pipeline
+separator        : ';'                            /* sequence */
+                 | '&'                            /* background the preceding and_or */
+                 | NEWLINE                        /* same as ; */
+                 ;
+
+and_or           : and_or '&&' newlines pipeline
+                 | and_or '||' newlines pipeline
                  | pipeline
                  ;
 
-pipeline         : pipeline '|' command
+pipeline         : pipeline '|' newlines command
                  | command
                  ;
 
 command          : simple_command
                  | '(' list ')'  redirect_list?
-                 | '{' list '}'  redirect_list?
+                 | WORD<'{'>  list WORD<'}'> redirect_list?
                  ;
 
 simple_command   : cmd_prefix cmd_word cmd_suffix
@@ -78,15 +81,23 @@ io_file          : '<' WORD
                  | '<&' WORD
                  | '>&' WORD
                  ;
+
+newlines         : NEWLINE*                       /* skip any newlines (continuation) */
+                 ;
 ```
+
+**Key grammar changes vs naive approach:**
+- `&` is a **separator** at the same level as `;` and NEWLINE. It backgrounds the and_or to its left. This makes `cmd1 & cmd2` work correctly.
+- **NEWLINE** is treated as a separator (like `;`). After `|`, `&&`, `||`, newlines are allowed (continuation lines, e.g., `ls |\n  grep foo`).
+- `{` and `}` are **reserved words** (WORD tokens with value `{`/`}`), NOT operators. See lexer notes.
 
 ## Operator Precedence (Low to High)
 
 ```
-1. ;     (sequence)      - lowest precedence
-2. && || (and/or)        - left-to-right associativity
-3. |     (pipe)          - left-to-right associativity
-4. command               - highest precedence
+1. ; & \n (list separators)  - lowest precedence
+2. && ||  (and/or)           - left-to-right associativity
+3. |      (pipe)             - left-to-right associativity
+4. command                   - highest precedence
 ```
 
 Example: `a ; b && c | d || e`
@@ -102,6 +113,17 @@ Parses as: `a ; ((b && (c | d)) || e)`
           b    PIPE
               /    \
              c      d
+```
+
+Example: `a & b && c`
+Parses as: `SEQUENCE(BACKGROUND(a), (b && c))`
+
+```
+        SEQUENCE
+        /      \
+   BACKGROUND   AND
+       |       /   \
+       a      b     c
 ```
 
 ## Assignment Detection (by Parser)
@@ -166,31 +188,54 @@ Helper operations:
 ### Pseudo Code
 
 ```
-parse_complete_command(p):
-    node = parse_list(p)
-    if current is '&':
+skip_newlines(p):
+    while current is TOK_NEWLINE:
         advance
-        node = new background node wrapping node
-    else if current is ';':
-        advance     # trailing ; is ok
+
+parse_complete_command(p):
+    skip_newlines(p)                # skip leading newlines
+    if current is TOK_EOF:
+        return NULL                 # empty input
+    node = parse_list(p)
     if current is not TOK_EOF:
         syntax error
     return node
 
 parse_list(p):
     left = parse_and_or(p)
-    while accept(';'):
-        if current is EOF or ')' or '}':
-            break       # trailing ; before end
+
+    while current is ';' or '&' or NEWLINE:
+        sep = current type
+        advance
+        skip_newlines(p)            # consume consecutive separators/newlines
+
+        # '&' backgrounds the command/pipeline BEFORE it
+        if sep == '&':
+            left = background_last(left)
+
+        # Trailing separator with nothing after?
+        if current is EOF or ')' or WORD("}"):
+            break
+
         right = parse_and_or(p)
-        left = new SEQUENCE node(left, right)
+        left = new SEQUENCE(left, right)
+
     return left
+
+# Helper: when & appears, background only the rightmost pipeline in
+# the accumulating tree, not the entire sequence built so far.
+background_last(node):
+    if node is SEQUENCE:
+        node->right = new BACKGROUND(node->right)
+        return node
+    return new BACKGROUND(node)
 
 parse_and_or(p):
     left = parse_pipeline(p)
     while current is '&&' or '||':
         op = current type
         advance
+        skip_newlines(p)            # allow continuation: cmd1 && \n cmd2
         right = parse_pipeline(p)
         left = new binary node(op, left, right)
     return left
@@ -198,20 +243,22 @@ parse_and_or(p):
 parse_pipeline(p):
     left = parse_command(p)
     while accept('|'):
+        skip_newlines(p)            # allow continuation: ls | \n grep foo
         right = parse_command(p)
         left = new PIPE node(left, right)
     return left
 
 parse_command(p):
-    if accept('('):
+    if accept('('):                 # modular: subshell
         inner = parse_list(p)
         expect(')')
-        redirs = parse_redirect_list(p)    # optional redirections after )
+        redirs = parse_redirect_list(p)
         return new SUBSHELL node(inner, redirs)
 
-    if accept('{'):
+    if current is WORD and value == '{':    # modular: block (reserved word)
+        advance
         inner = parse_list(p)
-        expect('}')
+        expect WORD with value '}'
         redirs = parse_redirect_list(p)
         return new BLOCK node(inner, redirs)
 
@@ -331,6 +378,13 @@ ls >> file 2>&1
 VAR=value cmd
 < input cmd > output
 VAR=value
+sleep 10 & echo done          # & as separator: sleep in bg, echo in fg
+cmd1 & cmd2 & cmd3            # cmd1 bg, cmd2 bg, cmd3 fg
+cmd1 & cmd2 &                 # both backgrounded
+ls |
+  grep foo                    # continuation after | (newline)
+true &&
+  echo ok                     # continuation after && (newline)
 
 # Invalid
 |
