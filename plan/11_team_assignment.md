@@ -50,6 +50,15 @@ Rough effort per module (implementation + testing + debugging):
 
 5. **P4 keeps Job Control** — Job control is coupled with the line editor through terminal ownership (tcsetpgrp) and signals (SIGTSTP/SIGCHLD). P4 needs to own both for clean terminal management. The pipeline PGID setup code is in the executor (P2), but P4 provides the higher-level job API that P2 calls.
 
+### Shared Infrastructure
+
+| Component | Owner | Reason |
+|-----------|-------|--------|
+| `main.c` | **P2** | Main loop drives execution; P2 owns executor which is the core of the loop. Others contribute init/cleanup calls. |
+| `builtins.c` (registry) | **P2** | Builtin lookup table and `builtin_get()`/`builtin_is_builtin()`. P2 owns the executor that calls these. Each person adds their own builtin entries. |
+
+**Phase 0 note:** `main.c` skeleton, Makefile, and shared headers are set up collaboratively by all 4 members. After Phase 0, P2 maintains `main.c`.
+
 ### Builtin Ownership
 
 | Builtin | Owner | Reason |
@@ -99,16 +108,18 @@ P1 finishes the core lexer/parser by Phase 1-3. After that, history and echo fil
 **Files:**
 ```
 include/lexer.h, include/parser.h, include/ast.h, include/history.h
-src/lexer/*, src/parser/*, src/history/*, src/builtins/builtin_echo.c
+src/lexer/*, src/parser/*, src/history/* (see 17_history.md), src/builtins/builtin_echo.c
 ```
 
 ---
 
 ### P2: Execution + Signals (exec/child)
 
-**Modules:** Executor, Redirections, Signals (executing + child contexts), exit/type builtins
+**Modules:** Executor, Redirections, Signals (executing + child contexts), exit/type builtins, main.c, builtin registry
 
 **Responsibilities:**
+- Maintain `main.c` (main loop, shell init/cleanup, `-c` mode)
+- Maintain builtin registry (`builtins.c`: lookup table, `builtin_get`, `builtin_is_builtin`)
 - Walk AST and execute commands
 - Call expander (P3's code) for each command before execution
 - Implement pipe handling with PGID setup (setpgid in both parent+child)
@@ -128,14 +139,17 @@ src/lexer/*, src/parser/*, src/history/*, src/builtins/builtin_echo.c
 **Delivers to:**
 - Main loop (exit status)
 - P4: Forked processes (via job_add_process)
+- All: builtin_get/builtin_is_builtin lookup
 
 **Why P2 works well:**
-The executor is the most integration-heavy module, so P2 focuses entirely on it. Signal setup for executing/child contexts is naturally part of the fork/exec code. No distractions from unrelated modules.
+The executor is the most integration-heavy module, so P2 focuses entirely on it. Signal setup for executing/child contexts is naturally part of the fork/exec code. Owning main.c and the builtin registry is natural since the main loop drives the executor and the executor dispatches builtins.
 
 **Files:**
 ```
-include/executor.h, include/signals.h (executing + child parts)
-src/executor/*, src/signals/signal_exec.c, src/signals/signal_child.c
+src/main.c
+include/executor.h, include/builtins.h, include/signals.h (executing + child parts)
+src/executor/*, src/builtins/builtins.c (registry)
+src/signals/signal_exec.c, src/signals/signal_child.c
 src/builtins/builtin_exit.c, src/builtins/builtin_type.c
 ```
 

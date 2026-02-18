@@ -23,10 +23,10 @@ void line_editor_cleanup(t_line_editor *le);
 // Read a line (main function) - returns malloc'd string or NULL for EOF
 char *line_editor_readline(t_line_editor *le, const char *prompt);
 
-// History management
-void history_add(t_history *hist, const char *line);
-void history_load(t_history *hist, const char *path);
-void history_save(t_history *hist, const char *path);
+// History API (provided by P1's history module — see include/history.h)
+// The line editor USES these functions but does NOT implement them:
+//   history_add(), history_prev(), history_next(),
+//   history_reset_cursor(), history_load(), history_save()
 ```
 
 ## Terminal Modes
@@ -253,33 +253,19 @@ line_editor_readline(le, prompt):
     return strdup(buffer)
 ```
 
-## History Navigation
+## History Integration
 
-```
-history_prev(le):
-    if no history entries: return
-    if not currently navigating:
-        save current buffer as saved_line
-        point to tail (most recent)
-    else if there's a previous entry:
-        move to previous
-    else: return (at oldest)
-    copy entry's line into buffer, cursor = end
+The line editor uses P1's history module for up/down arrow navigation. See **`17_history.md`** for the full history module plan.
 
-history_next(le):
-    if not navigating: return
-    if there's a next entry:
-        move to next, copy into buffer
-    else:
-        stop navigating
-        restore saved_line into buffer
-
-history_add(hist, line):
-    skip empty lines
-    skip if same as most recent entry (dedup)
-    create new entry, link to tail
-    trim from head if count > max_size
-```
+**How the line editor uses history:**
+- On KEY_UP: call `history_prev(hist)`, copy returned line into buffer
+- On KEY_DOWN: call `history_next(hist)`, copy returned line into buffer
+- Before history navigation: save current buffer as `saved_line`
+- When `history_next()` returns NULL (past newest): restore `saved_line`
+- On KEY_ENTER (line accepted): call `history_add(hist, buffer)`
+- On init: call `history_load(hist, "~/.42sh_history")`
+- On exit: call `history_save(hist, "~/.42sh_history")`
+- Before each navigation session: call `history_reset_cursor(hist)`
 
 ## Multi-line Input
 
@@ -307,7 +293,10 @@ src/line_editor/
 ├── terminal.c           # Raw mode enter/exit, termcap init
 ├── keys.c               # Key reading and escape sequence parsing
 ├── buffer.c             # Buffer management (insert, delete, etc.)
-├── display.c            # Screen refresh
-├── history.c            # History navigation and management
-└── history_file.c       # History file persistence (load/save)
+└── display.c            # Screen refresh
+
+# History lives in its own module (P1-owned):
+src/history/
+├── history.c            # History operations (add, prev, next, reset_cursor)
+└── history_file.c       # File persistence (load/save)
 ```

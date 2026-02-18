@@ -184,11 +184,26 @@ void signals_setup_child(void);
 void signals_check(t_shell *shell);
 ```
 
+## Ownership Split
+
+Signals span three contexts, owned by two team members (see `11_team_assignment.md`):
+
+| Context | Owner | Files |
+|---------|-------|-------|
+| Interactive (at prompt) | **P4** | `signal_interactive.c` |
+| Executing (foreground child running) | **P2** | `signal_exec.c` |
+| Child (inside fork, before exec) | **P2** | `signal_child.c` |
+
+Shared header `include/signals.h` declares all setup functions. P2 and P4 each implement their own.
+
 ## Files
 
 ```
+include/signals.h              # Shared header: declares all 3 setup functions + g_signal_received
+
 src/signals/
-├── signals.c          # Init and context setup functions
-├── signals_handlers.c # Handler implementations
-└── signals_utils.c    # Helper functions
+├── signal_interactive.c       # P4: signals_setup_interactive(), SIGINT/SIGCHLD handlers at prompt
+├── signal_exec.c              # P2: signals_setup_executing(), ignore signals during foreground wait
+├── signal_child.c             # P2: signals_setup_child(), restore SIG_DFL before execve
+└── signals_check.c            # Shared: signals_check() called in main loop (P2 or shared)
 ```

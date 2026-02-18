@@ -160,6 +160,7 @@ typedef struct s_shell
 │   ├── executor/
 │   ├── builtins/
 │   ├── variables/
+│   ├── history/          # History module (P1-owned, used by line editor)
 │   ├── job_control/
 │   ├── signals/
 │   ├── line_editor/

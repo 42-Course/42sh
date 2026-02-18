@@ -17,7 +17,7 @@ Convert a list of tokens into an Abstract Syntax Tree (AST). The parser handles:
 t_ast *parser_parse(t_token *tokens);
 
 // Free AST
-void parser_free_ast(t_ast *ast);
+void ast_free(t_ast *ast);
 
 // Collect heredoc content after parsing (walk AST, read from input)
 int parser_collect_heredocs(t_shell *shell, t_ast *ast);
