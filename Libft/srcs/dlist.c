@@ -1,9 +1,9 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   dlist.c                                           :+:      :+:    :+:   */
+/*   dlist.c                                           :+:      :+:    :+:    */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pulgamecanica <pulgamecanica@student.42.fr> +#+  +:+       +#+        */
+/*   By: pulgamecanica <pulgamecanica@student.42.fr> +#+  +:+       +#+       */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/24 00:00:00 by pulgamecanica     #+#    #+#             */
 /*   Updated: 2026/02/24 00:00:00 by pulgamecanica    ###   ########.fr       */
