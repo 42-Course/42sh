@@ -6,7 +6,7 @@
 /*   By: wengzhang <marvin@42.fr>                   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/22 21:00:00 by wengzhang         #+#    #+#             */
-/*   Updated: 2026/02/22 21:00:00 by wengzhang        ###   ########.fr       */
+/*   Updated: 2026/02/24 00:00:00 by pulgamecanica    ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,20 +17,32 @@
 # include "ast.h"
 
 /*
-** Parser state
+** Parser internal state.
+**
+** tokens:  the t_list* of t_token* produced by the lexer.
+** current: the list node the parser is currently examining.
+** error:   human-readable error string (set on syntax error, free'd by parser).
 */
 typedef struct s_parser
 {
-	t_token				*tokens;
-	t_token				*current;
-	char				*error;
+	t_list	*tokens;
+	t_list	*current;
+	char	*error;
 }	t_parser;
 
 /*
-** Parser functions
+** Parser interface
+**
+** parser_parse: consume a t_list* of tokens and return the AST root.
+**   Returns NULL on syntax error (error printed to stderr).
+**   The token list is NOT freed here — caller frees it with lexer_free_tokens().
+**
+** parser_collect_heredocs: walk the AST after parsing and read heredoc content
+**   from stdin for each << redirection.
+**   shell is needed to read from the correct fd and to check SIGINT.
+**   Returns 0 on success, -1 if SIGINT aborted heredoc input.
 */
-t_ast					*parser_parse(t_token *tokens);
-int						parser_collect_heredocs(struct s_shell *shell,
-							t_ast *ast);
+t_ast	*parser_parse(t_list *tokens);
+int		parser_collect_heredocs(t_ast *ast, struct s_shell *shell);
 
 #endif

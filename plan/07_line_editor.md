@@ -1,302 +1,146 @@
-# Line Editor Module (Termcap)
+# Line Editor Module (readline)
 
 ## Purpose
 
-Provide interactive line editing using termcap library. This replaces system `readline()` with a custom implementation that handles:
+Provide interactive line editing using the **GNU readline library** (`-lreadline`).
+Readline handles everything that would otherwise require a hand-rolled termcap
+implementation:
 
-- Raw terminal mode
-- Cursor movement
-- Character insertion/deletion
-- History navigation
-- Multi-line input
-- Signal handling during input
+- Raw terminal mode management
+- Character insertion/deletion and cursor movement
+- History navigation (Up/Down arrows) — integrated with our `t_history`
+- Ctrl-A/E (home/end), Ctrl-K/U/W (kill operations), Ctrl-L (clear screen)
+- Vi and Emacs editing modes (modular feature)
+
+P4 wraps readline to:
+1. Configure it at startup (history, signals, completion hook).
+2. Integrate it with our `t_history` module (file persistence + expansions).
+3. Handle multi-line continuation (unclosed quotes / trailing `\`).
+4. Switch editing modes at runtime for the `set -o vi / -o emacs` modular feature.
 
 ## Interface
 
 ```c
-// Initialize line editor
-int line_editor_init(t_line_editor *le, t_shell *shell);
+// Initialize readline and hook in our history.
+int     line_editor_init(t_line_editor *le, t_history *history);
 
-// Cleanup
-void line_editor_cleanup(t_line_editor *le);
+// Save history file, free saved_line, rl_clear_history().
+void    line_editor_cleanup(t_line_editor *le);
 
-// Read a line (main function) - returns malloc'd string or NULL for EOF
-char *line_editor_readline(t_line_editor *le, const char *prompt);
+// Read one complete line (handles multi-line continuation internally).
+// Returns malloc'd string, or NULL on EOF.
+// Calls history_add() + add_history() after each accepted non-empty line.
+char    *line_editor_readline(t_line_editor *le, const char *prompt);
 
-// History API (provided by P1's history module — see include/history.h)
-// The line editor USES these functions but does NOT implement them:
-//   history_add(), history_prev(), history_next(),
-//   history_reset_cursor(), history_load(), history_save()
+// Switch between emacs (LE_MODE_EMACS) and vi (LE_MODE_VI) at runtime.
+void    line_editor_set_mode(t_line_editor *le, int mode);
 ```
 
-## Terminal Modes
+## Readline Configuration
 
-### Canonical Mode (Normal)
-- Input is line-buffered (read returns after newline)
-- Special characters processed by kernel (Ctrl-C sends SIGINT, etc.)
-- Automatic echo of typed characters
+```c
+line_editor_init(le, history):
+    le->history = history
+    le->saved_line = NULL
+    le->editing_mode = LE_MODE_EMACS  // default
 
-### Raw Mode (For Line Editor)
-- Character-by-character input
-- No automatic echo
-- We handle all special keys ourselves
-- **Keep OPOST enabled** so `\n` still produces `\r\n` (bash does this too)
+    // Configure readline
+    rl_readline_name = "42sh"
+    rl_attempted_completion_function = completion_hook  // NULL until completion feature
+    using_history()                                      // activate history
+    rl_variable_bind("editing-mode", "emacs")            // default emacs mode
 
-### Raw Mode Setup
-
-```
-enter_raw_mode(le):
-    save current termios settings in le->orig_termios
-
-    copy to raw settings, then modify:
-
-    Input flags - clear:
-        BRKINT    (no break signal)
-        ICRNL     (don't map CR to NL - we handle Enter ourselves)
-        INPCK     (no parity check)
-        ISTRIP    (don't strip 8th bit)
-        IXON      (no software flow control)
-
-    Output flags:
-        Keep OPOST ENABLED (so \n → \r\n works automatically)
-
-    Control flags:
-        Set CS8   (8 bits per byte)
-
-    Local flags - clear:
-        ECHO      (no auto echo)
-        ICANON    (non-canonical mode, read byte-by-byte)
-        IEXTEN    (no extended functions)
-        ISIG      (no signal generation from Ctrl-C etc - we handle it)
-
-    Control characters:
-        VMIN = 1   (read returns after 1 byte)
-        VTIME = 0  (no timeout)
-
-    apply with tcsetattr(TCSAFLUSH)
-    le->raw_mode = 1
-
-exit_raw_mode(le):
-    if le->raw_mode:
-        restore le->orig_termios with tcsetattr(TCSAFLUSH)
-        le->raw_mode = 0
+    return 0
 ```
 
-## Termcap Initialization
+## Reading a Line
 
-Load terminal capabilities at startup:
-
-```
-Capabilities to load:
-    cm  - cursor motion (tgoto)
-    ce  - clear to end of line
-    cd  - clear to end of screen
-    cl  - clear screen
-    up  - cursor up one line
-    do  - cursor down one line
-    le  - cursor left
-    nd  - cursor right (non-destructive space)
-    cr  - carriage return
-    dc  - delete character
-    co  - number of columns (tgetnum)
-    li  - number of lines (tgetnum)
-
-Init:
-    term_name = getenv("TERM"), default to "xterm"
-    tgetent(buf, term_name) to load terminal database
-    tgetstr() for each string capability
-    tgetnum() for numeric capabilities
-    default co=80, li=24 if not found
-
-Output: use tputs(capability, 1, putchar_fn)
-    where putchar_fn writes one byte to STDOUT
-```
-
-## Key Reading
-
-Read one keypress at a time. Map raw bytes to logical key values.
-
-```
-Key mapping:
-    '\r' or '\n'  → KEY_ENTER
-    127 or 8      → KEY_BACKSPACE
-    '\t'          → KEY_TAB
-    Ctrl-A (1)    → KEY_HOME (or KEY_CTRL_A)
-    Ctrl-B (2)    → KEY_LEFT
-    Ctrl-C (3)    → KEY_CTRL_C
-    Ctrl-D (4)    → KEY_CTRL_D (EOF if empty)
-    Ctrl-E (5)    → KEY_END
-    Ctrl-F (6)    → KEY_RIGHT
-    Ctrl-K (11)   → KEY_CTRL_K (kill to end)
-    Ctrl-L (12)   → KEY_CTRL_L (clear screen)
-    Ctrl-N (14)   → KEY_DOWN (next history)
-    Ctrl-P (16)   → KEY_UP (prev history)
-    Ctrl-U (21)   → KEY_CTRL_U (kill to start)
-    Ctrl-W (23)   → KEY_CTRL_W (kill word back)
-    27 (ESC)      → read escape sequence
-
-Escape sequences (ESC [ ...):
-    ESC [ A       → KEY_UP
-    ESC [ B       → KEY_DOWN
-    ESC [ C       → KEY_RIGHT
-    ESC [ D       → KEY_LEFT
-    ESC [ H       → KEY_HOME
-    ESC [ F       → KEY_END
-    ESC [ 1 ~     → KEY_HOME
-    ESC [ 3 ~     → KEY_DELETE
-    ESC [ 4 ~     → KEY_END
-    32-126        → KEY_CHAR (printable character)
-```
-
-For escape sequences, read with a short timeout (or check if more bytes are available) to distinguish ESC key press from ESC sequence.
-
-## Buffer Management
-
-The line buffer is a dynamic char array with cursor position tracking:
-
-```
-Model:
-    buffer[]  - the text content
-    len       - current length of text
-    cursor    - position of cursor (0 to len)
-    buf_size  - allocated capacity
-
-Operations:
-    insert_char(c):
-        grow buffer if needed (double capacity)
-        shift chars from cursor..len right by 1
-        put c at cursor position
-        advance cursor, increment len
-
-    delete_char_before():  (backspace)
-        if cursor == 0: nothing
-        shift chars from cursor..len left by 1
-        decrement cursor and len
-
-    delete_char_at():  (delete key)
-        if cursor == len: nothing
-        shift chars from cursor+1..len left by 1
-        decrement len
-
-    kill_to_end():
-        set buffer[cursor] = '\0'
-        len = cursor
-
-    kill_to_start():
-        shift chars from cursor..len to position 0
-        len -= cursor
-        cursor = 0
-
-    clear():
-        len = 0, cursor = 0, buffer[0] = '\0'
-```
-
-## Display Refresh
-
-After each edit, redraw the line:
-
-```
-refresh_line(le):
-    move cursor to start of input area (carriage return)
-    write prompt
-    write buffer contents
-    clear to end of line (termcap 'ce')
-
-    # Handle multi-line: if prompt + buffer > terminal width
-    calculate actual cursor position:
-        total_pos = prompt_len + cursor
-        cursor_row = total_pos / terminal_cols
-        cursor_col = total_pos % terminal_cols
-
-    calculate current position (after writing buffer):
-        current_pos = prompt_len + len
-        current_row = current_pos / terminal_cols
-
-    # Move cursor from end-of-buffer position back to cursor position
-    move up (current_row - cursor_row) times using 'up' capability
-    carriage return, then move right cursor_col times using 'nd' capability
-```
-
-## Main Read Loop
-
-```
+```c
 line_editor_readline(le, prompt):
-    init buffer (empty)
-    save history position
-    enter raw mode (fallback to simple getline if fails)
-    write prompt to stdout
+    history_reset_cursor(le->history)     // each session starts fresh
 
-    setup signal handlers for SIGINT (set flag, don't terminate)
+    line = readline(prompt)
+    if line == NULL:
+        return NULL    // EOF (Ctrl-D on empty line)
 
-    loop:
-        key = read_key()
+    // Multi-line continuation: unclosed quotes or trailing backslash
+    while lexer_check_quotes(line, &quote) != 0 or line ends with '\':
+        continuation = readline("> ")
+        if continuation == NULL:
+            free(line)
+            return NULL
+        new_line = ft_strjoin(ft_strjoin(line, "\n"), continuation)
+        free(line)
+        free(continuation)
+        line = new_line
 
-        KEY_CHAR:       insert_char, refresh
-        KEY_ENTER:      write newline, break → return buffer
-        KEY_CTRL_D:     if buffer empty → return NULL (EOF)
-                        else → delete char at cursor
-        KEY_CTRL_C:     write "^C\n", clear buffer, rewrite prompt
-        KEY_BACKSPACE:  delete char before cursor, refresh
-        KEY_DELETE:     delete char at cursor, refresh
-        KEY_LEFT:       if cursor > 0: cursor--, refresh
-        KEY_RIGHT:      if cursor < len: cursor++, refresh
-        KEY_UP:         history_prev, refresh
-        KEY_DOWN:       history_next, refresh
-        KEY_HOME:       cursor = 0, refresh
-        KEY_END:        cursor = len, refresh
-        KEY_CTRL_U:     kill to start, refresh
-        KEY_CTRL_K:     kill to end, refresh
-        KEY_CTRL_W:     kill word backwards, refresh
-        KEY_CTRL_L:     clear screen (termcap 'cl'), refresh
-
-    exit raw mode
-    return strdup(buffer)
+    return line          // caller calls history_add() and add_history()
 ```
 
 ## History Integration
 
-The line editor uses P1's history module for up/down arrow navigation. See **`17_history.md`** for the full history module plan.
+We maintain two history systems in parallel:
 
-**How the line editor uses history:**
-- On KEY_UP: call `history_prev(hist)`, copy returned line into buffer
-- On KEY_DOWN: call `history_next(hist)`, copy returned line into buffer
-- Before history navigation: save current buffer as `saved_line`
-- When `history_next()` returns NULL (past newest): restore `saved_line`
-- On KEY_ENTER (line accepted): call `history_add(hist, buffer)`
-- On init: call `history_load(hist, "~/.42sh_history")`
-- On exit: call `history_save(hist, "~/.42sh_history")`
-- Before each navigation session: call `history_reset_cursor(hist)`
+| System | Purpose |
+|--------|---------|
+| readline's internal history (`add_history()`) | Up/Down arrow key navigation |
+| our `t_history` (P1's module) | File persistence, `!!`/`!n` expansions, `fc` builtin |
 
-## Multi-line Input
-
-When the user types an unclosed quote or ends with `\`, prompt for continuation:
-
-```
-line_editor_readline_continued(le, prompt):
-    total = readline(prompt)
-
-    while total has unclosed quotes or ends with '\':
-        continuation = readline("> ")
-        if continuation is NULL: return NULL (EOF)
-        total = total + "\n" + continuation
-
-    return total
+After each accepted non-empty line, the **caller** (main loop) calls:
+```c
+add_history(line);                       // readline internal
+history_add(&shell->history, line);      // our module
 ```
 
-Use `lexer_check_quotes()` to detect unclosed quotes.
+At startup:  `history_load(&shell->history, "~/.42sh_history")`
+At exit:     `history_save(&shell->history, "~/.42sh_history")`
+
+## Editing Modes (Modular Feature)
+
+`set -o emacs` → calls `line_editor_set_mode(le, LE_MODE_EMACS)`:
+```c
+rl_variable_bind("editing-mode", "emacs")
+le->editing_mode = LE_MODE_EMACS
+```
+
+`set -o vi` → calls `line_editor_set_mode(le, LE_MODE_VI)`:
+```c
+rl_variable_bind("editing-mode", "vi")
+le->editing_mode = LE_MODE_VI
+```
+
+Readline's built-in vi mode provides all the required vi shortcuts (h, j, k,
+l, w, b, ^, $, 0, i, I, a, A, x, X, d, D, y, Y, p, P, u, U, r, R, c, C, s, S,
+/, ?, n, N, #, v, ~) out of the box.
+
+Readline's Emacs (default) mode provides: C-b, C-f, C-p, C-n, C-_, C-t, A-t.
+
+## Signal Handling During Input
+
+readline's `read()` is interrupted by signals.  The signals_setup_interactive
+handler sets `g_signal_received = SIGINT` and writes `\n` to stdout.
+readline detects the interrupted read and the next call to `readline()` shows a
+fresh prompt with an empty line.
+
+Ctrl-D on a non-empty line: readline returns the current buffer (not NULL).
+Ctrl-D on an empty line: readline returns NULL → main loop exits.
 
 ## Files
 
 ```
 src/line_editor/
-├── line_editor.c        # Main readline function, init/cleanup
-├── terminal.c           # Raw mode enter/exit, termcap init
-├── keys.c               # Key reading and escape sequence parsing
-├── buffer.c             # Buffer management (insert, delete, etc.)
-└── display.c            # Screen refresh
-
-# History lives in its own module (P1-owned):
-src/history/
-├── history.c            # History operations (add, prev, next, reset_cursor)
-└── history_file.c       # File persistence (load/save)
+├── line_editor.c       # init, cleanup, readline wrapper
+└── line_editor_mode.c  # set_mode, completion hook (stub for now)
 ```
+
+## Why Not a Custom Termcap Editor?
+
+The subject explicitly allows `readline` (`-lreadline`).  Using readline:
+- Gives us full POSIX-quality line editing on day 1 (freeing P4 to focus on job control).
+- Provides Vi/Emacs modes with a single `rl_variable_bind()` call.
+- Lets us add contextual completion later via `rl_attempted_completion_function`.
+- Keeps the terminal always in a consistent state (readline resets on cleanup).
+
+The raw-mode / termcap knowledge documented in background resources is still
+worth understanding — it's exactly what readline implements under the hood — but
+there is no reason to reimplement it from scratch.

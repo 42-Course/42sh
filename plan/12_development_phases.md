@@ -39,9 +39,9 @@ shell->interactive = isatty(STDIN)
 
 while shell->running:
     if interactive:
-        line = line_editor_readline(prompt)    # use system readline temporarily
+        line = line_editor_readline(le, prompt)   # uses readline() from libreadline
     else:
-        line = read_line_from_stdin()
+        line = getline_from_stdin()               # getline(); no prompt, no readline
 
     if line is NULL: break (EOF)
     if line is empty: continue
@@ -321,35 +321,36 @@ ls: nonexistent: No such file or directory
 
 ---
 
-## Phase 8: Line Editor (Termcap)
+## Phase 8: Line Editor (readline integration)
 
 ### Goals
-- Replace system readline with custom termcap implementation
-- Arrow keys for cursor movement
-- Arrow keys for history navigation
+- Full interactive line editing via GNU readline (already linked from Phase 0)
+- History navigation integrated with our `t_history` module
+- Multi-line continuation for unclosed quotes and trailing `\`
 
 ### Tasks
-1. Termcap initialization (load terminal capabilities)
-2. Raw terminal mode (enter/exit)
-3. Key reading (single chars, escape sequences)
-4. Buffer management (insert, delete, cursor tracking)
-5. Display refresh (using termcap capabilities)
-6. History integration (up/down arrows, add to history)
-7. Ctrl-C (clear line), Ctrl-D (EOF), Ctrl-L (clear screen)
+1. Implement `line_editor_init`: configure `rl_readline_name`, `using_history()`
+2. Implement `line_editor_readline`: wrap `readline()` with multi-line continuation
+   using `lexer_check_quotes()`
+3. Integrate history: after each accepted line call `add_history()` (readline)
+   AND `history_add()` (our module)
+4. Load history from `~/.42sh_history` at startup; save on exit
+5. Ctrl-C handling: readline restores prompt on SIGINT automatically when
+   `signals_setup_interactive()` uses a write-only handler
 
 ### Deliverable
-- Left/right arrows move cursor within line
-- Up/down arrows navigate history
-- Backspace deletes character before cursor
-- Home/End move to start/end of line
-- Ctrl-C clears current line and shows new prompt
+- Left/right arrows, Home/End, Ctrl-A/E, Ctrl-K/U/W — all from readline for free
+- Up/Down arrows navigate both readline internal history and our `t_history`
+- Multi-line input works (continues with `> ` prompt on unclosed quotes)
+- History file loaded at startup and saved at exit
 
 ### Checklist
-- [ ] Raw mode enter/exit works
-- [ ] Arrow keys work
-- [ ] History navigation works
-- [ ] Ctrl-C, Ctrl-D, Ctrl-L work
-- [ ] Multi-line display works (wrapping)
+- [ ] readline() replaces getline in interactive mode
+- [ ] History navigation works (Up/Down arrows)
+- [ ] Multi-line input works (unclosed quotes continue)
+- [ ] Ctrl-C shows fresh prompt without exiting
+- [ ] Ctrl-D on empty line exits
+- [ ] `~/.42sh_history` loaded at startup, saved at exit
 - [ ] Terminal state always restored on exit
 
 ---
@@ -452,23 +453,42 @@ Suggested order based on dependencies:
 
 ## Testing Strategy
 
-### Comparison Tests (Primary)
+### Unit Tests (primary for TDD)
 
-The most effective test: run the same command in bash and 42sh, compare output and exit status.
+Build and run with `make test`.  A minimal test framework (`tests/minunit.h`)
+provides `MU_ASSERT`, `MU_ASSERT_INT`, `MU_ASSERT_STR`, `MU_RUN`, `MU_SUMMARY`.
+
+- `tests/test_dlist.c` — ft_dlstnew, ft_dlstadd_back, ft_dlstclear, prev/next linkage
+- `tests/test_list.c` — t_list (libft) pointer-storage pattern and del convention
+- `tests/test_array.c` — ft_array grow, ft_arritem_at, ft_arrswap, ft_arrdel
+- `tests/test_history.c` — history_add (dedup, max_size), history_prev/next navigation
+- Add `tests/test_<module>.c` as each module is implemented
+
+Compile flag `-DTEST_MODE` can gate debug-only code:
+```c
+#ifdef TEST_MODE
+    ft_dprintf(STDERR_FILENO, "[DBG] token: %s\n", tok->value);
+#endif
+```
+
+### Debug Build
+
+```
+make debug     # ASAN + UBSan + -g, forces full rebuild
+```
+
+Run the resulting `./42sh` under valgrind or GDB for deep inspection.
+
+### Comparison Tests (end-to-end)
+
+Run the same command in bash and 42sh, compare output and exit status:
 
 ```
 bash -c "command here; echo EXIT:\$?"
 ./42sh -c "command here; echo EXIT:\$?"
 ```
 
-This is why non-interactive mode (`-c` flag) is implemented in Phase 0.
-
-### Unit Tests
-- Test each module independently
-- Lexer: verify token sequences for various inputs
-- Parser: verify AST structure
-- Expander: verify expansion results
-- Variables: verify get/set/export behavior
+`-c` mode is implemented from Phase 0 precisely for this purpose.
 
 ### Integration Tests
 - Test command combinations
@@ -477,4 +497,4 @@ This is why non-interactive mode (`-c` flag) is implemented in Phase 0.
 
 ### Regression Tests
 - Keep every test that found a bug
-- Run full test suite before each merge to main
+- Run full test suite (`make test`) before each merge to main

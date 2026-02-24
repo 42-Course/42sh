@@ -1,250 +1,261 @@
 # Core Data Structures
 
+## Guiding Principles
+
+1. **Use `t_list` (from libft) for all singly-linked collections.**
+   No struct may have a raw `*next` pointer for list linkage.
+   Traversal happens through `t_list *` fields on the owning struct.
+   Access pattern: `(t_var *)node->content` (direct cast, see note below).
+
+2. **Use `t_dlist` (project-defined in `includes/dlist.h`) for doubly-linked needs.**
+   Currently used for history navigation only. Same content-as-pointer convention.
+
+3. **Use `ft_array` (from libft) for dynamic arrays built incrementally.**
+   Primary use: building `argv[]` during parsing (`ft_arrappend_raw`), glob results,
+   and field-splitting output.
+   Final result is converted to `char **` (NULL-terminated) for execve.
+
+4. **Use plain `char **` where POSIX demands it.**
+   `argv` in `t_cmd`, environment passed to execve.  These are the terminal
+   form; `ft_array` is only the build step.
+
+### t_list storage convention
+
+`ft_lstnew(&ptr, sizeof(ptr))` copies the _pointer value_ into `node->content`
+(an 8-byte allocation on 64-bit).  The correct read pattern is therefore:
+
+```c
+t_var *v = *(t_var **)node->content;
+```
+
+The LST_VAR / LST_JOB / LST_ALIAS / LST_PROC macros in `42sh.h` do this for
+the common types.  For one-off casts, use `*(T **)node->content`.
+
+---
+
 ## 1. Token (Lexer Output)
 
 ```c
 typedef enum e_token_type
 {
-    // Words
-    TOK_WORD,               // Regular word/argument (quotes preserved in value)
-
-    // Operators
-    TOK_PIPE,               // |
-    TOK_AND,                // &&
-    TOK_OR,                 // ||
-    TOK_SEMICOLON,          // ;
-    TOK_AMPERSAND,          // & (background)
-    TOK_NEWLINE,            // \n
-
-    // Redirections
-    TOK_REDIR_IN,           // <
-    TOK_REDIR_OUT,          // >
-    TOK_REDIR_APPEND,       // >>
-    TOK_HEREDOC,            // <<
-    TOK_REDIR_DUP_IN,       // <&
-    TOK_REDIR_DUP_OUT,      // >&
-
-    // Grouping (modular)
-    TOK_LPAREN,             // (   — operator, breaks words
-    TOK_RPAREN,             // )   — operator, breaks words
-    // NOTE: { and } are NOT token types. They are reserved words:
-    // the lexer produces TOK_WORD with value "{" or "}".
-    // The parser recognizes them in command position.
-
-    // Special
-    TOK_EOF,                // End of input
-    TOK_ERROR               // Lexer error
+    TOK_WORD,           // Regular word/argument (quotes preserved in value)
+    TOK_PIPE,           // |
+    TOK_AND,            // &&
+    TOK_OR,             // ||
+    TOK_SEMICOLON,      // ;
+    TOK_AMPERSAND,      // & (background)
+    TOK_NEWLINE,        // \n
+    TOK_REDIR_IN,       // <
+    TOK_REDIR_OUT,      // >
+    TOK_REDIR_APPEND,   // >>
+    TOK_HEREDOC,        // <<
+    TOK_REDIR_DUP_IN,   // <&
+    TOK_REDIR_DUP_OUT,  // >&
+    TOK_LPAREN,         // (
+    TOK_RPAREN,         // )
+    TOK_EOF,
+    TOK_ERROR
 }   t_token_type;
 
+// Token data — NO *next pointer.
 typedef struct s_token
 {
     t_token_type    type;
-    char            *value;         // Raw token string (quotes preserved for expander)
-    int             io_number;      // FD number before redirect (-1 if none)
-    struct s_token  *next;
+    char            *value;         // Raw string (quotes preserved for expander)
+    int             io_number;      // fd before redirect (-1 if none)
 }   t_token;
 ```
 
-**Design decision:** No `TOK_ASSIGNMENT` type. Assignment detection (`VAR=value`) is done by the parser in the command prefix position, not by the lexer. This avoids the bug where `echo VAR=value` would be misclassified.
+**Lexer returns `t_list *`** (each node contains a `t_token *`).
+Access: `TOK(node)` macro → `(t_token *)node->content`.
+Free: `lexer_free_tokens(t_list *tokens)`.
 
-**Design decision:** Quotes are preserved in `value`. The string `"hello"'world'$VAR` is stored as-is. The expander handles quote interpretation during expansion. This allows the expander to know which parts are single-quoted (no expansion), double-quoted (partial expansion), or unquoted (full expansion).
+---
 
 ## 2. AST Nodes (Parser Output)
 
-### Union-based approach
-
 ```c
-typedef enum e_node_type
-{
-    NODE_COMMAND,           // Simple command: ls -la
-    NODE_PIPE,              // Pipe: cmd1 | cmd2
-    NODE_AND,               // And: cmd1 && cmd2
-    NODE_OR,                // Or: cmd1 || cmd2
-    NODE_SEQUENCE,          // Sequence: cmd1 ; cmd2
-    NODE_SUBSHELL,          // Subshell: (cmd)
-    NODE_BLOCK,             // Block: { cmd; }
-    NODE_BACKGROUND,        // Background: cmd &
-}   t_node_type;
-
-// Redirection
+// Redirection data — NO *next pointer.
 typedef struct s_redir
 {
-    t_token_type    type;           // Type of redirection
-    int             fd;             // File descriptor (default: -1 = use default)
-    char            *target;        // Filename or fd number (raw, unexpanded)
-    char            *heredoc_delim;     // For heredoc: the delimiter word
-    char            *heredoc_content;   // For heredoc: collected content (filled after parse)
-    int             heredoc_quoted;     // Was delimiter quoted? (no expansion if yes)
-    struct s_redir  *next;
+    t_token_type    type;
+    int             fd;                 // Source fd (-1 = default)
+    char            *target;            // Filename or fd string (unexpanded)
+    char            *heredoc_delim;
+    char            *heredoc_content;   // Filled by heredoc collection pass
+    int             heredoc_quoted;     // 1 = no expansion inside heredoc
 }   t_redir;
 
-// Simple command
+// Simple command.
 typedef struct s_cmd
 {
-    char            **argv;         // Arguments (argv[0] is command), raw/unexpanded
-    int             argc;           // Argument count
-    char            **assignments;  // VAR=value before command (detected by parser)
-    t_redir         *redirs;        // Redirections
+    char    **argv;         // NULL-terminated, unexpanded (for execve)
+    int     argc;
+    t_list  *assignments;   // list of char* "NAME=val" — NO char **
+    t_list  *redirs;        // list of t_redir*
 }   t_cmd;
 
-// Binary operation (pipe, &&, ||, ;)
+// Binary node (pipe, &&, ||, ;)
 typedef struct s_binary
 {
     struct s_ast    *left;
     struct s_ast    *right;
 }   t_binary;
 
-// Group (subshell, block, background) - can have own redirections
+// Group node (subshell, block, background)
 typedef struct s_group
 {
     struct s_ast    *child;
-    t_redir         *redirs;        // Redirections on the group: (cmd) > file
+    t_list          *redirs;    // list of t_redir* for the whole group
 }   t_group;
 
-// AST Node
 typedef struct s_ast
 {
-    t_node_type     type;
+    t_node_type type;
     union {
-        t_cmd       cmd;        // NODE_COMMAND
-        t_binary    binary;     // NODE_PIPE, NODE_AND, NODE_OR, NODE_SEQUENCE
-        t_group     group;      // NODE_SUBSHELL, NODE_BLOCK, NODE_BACKGROUND
+        t_cmd       cmd;
+        t_binary    binary;
+        t_group     group;
     } data;
 }   t_ast;
 ```
 
-**Note:** All strings in the AST (argv, assignments, redir targets) are raw/unexpanded. The expander processes them at execution time, not at parse time.
+**Design decisions:**
+- `argv` is a `char **` because that's what execve needs; build it from
+  `ft_array` in the parser and call `ft_arrdel` when done building.
+- `assignments` and `redirs` use `t_list *` (no raw next pointer).
+- `REDIR(node)` macro → `(t_redir *)node->content`.
+
+---
 
 ## 3. Variable Storage
 
 ```c
+// Variable data — NO *next pointer.
 typedef struct s_var
 {
-    char            *name;
-    char            *value;
-    int             exported;       // Is in environment?
-    int             readonly;       // Is read-only? (bonus)
-    struct s_var    *next;
+    char    *name;
+    char    *value;
+    int     exported;
+    int     readonly;
 }   t_var;
 ```
 
-Alternatively, use a hash table for O(1) lookup if the variable count is large:
+Stored as `t_list *variables` in `t_shell`.
+Access: `LST_VAR(node)` → `*(t_var **)node->content`.
 
-```c
-typedef struct s_var_table
-{
-    t_var           **buckets;
-    size_t          size;
-    size_t          count;
-}   t_var_table;
-```
+For O(1) lookup a hash table variant may be added later, but the linked list
+is the baseline.
+
+---
 
 ## 4. Job Control
 
 ```c
-typedef enum e_job_status
-{
-    JOB_RUNNING,
-    JOB_STOPPED,
-    JOB_DONE,
-    JOB_TERMINATED
-}   t_job_status;
-
+// Process in a pipeline — NO *next pointer.
 typedef struct s_process
 {
-    pid_t           pid;
-    char            *cmd;           // Command string for display
-    int             status;         // waitpid status
-    int             completed;
-    int             stopped;
-    struct s_process *next;
+    pid_t   pid;
+    char    *cmd;       // command string for display
+    int     status;     // raw waitpid status
+    int     completed;
+    int     stopped;
 }   t_process;
 
+// Job — NO *next pointer.
 typedef struct s_job
 {
-    int             id;             // Job number [1], [2], etc.
-    pid_t           pgid;           // Process group ID
-    char            *cmd_line;      // Full command line
-    t_process       *processes;     // Processes in this job
+    int             id;
+    pid_t           pgid;
+    char            *cmd_line;
+    t_list          *processes;     // list of t_process*
     t_job_status    status;
-    int             notified;       // User notified of status?
-    int             foreground;     // Was started in foreground?
-    struct s_job    *next;
+    int             notified;
+    int             foreground;
 }   t_job;
 ```
+
+Stored as `t_list *jobs` in `t_shell`.
+Access: `LST_JOB(node)` → `*(t_job **)node->content`.
+`LST_PROC(node)` → `*(t_process **)node->content` (for `job->processes`).
+
+---
 
 ## 5. History
 
 ```c
+// History entry data — stored in t_dlist nodes (doubly-linked for navigation).
 typedef struct s_history_entry
 {
-    int             number;         // History number
-    char            *line;          // Command line
-    struct s_history_entry *prev;
-    struct s_history_entry *next;
+    int     number;     // monotonically increasing history number (1-based)
+    char    *line;      // command line string (heap-allocated)
 }   t_history_entry;
 
 typedef struct s_history
 {
-    t_history_entry *head;          // Oldest
-    t_history_entry *tail;          // Newest
-    t_history_entry *current;       // For navigation
-    int             count;
-    int             max_size;       // Max entries to keep
-    char            *file_path;     // ~/.42sh_history
+    t_dlist *head;      // oldest entry  (t_dlist; content = t_history_entry*)
+    t_dlist *tail;      // newest entry
+    t_dlist *current;   // navigation cursor (NULL when not navigating)
+    int     count;
+    int     max_size;
+    int     next_number;
+    char    *file_path;
 }   t_history;
 ```
 
+**Why `t_dlist`?** Arrow key navigation requires both forward (Down) and
+backward (Up) traversal.  A singly-linked `t_list` would require storing a
+reverse pointer separately; `t_dlist` is the natural fit.
+
+Access: `(t_history_entry *)node->content` (no double-deref needed here since
+`ft_dlstnew(ptr)` stores the pointer directly).
+
+---
+
 ## 6. Line Editor State
+
+With readline handling raw mode, key reading, buffer, and display, the
+`t_line_editor` struct is lean:
 
 ```c
 typedef struct s_line_editor
 {
-    // Buffer
-    char            *buffer;        // Input buffer
-    size_t          buf_size;       // Allocated size
-    size_t          len;            // Current length
-    size_t          cursor;         // Cursor position
-
-    // Display
-    size_t          prompt_len;     // Prompt length
-    int             term_cols;      // Terminal width
-    int             term_rows;      // Terminal height
-
-    // Terminal
-    struct termios  orig_termios;   // Original settings
-    int             raw_mode;       // In raw mode?
-
-    // History
-    t_history       *history;
-    char            *saved_line;    // Line before history nav
-
-    // Multi-line
-    int             in_quote;       // Unclosed quote type
-    int             line_continuation; // Backslash at EOL
+    t_history   *history;       // pointer into t_shell.history
+    char        *saved_line;    // buffer snapshot before history navigation
+    int         editing_mode;   // LE_MODE_EMACS (0) or LE_MODE_VI (1)
 }   t_line_editor;
 ```
 
-## 7. Alias (Modular Feature)
+All terminal state is managed by readline internally.  We configure readline
+via `rl_variable_bind()`, readline callbacks, and `rl_attempted_completion_function`.
+
+---
+
+## 7. Alias
 
 ```c
+// Alias data — NO *next pointer.
 typedef struct s_alias
 {
-    char            *name;
-    char            *value;
-    struct s_alias  *next;
+    char    *name;
+    char    *value;
 }   t_alias;
 ```
+
+Stored as `t_list *aliases` in `t_shell`.
+Access: `LST_ALIAS(node)` → `*(t_alias **)node->content`.
+
+---
 
 ## 8. Hash Table for Command Cache (Modular Feature)
 
 ```c
 typedef struct s_hash_entry
 {
-    char            *name;          // Command name
-    char            *path;          // Full path
-    int             hits;           // Usage count
-    struct s_hash_entry *next;
+    char                *name;
+    char                *path;
+    int                 hits;
+    struct s_hash_entry *next;  // internal chaining within a bucket (not a project-wide list)
 }   t_hash_entry;
 
 typedef struct s_hash_table
@@ -254,36 +265,53 @@ typedef struct s_hash_table
 }   t_hash_table;
 ```
 
+The internal bucket chaining uses a raw `*next` because this is a hash-specific
+structure (not a general project list) and the performance trade-off justifies it.
+
+---
+
 ## Memory Management Guidelines
 
-1. **Tokens**: Free after parsing (parser consumes them)
-2. **AST**: Free after execution
-3. **Variables**: Free when unset or shell exits
-4. **Jobs**: Free when job completes and is reported
-5. **History**: Free on shell exit, save to file first
+| Structure | When to free |
+|-----------|-------------|
+| Token list | After `parser_parse()` consumes it |
+| AST | After `executor_execute()` completes |
+| Variables | On `unset` or shell exit |
+| Jobs | When job is done, reported, and removed from list |
+| History entries | On eviction (max_size) or shell exit |
+| argv `char **` | After executor no longer needs the command |
+| ft_array used to build argv | Right after `char **` is extracted |
 
 ### Helper functions to implement:
 
 ```c
+// t_list node helpers (in src/utils/list_utils.c)
+t_list      *lst_new_ptr(void *ptr);            // malloc node, store ptr directly
+void        lst_free_ptr(t_list **lst,          // free list; del frees content
+                         void (*del)(void *));
+
 // Token
 t_token     *token_new(t_token_type type, char *value);
 void        token_free(t_token *token);
-void        token_list_free(t_token *head);
+void        lexer_free_tokens(t_list *head);
 
 // AST
 t_ast       *ast_new_command(t_cmd *cmd);
 t_ast       *ast_new_binary(t_node_type type, t_ast *left, t_ast *right);
-t_ast       *ast_new_group(t_node_type type, t_ast *child, t_redir *redirs);
+t_ast       *ast_new_group(t_node_type type, t_ast *child, t_list *redirs);
 void        ast_free(t_ast *node);
 
 // Redirection
-t_redir     *redir_new(t_token_type type, char *target);
+t_redir     *redir_new(t_token_type type, int fd, char *target);
 void        redir_free(t_redir *redir);
-void        redir_list_free(t_redir *head);
 
 // Variables
 t_var       *var_get(t_shell *shell, const char *name);
+char        *var_get_value(t_shell *shell, const char *name);
 int         var_set(t_shell *shell, const char *name, const char *value);
 int         var_unset(t_shell *shell, const char *name);
 int         var_export(t_shell *shell, const char *name);
+
+// argv building during parsing
+char        **argv_from_array(t_array *arr);    // NULL-terminate and extract
 ```
