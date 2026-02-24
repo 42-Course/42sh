@@ -33,36 +33,36 @@ The lexer uses a state machine to track whether it's inside quotes:
 │                         STATE MACHINE                           │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│   ┌─────────┐    whitespace     ┌─────────┐                    │
-│   │  START  │◄─────────────────│  START  │                    │
-│   └────┬────┘                   └─────────┘                    │
+│   ┌─────────┐    whitespace    ┌─────────┐                      │
+│   │  START  │◄─────────────────│  START  │                      │
+│   └────┬────┘                  └─────────┘                      │
 │        │                                                        │
-│        ├── ' ──────────────────► SINGLE_QUOTE                  │
-│        ├── " ──────────────────► DOUBLE_QUOTE                  │
-│        ├── \ ──────────────────► ESCAPE                        │
-│        ├── operator ───────────► emit operator token           │
-│        └── other ──────────────► IN_WORD                       │
+│        ├── ' ──────────────────► SINGLE_QUOTE                   │
+│        ├── " ──────────────────► DOUBLE_QUOTE                   │
+│        ├── \ ──────────────────► ESCAPE                         │
+│        ├── operator ───────────► emit operator token            │
+│        └── other ──────────────► IN_WORD                        │
 │                                                                 │
 │   IN_WORD:                                                      │
-│        ├── whitespace ─────────► emit word, → START            │
-│        ├── operator ───────────► emit word, → handle operator  │
-│        ├── ' ──────────────────► SINGLE_QUOTE (in word)        │
-│        ├── " ──────────────────► DOUBLE_QUOTE (in word)        │
-│        ├── \ ──────────────────► ESCAPE (in word)              │
-│        └── other ──────────────► append to word                │
+│        ├── whitespace ─────────► emit word, → START             │
+│        ├── operator ───────────► emit word, → handle operator   │
+│        ├── ' ──────────────────► SINGLE_QUOTE (in word)         │
+│        ├── " ──────────────────► DOUBLE_QUOTE (in word)         │
+│        ├── \ ──────────────────► ESCAPE (in word)               │
+│        └── other ──────────────► append to word                 │
 │                                                                 │
 │   SINGLE_QUOTE:                                                 │
-│        ├── ' ──────────────────► return to previous state      │
-│        └── other ──────────────► append literally              │
+│        ├── ' ──────────────────► return to previous state       │
+│        └── other ──────────────► append literally               │
 │                                                                 │
 │   DOUBLE_QUOTE:                                                 │
-│        ├── " ──────────────────► return to previous state      │
-│        ├── \ ──────────────────► ESCAPE_IN_DQUOTE              │
-│        ├── $ ──────────────────► append (kept for expander)    │
-│        └── other ──────────────► append to word                │
+│        ├── " ──────────────────► return to previous state       │
+│        ├── \ ──────────────────► ESCAPE_IN_DQUOTE               │
+│        ├── $ ──────────────────► append (kept for expander)     │
+│        └── other ──────────────► append to word                 │
 │                                                                 │
 │   ESCAPE:                                                       │
-│        └── any ────────────────► append literally, → previous  │
+│        └── any ────────────────► append literally, → previous   │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
