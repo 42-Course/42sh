@@ -8,6 +8,7 @@
 #ifndef SHELL_42SH_H
 # define SHELL_42SH_H
 
+# include <stdio.h>
 # include <unistd.h>
 # include <stdlib.h>
 # include <errno.h>
