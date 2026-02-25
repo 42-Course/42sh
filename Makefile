@@ -14,7 +14,7 @@ TEST_PATH	= tests
 # ----- Base flags -----
 CFLAGS		= $(foreach D, $(HEADER_PATH), -I$(D)) \
 			  -Wall -Wextra -Werror \
-			  -MD -MP
+			  -MD -MP -std=gnu99
 
 LDFLAGS		= -L$(LIB_PATH) -lft -lreadline -ltermcap
 
