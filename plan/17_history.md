@@ -2,30 +2,40 @@
 
 ## Purpose
 
-Store and navigate command history. The history module is **owned by P1** and provides a clean API that the line editor (P4) consumes. History is a standalone data structure module — it has no dependency on terminal I/O, signals, or the executor.
+Store and navigate command history.  History is **owned by P1** and provides a
+clean API that the line editor (P4) and the main loop consume.
+
+The module has no dependency on terminal I/O, signals, or the executor.
 
 ## Data Structure
 
+Uses **`t_dlist`** (doubly-linked list) because history navigation requires both
+backward (Up arrow → older) and forward (Down arrow → newer) traversal.
+`t_list` (singly-linked) would not support efficient forward traversal.
+
 ```c
+// History entry data.  Stored in t_dlist nodes: node->content = t_history_entry*
 typedef struct s_history_entry
 {
-    int             number;         // History number (1-based, monotonically increasing)
-    char            *line;          // Command line string
-    struct s_history_entry *prev;
-    struct s_history_entry *next;
+    int     number;     // 1-based monotonically increasing
+    char    *line;      // heap-allocated command string
 }   t_history_entry;
 
 typedef struct s_history
 {
-    t_history_entry *head;          // Oldest entry
-    t_history_entry *tail;          // Newest entry
-    t_history_entry *current;       // Navigation cursor (NULL when not navigating)
-    int             count;          // Number of entries
-    int             max_size;       // Max entries to keep (default: 500)
-    int             next_number;    // Next history number to assign
-    char            *file_path;     // ~/.42sh_history
+    t_dlist *head;          // oldest entry
+    t_dlist *tail;          // newest entry
+    t_dlist *current;       // navigation cursor (NULL = not navigating)
+    int     count;
+    int     max_size;       // default: HISTORY_MAX_SIZE (500)
+    int     next_number;
+    char    *file_path;     // ~/.42sh_history (set by caller)
 }   t_history;
 ```
+
+`ft_dlstnew(entry_ptr)` stores the pointer directly (`node->content = entry_ptr`).
+Access: `(t_history_entry *)node->content` — single cast, no double-deref needed
+because `ft_dlstnew` does NOT copy content (unlike `ft_lstnew`).
 
 ## Interface
 
@@ -34,18 +44,17 @@ typedef struct s_history
 void    history_init(t_history *hist, int max_size);
 void    history_free(t_history *hist);
 
-// Add a command to history (called after each accepted line)
+// Add after each accepted non-empty line
 int     history_add(t_history *hist, const char *line);
 
 // Navigation (called by line editor on up/down arrow)
-char    *history_prev(t_history *hist);
-char    *history_next(t_history *hist);
+char    *history_prev(t_history *hist);     // returns older line or NULL
+char    *history_next(t_history *hist);     // returns newer line or NULL (= restore saved_line)
 
-// Reset navigation cursor to "not navigating" state
-// Called before each new readline session
+// Reset cursor before each new readline session
 void    history_reset_cursor(t_history *hist);
 
-// File persistence
+// File I/O (0600 permissions, one command per line)
 int     history_load(t_history *hist, const char *path);
 int     history_save(t_history *hist, const char *path);
 ```
@@ -54,212 +63,107 @@ int     history_save(t_history *hist, const char *path);
 
 ### history_add
 
-Called by the line editor after the user presses Enter.
-
 ```
 history_add(hist, line):
-    # Skip empty or whitespace-only lines
-    if line is empty or all whitespace:
-        return 0
+    if line is empty or all whitespace: return 0
+    if hist->tail && tail->line == line: return 0  // skip duplicates
 
-    # Deduplication: skip if identical to most recent entry
-    if hist->tail is not NULL and hist->tail->line equals line:
-        return 0
-
-    # Create new entry
-    entry = allocate t_history_entry
+    entry = malloc(t_history_entry)
     entry->line = strdup(line)
     entry->number = hist->next_number++
-    entry->prev = hist->tail
-    entry->next = NULL
 
-    # Link to list
-    if hist->tail:
-        hist->tail->next = entry
-    else:
-        hist->head = entry      # first entry
-    hist->tail = entry
+    node = ft_dlstnew(entry)
+    ft_dlstadd_back(&hist->head, node)
+    hist->tail = node   // update tail pointer
     hist->count++
 
-    # Trim oldest if over max_size
     while hist->count > hist->max_size:
-        old = hist->head
-        hist->head = old->next
-        if hist->head:
-            hist->head->prev = NULL
-        else:
-            hist->tail = NULL   # list is now empty
-        free old->line, free old
+        old_node = hist->head
+        hist->head = hist->head->next
+        if hist->head: hist->head->prev = NULL
+        free (t_history_entry *)old_node->content ->line
+        free (t_history_entry *)old_node->content
+        free old_node
         hist->count--
 
     return 1
 ```
 
-### history_prev
-
-Navigate backward (older). Returns the line string, or NULL if already at oldest.
+### history_prev (Up arrow)
 
 ```
 history_prev(hist):
-    if hist->count == 0:
-        return NULL
+    if hist->count == 0: return NULL
 
-    if hist->current is NULL:
-        # Start navigating from the newest entry
-        hist->current = hist->tail
-    else if hist->current->prev is not NULL:
-        # Move to older entry
+    if hist->current == NULL:
+        hist->current = hist->tail      // start from newest
+    else if hist->current->prev != NULL:
         hist->current = hist->current->prev
     else:
-        # Already at oldest entry
-        return NULL
+        return NULL                     // already at oldest
 
-    return hist->current->line
+    return ((t_history_entry *)hist->current->content)->line
 ```
 
-### history_next
-
-Navigate forward (newer). Returns the line string, or NULL if past the newest (meaning "restore saved line").
+### history_next (Down arrow)
 
 ```
 history_next(hist):
-    if hist->current is NULL:
-        # Not navigating
-        return NULL
+    if hist->current == NULL: return NULL   // not navigating
 
-    if hist->current->next is not NULL:
-        # Move to newer entry
+    if hist->current->next != NULL:
         hist->current = hist->current->next
-        return hist->current->line
+        return ((t_history_entry *)hist->current->content)->line
     else:
-        # Past the newest entry — stop navigating
         hist->current = NULL
-        return NULL             # caller restores saved_line
+        return NULL                         // caller restores saved_line
 ```
 
-### history_reset_cursor
+### history_load / history_save
 
-Reset navigation state. Called by the line editor before each new readline session (so a new up-arrow starts from the newest entry, not wherever the last session left off).
-
-```
-history_reset_cursor(hist):
-    hist->current = NULL
-```
-
-### history_load
-
-Load history from file at shell startup.
-
-```
-history_load(hist, path):
-    expand ~ in path if needed
-    fd = open(path, O_RDONLY)
-    if fd < 0: return 0         # no history file is not an error
-
-    for each line in the file:
-        strip trailing newline
-        if line is not empty:
-            history_add(hist, line)
-
-    close(fd)
-    return 1
-```
-
-File format: one command per line, plain text. Most recent command is the last line.
-
-### history_save
-
-Save history to file at shell exit.
-
-```
-history_save(hist, path):
-    expand ~ in path if needed
-    fd = open(path, O_WRONLY | O_CREAT | O_TRUNC, 0600)
-    if fd < 0: return 0         # print warning, but don't crash
-
-    entry = hist->head
-    while entry:
-        write entry->line to fd
-        write '\n' to fd
-        entry = entry->next
-
-    close(fd)
-    return 1
-```
-
-File permissions: `0600` (read/write owner only — history may contain sensitive commands).
-
-### history_free
-
-Free all entries. Called at shell exit after history_save.
-
-```
-history_free(hist):
-    entry = hist->head
-    while entry:
-        next = entry->next
-        free entry->line
-        free entry
-        entry = next
-    hist->head = NULL
-    hist->tail = NULL
-    hist->current = NULL
-    hist->count = 0
-```
+Same semantics as before.  File format: plain text, one command per line,
+newest last.  File permissions: 0600.
 
 ## Integration with Line Editor (P4)
 
-The line editor uses history through a simple contract:
+| Event | Line editor calls |
+|-------|-------------------|
+| Session starts | `history_reset_cursor(hist)` |
+| Up arrow | `history_prev(hist)` |
+| Down arrow | `history_next(hist)` |
+| Enter | `history_add(hist, line)` + `add_history(line)` (readline) |
+| Shell startup | `history_load(hist, path)` |
+| Shell exit | `history_save(hist, path)` |
 
-| When | Line editor calls | What happens |
-|------|-------------------|--------------|
-| Readline session starts | `history_reset_cursor(hist)` | Navigation cursor reset to NULL |
-| User presses Up arrow | `history_prev(hist)` | Returns older line, or NULL at oldest |
-| User presses Down arrow | `history_next(hist)` | Returns newer line, or NULL past newest |
-| User presses Enter | `history_add(hist, line)` | Adds line to history (with dedup) |
-| Shell startup | `history_load(hist, path)` | Loads history file |
-| Shell exit | `history_save(hist, path)` | Saves history file |
-
-The line editor is responsible for:
-- Saving the current buffer before starting navigation (`saved_line`)
-- Restoring `saved_line` when `history_next()` returns NULL
-- Copying the returned line into the edit buffer
-
-The history module is responsible for:
-- Maintaining the doubly linked list
-- Deduplication
-- Max size enforcement
-- File I/O
+The line editor saves `le->saved_line` before starting navigation so it can
+restore it when `history_next()` returns NULL.
 
 ## Modular: History Expansions (P1)
 
-If implementing the **History modular feature**, P1 adds a pre-processing step that runs on the raw input line BEFORE tokenization:
+Pre-processing step on the raw input string **before tokenization**:
 
 ```
 history_expand(hist, input):
-    scan input for:
-        !!          → replace with hist->tail->line
-        !n          → replace with entry number n
-        !-n         → replace with entry (count - n) from tail
-        !string     → replace with most recent entry starting with string
-        !?string    → replace with most recent entry containing string
-
-    if any expansion happened:
-        print the expanded line (so user sees what was substituted)
-
-    return expanded string
+    scan for !! / !n / !-n / !string
+    if match found: print expanded form (so user sees what was substituted)
+    return expanded string (malloc'd)
 ```
 
-This is called in the main loop after `line_editor_readline()` returns, before `lexer_tokenize()`.
+Called in main loop after `line_editor_readline()` returns, before
+`lexer_tokenize()`.
 
 ## Files
 
 ```
-include/history.h            # t_history, t_history_entry, all function declarations
+includes/history.h              # types + function declarations
+includes/dlist.h                # t_dlist (used by history)
 
 src/history/
-├── history.c                # history_init, history_free, history_add
-├── history_nav.c            # history_prev, history_next, history_reset_cursor
-├── history_file.c           # history_load, history_save
-└── history_expand.c         # Modular: history expansion (!!, !n, etc.)
+├── history.c                   # history_init, history_free, history_add
+├── history_nav.c               # history_prev, history_next, history_reset_cursor
+├── history_file.c              # history_load, history_save
+└── history_expand.c            # Modular: !! !n expansions
+
+src/dlist/
+└── dlist.c                     # ft_dlstnew, ft_dlstadd_back, ft_dlstclear, etc.
 ```

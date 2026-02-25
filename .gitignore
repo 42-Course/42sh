@@ -1,2 +1,7 @@
 .claude*
 CLAUDE*
+docs/tests/*
+docs/core/*
+obj
+obj/*
+.DS_Store

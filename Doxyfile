@@ -1,0 +1,53 @@
+# Doxyfile for 42sh core project — generates man pages from Doxygen comments.
+# Run "make docs" to generate, "make html" to build the full viewer.
+
+#---------------------------------------------------------------------------
+# Project
+#---------------------------------------------------------------------------
+PROJECT_NAME           = "42sh"
+PROJECT_BRIEF          = "A POSIX-compliant shell"
+PROJECT_NUMBER         = "pulgamecanica"
+OUTPUT_DIRECTORY       = docs/core
+CREATE_SUBDIRS         = NO
+OUTPUT_LANGUAGE        = English
+
+#---------------------------------------------------------------------------
+# Input
+#---------------------------------------------------------------------------
+INPUT                  = includes srcs
+FILE_PATTERNS          = *.h *.c
+RECURSIVE              = YES
+EXCLUDE                =
+# Only document symbols that carry explicit /** */ comments.
+# Set to YES to get auto-stubs for every function once docs are sparse.
+EXTRACT_ALL            = NO
+EXTRACT_STATIC         = YES
+EXTRACT_PRIVATE        = NO
+HIDE_UNDOC_MEMBERS     = YES
+HIDE_UNDOC_CLASSES     = YES
+
+#---------------------------------------------------------------------------
+# Build / parsing
+#---------------------------------------------------------------------------
+OPTIMIZE_OUTPUT_FOR_C  = YES
+TYPEDEF_HIDES_STRUCT   = YES
+JAVADOC_AUTOBRIEF      = NO
+MARKDOWN_SUPPORT       = YES
+
+#---------------------------------------------------------------------------
+# Output: man pages only (html target converts these via man2html)
+#---------------------------------------------------------------------------
+GENERATE_HTML          = NO
+GENERATE_LATEX         = NO
+GENERATE_MAN           = YES
+MAN_OUTPUT             = man
+MAN_EXTENSION          = .9
+MAN_SUBDIR             =
+MAN_LINKS              = YES
+
+#---------------------------------------------------------------------------
+# Verbosity
+#---------------------------------------------------------------------------
+QUIET                  = YES
+WARNINGS               = YES
+WARN_IF_UNDOCUMENTED   = NO

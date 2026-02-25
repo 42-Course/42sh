@@ -1,19 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_arritem_del.c                                   :+:      :+:    :+:   */
+/*   ft_lstnew.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: zweng <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/03/09 15:57:12 by zweng             #+#    #+#             */
-/*   Updated: 2022/12/16 19:42:25 by zweng            ###   ########.fr       */
+/*   Created: 2017/11/11 18:12:06 by zweng             #+#    #+#             */
+/*   Updated: 2026/02/24 00:00:00 by pulgamecanica    ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_array.h"
+#include "libft.h"
 
-void	ft_arritem_del(t_arritem *item)
+t_list	*ft_lstnew(void *content)
 {
-	free(item->content);
-	ft_bzero(item, sizeof(t_arritem));
+	t_list	*node;
+
+	node = malloc(sizeof(t_list));
+	if (!node)
+		return (NULL);
+	node->content = content;
+	node->next = NULL;
+	return (node);
 }

@@ -28,12 +28,20 @@
 # define FUN_EXT(a)	(a == 0 ? 1 : 0)
 # define ABS(a,b)	(a > b ? a : b)
 
+typedef unsigned char bool;
+
 typedef struct s_list
 {
 	void			*content;
-	size_t			content_size;
 	struct s_list	*next;
 }					t_list;
+
+typedef struct s_dlist
+{
+	void			*content;
+	struct s_dlist	*prev;
+	struct s_dlist	*next;
+}					t_dlist;
 
 typedef struct s_fd
 {
@@ -104,9 +112,9 @@ void				ft_putendl_fd(char const *s, int fd);
 void				ft_putnbr_fd(int n, int fd);
 char				*ft_strrev(char const *s);
 char				*ft_strlastchrp(char const *s);
-t_list				*ft_lstnew(void const *content, size_t content_size);
-void				ft_lstdelone(t_list **alst, void (*del)(void *, size_t));
-void				ft_lstdel(t_list **alst, void (*del)(void *, size_t));
+t_list				*ft_lstnew(void *content);
+void				ft_lstdelone(t_list **alst, void (*del)(void *));
+void				ft_lstdel(t_list **alst, void (*del)(void *));
 void				ft_lstadd(t_list **alst, t_list *new);
 void				ft_lstiter(t_list *lst, void (*f)(t_list *elem));
 t_list				*ft_lstmap(t_list *lst, t_list *(*f)(t_list *elem));
@@ -117,4 +125,10 @@ size_t				ft_lstsize(t_list *lst);
 int					get_next_line(const int fd, char **line);
 char				*ft_ternary(int x, const char *s1, const char *s2);
 int					ft_ternary_int(int x, const int n1, const int n2);
+t_dlist				*ft_dlstnew(void *content);
+void				ft_dlstadd_front(t_dlist **head, t_dlist *node);
+t_dlist				*ft_dlstadd_back(t_dlist **head, t_dlist *node);
+void				ft_dlstdelone(t_dlist *node, void (*del)(void *));
+void				ft_dlstclear(t_dlist **head, void (*del)(void *));
+size_t				ft_dlstsize(t_dlist *head);
 #endif

@@ -2,48 +2,57 @@
 
 ## Purpose
 
-Manage background jobs and process groups. Job control allows:
-
+Manage background jobs and process groups.  Job control allows:
 - Running commands in background (`&`)
-- Suspending foreground jobs (Ctrl-Z)
+- Suspending foreground jobs (Ctrl-Z / SIGTSTP)
 - Resuming jobs in foreground (`fg`) or background (`bg`)
 - Listing jobs (`jobs`)
 
 ## Concepts
 
 ### Process Groups
-- A group of related processes (e.g., all commands in a pipeline)
-- Each job runs in its own process group
-- The shell is its own process group
-
-### Session
-- A collection of process groups sharing a controlling terminal
-- One process group is the **foreground group** (receives terminal input and signals)
-- Other groups are **background groups**
+Each pipeline runs in its own process group (pgid).  The shell is its own group.
 
 ### Controlling Terminal
-- The terminal associated with the session
-- Only the foreground process group receives SIGINT/SIGTSTP from keyboard
+Only the foreground process group receives SIGINT/SIGTSTP from the keyboard.
+`tcsetpgrp(fd, pgid)` moves terminal ownership.
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                          SESSION                                 │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  ┌──────────────────────┐    ┌──────────────────────┐          │
-│  │   Shell (PGID 1000)  │    │   Job 1 (PGID 1001)  │          │
-│  │   [Foreground]       │    │   ls | grep foo      │          │
-│  │                      │    │   [Background]       │          │
-│  └──────────────────────┘    └──────────────────────┘          │
-│                                                                 │
-│  ┌──────────────────────┐                                      │
-│  │   Job 2 (PGID 1002)  │                                      │
-│  │   sleep 100          │                                      │
-│  │   [Stopped]          │                                      │
-│  └──────────────────────┘                                      │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+SESSION
+├── Shell process group (pgid = shell_pgid)   [Foreground when at prompt]
+├── Job 1 pgid                                 [Foreground or Background]
+└── Job 2 pgid                                 [Stopped]
 ```
+
+## Data Structures
+
+```c
+// Process within a pipeline — NO *next; stored in t_job.processes (t_list*).
+typedef struct s_process
+{
+    pid_t   pid;
+    char    *cmd;
+    int     status;
+    int     completed;
+    int     stopped;
+}   t_process;
+
+// Job — NO *next; stored in t_shell.jobs (t_list*).
+typedef struct s_job
+{
+    int             id;
+    pid_t           pgid;
+    char            *cmd_line;
+    t_list          *processes;     // list of t_process*
+    t_job_status    status;
+    int             notified;
+    int             foreground;
+}   t_job;
+```
+
+Access patterns:
+- Iterate jobs:     `for (node = shell->jobs; node; node = node->next)` → `LST_JOB(node)`
+- Iterate procs:    `for (node = job->processes; node; node = node->next)` → `LST_PROC(node)`
 
 ## Interface
 
@@ -52,7 +61,7 @@ int     job_control_init(t_shell *shell);
 void    job_control_cleanup(t_shell *shell);
 
 t_job   *job_create(t_shell *shell, const char *cmd_line);
-void    job_add_process(t_job *job, pid_t pid);
+void    job_add_process(t_job *job, pid_t pid, const char *cmd);
 
 int     job_launch_foreground(t_shell *shell, t_job *job);
 int     job_launch_background(t_shell *shell, t_job *job);
@@ -71,24 +80,21 @@ t_job   *job_find_by_spec(t_shell *shell, const char *spec);
 
 ```
 job_control_init(shell):
-    terminal_fd = STDIN
-    interactive = isatty(terminal_fd)
-    if not interactive: return (no job control)
+    terminal_fd = STDIN_FILENO
+    if not isatty(terminal_fd): return 0   // no job control in non-interactive
 
-    # Wait until we are in the foreground
+    // Wait until we own the foreground
     while tcgetpgrp(terminal_fd) != getpgrp():
         kill(-getpgrp(), SIGTTIN)
 
-    # Ignore job control signals in shell
-    ignore: SIGINT, SIGQUIT, SIGTSTP, SIGTTIN, SIGTTOU
-
-    # Put shell in its own process group and take terminal
+    // Shell takes its own process group
     shell_pgid = getpid()
     setpgid(shell_pgid, shell_pgid)
     tcsetpgrp(terminal_fd, shell_pgid)
+    tcgetattr(terminal_fd, &shell->original_termios)
 
-    # Save terminal attributes
-    tcgetattr(terminal_fd, &original_termios)
+    // Ignore job-control signals in the shell itself
+    signal SIGINT, SIGQUIT, SIGTSTP, SIGTTIN, SIGTTOU → SIG_IGN
 ```
 
 ## Launching Jobs
@@ -97,18 +103,11 @@ job_control_init(shell):
 
 ```
 job_launch_foreground(shell, job):
-    job.foreground = true
-
-    # Give terminal to job's process group
-    tcsetpgrp(terminal_fd, job.pgid)
-
-    # Wait for job to complete or stop
+    job->foreground = 1
+    tcsetpgrp(shell->terminal_fd, job->pgid)
     status = job_wait(shell, job)
-
-    # Take terminal back
-    tcsetpgrp(terminal_fd, shell_pgid)
-    tcsetattr(terminal_fd, TCSADRAIN, &original_termios)
-
+    tcsetpgrp(shell->terminal_fd, shell->shell_pgid)
+    tcsetattr(shell->terminal_fd, TCSADRAIN, &shell->original_termios)
     return status
 ```
 
@@ -116,130 +115,78 @@ job_launch_foreground(shell, job):
 
 ```
 job_launch_background(shell, job):
-    job.foreground = false
-    print "[job_id] pgid"
-    return 0  # don't wait
+    job->foreground = 0
+    ft_dprintf(STDERR_FILENO, "[%d] %d\n", job->id, job->pgid)
+    return 0
 ```
 
-## Waiting for Jobs
+## Waiting
 
 ```
 job_wait(shell, job):
     loop:
-        pid = waitpid(-job.pgid, &status, WUNTRACED)
+        pid = waitpid(-job->pgid, &status, WUNTRACED)
         if pid < 0:
-            if errno == ECHILD: break (no more children)
-            return error
+            if errno == ECHILD: break
+            return -1
 
-        find process in job with this pid
-        update its status
+        find t_process in job->processes by pid (iterate t_list)
+        update process->status, completed, stopped
 
-        if WIFSTOPPED(status):
-            mark process as stopped
-            job.status = STOPPED
-            print "[id]+ Stopped  command"
-            return 128 + WSTOPSIG
+        if WIFSTOPPED: job->status = JOB_STOPPED; return 128 + WSTOPSIG
+        if all processes completed: job->status = JOB_DONE; break
 
-        if WIFEXITED or WIFSIGNALED:
-            mark process as completed
-            if all processes in job completed:
-                job.status = DONE
-                break
-
-    return exit status from last process in job
+    return exit status of last process
 ```
 
-## Continuing Stopped Jobs
-
-```
-job_continue_foreground(shell, job):
-    job.status = RUNNING
-    job.foreground = true
-    tcsetpgrp(terminal_fd, job.pgid)
-    kill(-job.pgid, SIGCONT)        # send to whole process group
-    mark all processes as not stopped
-    status = job_wait(shell, job)
-    tcsetpgrp(terminal_fd, shell_pgid)
-    tcsetattr(terminal_fd, TCSADRAIN, &original_termios)
-    return status
-
-job_continue_background(shell, job):
-    job.status = RUNNING
-    job.foreground = false
-    kill(-job.pgid, SIGCONT)
-    mark all processes as not stopped
-    return 0
-```
-
-## Background Job Monitoring
-
-Called before each prompt to check on background jobs:
+## Background Job Monitoring (before each prompt)
 
 ```
 job_update_statuses(shell):
-    loop with waitpid(-1, &status, WNOHANG | WUNTRACED):
-        while a child has changed state:
-            find job/process for this pid
-            update process status (completed, stopped, signaled)
-            update job status if all processes done
-            mark job as needing notification
+    loop: waitpid(-1, &status, WNOHANG | WUNTRACED)
+        find job/process for pid in shell->jobs (iterate t_list)
+        update process + job status
 
 job_notify(shell):
-    for each job:
-        if needs notification:
-            DONE:       print "[id]+ Done       command"
-            TERMINATED: print "[id]+ Terminated command"
-            STOPPED:    print "[id]+ Stopped    command"
-            mark as notified
-
-        if done/terminated and notified:
-            remove job from list, free
+    for each t_job in shell->jobs (iterate t_list):
+        if needs notification: print status line
+        if JOB_DONE/JOB_TERMINATED and notified:
+            remove from shell->jobs list; free job and its processes
 ```
 
-## Child Process Setup
+## Child Setup
 
-Every forked child in a job must set up its process group:
-
-```
+```c
 child_setup_job_control(shell, job, foreground):
     pid = getpid()
-
-    # First child in job sets PGID, others join it
-    if job.pgid == 0: job.pgid = pid
-    setpgid(pid, job.pgid)
-
-    # If foreground: take terminal
-    if foreground and interactive:
-        tcsetpgrp(terminal_fd, job.pgid)
-
-    # Restore default signal handlers (shell ignores them)
-    restore: SIGINT, SIGQUIT, SIGTSTP, SIGTTIN, SIGTTOU, SIGCHLD to SIG_DFL
+    if job->pgid == 0: job->pgid = pid
+    setpgid(pid, job->pgid)
+    if foreground && shell->interactive:
+        tcsetpgrp(shell->terminal_fd, job->pgid)
+    // Restore signals to SIG_DFL (shell ignores them)
+    signals_setup_child()
 ```
 
 ## Job Spec Parsing
 
-For `fg %1`, `bg %+`, etc:
-
 ```
 job_find_by_spec(shell, spec):
-    if spec is NULL or empty: return current job
-    if spec starts with '%':
-        %+ or %% or just %  → current job
-        %-                   → previous job
-        %N (digit)           → job with id N
-        %string              → job whose command starts with string
-    return NULL if not found
+    NULL / ""   → shell->current_job
+    "%+" / "%%" → shell->current_job
+    "%-"        → job before current_job in list
+    "%N"        → job with id == N
+    "%string"   → first job whose cmd_line starts with string
 ```
 
 ## Files
 
 ```
 src/job_control/
-├── job_control.c     # Init, cleanup
-├── job.c             # Job creation, management
-├── job_launch.c      # Launch foreground/background
-├── job_wait.c        # Wait for jobs
-├── job_continue.c    # Continue stopped jobs
-├── job_notify.c      # Background job notification
-└── job_utils.c       # Helper functions, job spec parsing
+├── job_control.c       # init, cleanup
+├── job.c               # job_create, job_add_process, job_find_*
+├── job_launch.c        # launch_foreground, launch_background
+├── job_wait.c          # job_wait, child_setup_job_control
+├── job_continue.c      # continue_foreground, continue_background
+├── job_notify.c        # job_update_statuses, job_notify
+└── job_utils.c         # job_find_by_spec, helper for list traversal
 ```
