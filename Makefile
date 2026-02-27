@@ -1,5 +1,5 @@
 # ----- Toolchain -----
-CC			= gcc
+CC			= c99
 NAME		= 42sh
 TEST_NAME	= 42sh_test
 
@@ -15,7 +15,7 @@ TEST_PATH	= tests
 CFLAGS		= $(foreach D, $(HEADER_PATH), -I$(D)) \
 			  -std=gnu99 \
 			  -Wall -Wextra -Werror \
-			  -MD -MP
+			  -MD -MP # -std=c99
 
 LDFLAGS		= -L$(LIB_PATH) -lft -lreadline -ltermcap
 
