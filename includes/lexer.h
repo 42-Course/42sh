@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   lexer.h                                           :+:      :+:    :+:   */
+/*   lexer.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: wengzhang <marvin@42.fr>                   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/22 21:00:00 by wengzhang         #+#    #+#             */
-/*   Updated: 2026/02/24 00:00:00 by pulgamecanica    ###   ########.fr       */
+/*   Updated: 2026/02/27 18:09:37 by jguillem         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,8 +75,20 @@ void				lexer_free_tokens(t_list *tokens);
 /*
 ** Token helpers (used by lexer internally and by tests)
 */
-t_token				*token_new(t_token_type type, char *value);
+t_list				*token_new(t_token_type type, char *value, int io_number);
 void				token_free(t_token *token);
+
+/*
+** lexer_operator.c
+*/
+int					is_operator(char c);
+int					is_operator_start(const char *line);
+t_list				*read_operator(const char **line);
+
+/*
+** lexer_words.c
+*/
+t_list	*read_word(const char **line);
 
 /*
 ** Convenience accessor: get t_token* from a t_list node.

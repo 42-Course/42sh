@@ -13,6 +13,7 @@ TEST_PATH	= tests
 
 # ----- Base flags -----
 CFLAGS		= $(foreach D, $(HEADER_PATH), -I$(D)) \
+			  -std=gnu99 \
 			  -Wall -Wextra -Werror \
 			  -MD -MP
 
