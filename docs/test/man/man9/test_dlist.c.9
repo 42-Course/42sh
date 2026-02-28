@@ -1,0 +1,57 @@
+.TH "test_dlist.c" 9 "Version pulgamecanica" "42sh Tests" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+test_dlist.c \- Test suite for the doubly-linked list (t_dlist) implementation\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+\fR#include 'minunit\&.h'\fP
+.br
+\fR#include '\&.\&./Libft/includes/libft\&.h'\fP
+.br
+\fR#include <stdlib\&.h>\fP
+.br
+
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBtest_dlist_suite\fP (void)"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Test suite for the doubly-linked list (t_dlist) implementation\&. 
+
+
+.PP
+\fBAuthor\fP
+.RS 4
+pulgamecanica (arosado-)
+.RE
+.PP
+Covers ft_dlstnew(), ft_dlstadd_back(), ft_dlstsize()\&.
+
+.PP
+Forward and backward traversal via \fR->next\fP / \fR->prev\fP, and ft_dlstclear()\&.
+
+.PP
+This suite is always compiled and always runs — it is not guarded by a feature flag because \fRt_list\fP is a core Libft primitive\&. 
+.SH "Function Documentation"
+.PP 
+.SS "void test_dlist_suite (void )"
+Run all doubly-linked list assertions\&.
+
+.PP
+Builds a three-node list \fR[1 <-> 2 <-> 3]\fP, verifies size, forward and backward links, sentinel NULL values at both ends, then calls ft_dlstclear() and asserts the head pointer is NULL afterwards\&. 
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for 42sh Tests from the source code\&.
+.SH SEE ALSO
+.BR minunit.h (9),
+.BR test_history.c (9),
+.BR test_lexer.c (9),
+.BR test_list.c (9),
+.BR test_runner.c (9)

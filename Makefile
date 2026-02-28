@@ -29,7 +29,10 @@ DBGFLAGS	= -g -fsanitize=address -fsanitize=undefined -fsanitize=leak -DDEBUG
 #   3. Remove the corresponding -D flag here.
 TEST_FLAGS	=
 # For example: Uncomment once srcs/history/ is implemented:
-# TEST_FLAGS += -DTEST_HISTORY_ENABLED
+#TEST_FLAGS += -DTEST_HISTORY_ENABLED
+TEST_FLAGS += -DTEST_LEXER_ENABLED
+TEST_FLAGS += -DTEST_LIST_ENABLED
+TEST_FLAGS += -DTEST_DLIST_ENABLED
 
 # ----- Source discovery (recursive) -----
 SRCS		= $(shell find $(SRC_PATH) -name '*.c')
@@ -146,26 +149,15 @@ docs:
 html: docs
 	@printf $(GREEN)"Converting man pages to HTML...\n"$(EOC)
 	@mkdir -p docs/core docs/test
-	@if [ -d $(CORE_MAN) ]; then \
-		for f in $(CORE_MAN)/*.9; do \
-			head -1 "$$f" | grep -q '^\.so' && continue; \
+	@if [ -d $(TEST_MAN) ]; then \
+		for f in $(TEST_MAN)/*.9; do \
+			grep -q '^\.so' "$$f" && continue; \
 			name=$$(basename "$$f" .9); \
-			man2html "$$f" \
-			| sed 's/Value:\.PP/Value:/g' \
-			| perl -0777 -pe \
-				's{<DL COMPACT>\n(<DT>&bull;<DD>\n.*?)</DL>}{"<UL>\n".(do{my $$c=$$1;$$c=~s{<DT>&bull;<DD>\n}{<LI>\n}g;$$c})."</UL>"}ges' \
-			> "docs/core/$$name.html"; \
+			printf "  converting $$name...\n"; \
+			groff -man -Thtml "$$f" \
+				> "docs/test/$$name.html"; \
 		done; \
 	fi
-	@for f in $(TEST_MAN)/*.9; do \
-		head -1 "$$f" | grep -q '^\.so' && continue; \
-		name=$$(basename "$$f" .9); \
-		man2html "$$f" \
-			| sed 's/Value:\.PP/Value:/g' \
-			| perl -0777 -pe \
-				's{<DL COMPACT>\n(<DT>&bull;<DD>\n.*?)</DL>}{"<UL>\n".(do{my $$c=$$1;$$c=~s{<DT>&bull;<DD>\n}{<LI>\n}g;$$c})."</UL>"}ges' \
-			> "docs/test/$$name.html"; \
-	done
 	@printf $(GREEN)"Generating docs/pages.json...\n"$(EOC)
 	@( \
 		printf '{\n  "core": ['; \

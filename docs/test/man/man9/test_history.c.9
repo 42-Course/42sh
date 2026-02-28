@@ -1,0 +1,62 @@
+.TH "test_history.c" 9 "Version pulgamecanica" "42sh Tests" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+test_history.c \- Test suite for the shell command history module\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+\fR#include 'minunit\&.h'\fP
+.br
+\fR#include '\&.\&./includes/history\&.h'\fP
+.br
+\fR#include <stdlib\&.h>\fP
+.br
+
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBtest_history_suite\fP (void)"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Test suite for the shell command history module\&. 
+
+
+.PP
+\fBAuthor\fP
+.RS 4
+pulgamecanica (arosado-)
+.RE
+.PP
+Covers history_init(), history_add() (including empty-line and duplicate rejection), history_prev() / history_next() cursor navigation, circular-buffer trimming when \fRmax_size\fP is exceeded, and history_free()\&.
+
+.PP
+Guarded by \fRTEST_HISTORY_ENABLED\fP (set in \fRTEST_FLAGS\fP in the root Makefile)\&. Once \fRsrcs/history/\fP is implemented and all assertions pass, remove the \fR#ifdef\fP guards and the \fR-D\fP flag\&. 
+.SH "Function Documentation"
+.PP 
+.SS "void test_history_suite (void )"
+Run all history module assertions\&.
+
+.PP
+Tests the full lifecycle of a \fRt_history\fP object:
+.IP "\(bu" 2
+Initialisation and zero-count state\&.
+.IP "\(bu" 2
+Adding valid entries; rejection of blank and duplicate lines\&.
+.IP "\(bu" 2
+history_free() resets count to zero and head to NULL\&. 
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for 42sh Tests from the source code\&.
+.SH SEE ALSO
+.BR minunit.h (9),
+.BR test_dlist.c (9),
+.BR test_lexer.c (9),
+.BR test_list.c (9),
+.BR test_runner.c (9)

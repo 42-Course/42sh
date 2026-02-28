@@ -36,7 +36,8 @@ MARKDOWN_SUPPORT       = YES
 # are documented even before their implementations exist.
 PREDEFINED             = TEST_DLIST_ENABLED \
                          TEST_HISTORY_ENABLED \
-                         TEST_ARRAY_ENABLED
+                         TEST_ARRAY_ENABLED \
+						 TEST_LEXER_ENABLED
 
 #---------------------------------------------------------------------------
 # Output: man pages only (html target converts these via man2html)

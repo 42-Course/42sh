@@ -6,7 +6,7 @@
 /*   By: jguillem <jguillem@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/24 13:30:36 by jguillem          #+#    #+#             */
-/*   Updated: 2026/02/27 19:07:30 by jguillem         ###   ########.fr       */
+/*   Updated: 2026/02/28 19:19:24 by jguillem         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,11 +23,12 @@ t_list	*lexer_tokenize(const char *input)
 	char	*eof;
 
 	head = NULL;
+	token = NULL;
 	while (*input)
 	{
 		while (isspace(*input))
 			input++;
-		if (!input)
+		if (!*input)
 			break ;
 		if (is_operator_start(input))
 			token = read_operator(&input);

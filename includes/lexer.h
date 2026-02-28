@@ -6,7 +6,7 @@
 /*   By: wengzhang <marvin@42.fr>                   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/22 21:00:00 by wengzhang         #+#    #+#             */
-/*   Updated: 2026/02/27 18:09:37 by jguillem         ###   ########.fr       */
+/*   Updated: 2026/02/28 19:23:43 by jguillem         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ t_list				*read_operator(const char **line);
 /*
 ** lexer_words.c
 */
-t_list	*read_word(const char **line);
+t_list				*read_word(const char **line);
 
 /*
 ** Convenience accessor: get t_token* from a t_list node.
