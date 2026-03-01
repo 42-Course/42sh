@@ -114,69 +114,13 @@ re: fclean all
 #   root Doxyfile  → 42sh core     → docs/core/
 #   tests/Doxyfile → test suite    → docs/test/
 # docs/index.html is the static viewer (version-controlled, never removed).
-
-CORE_MAN	= docs/core/man/man9
-TEST_MAN	= docs/test/man/man9
+# All generation logic lives in scripts/gendocs.sh.
 
 docs:
-	@printf $(GREEN)"[1/2] Generating core man pages...\n"$(EOC)
-	@doxygen Doxyfile
-	@printf $(GREEN)"[2/2] Generating test man pages...\n"$(EOC)
-	@cd $(TEST_PATH) && doxygen Doxyfile
-	@printf $(GREEN)"Adding SEE ALSO cross-references...\n"$(EOC)
-	@if ls $(CORE_MAN)/*.9 >/dev/null 2>&1; then \
-		cd $(CORE_MAN) && \
-		REAL=$$(for f in *.9; do head -1 "$$f" | grep -q '^\.so' || echo "$${f%.9}"; done | tr '\n' ' ') && \
-		for name in $$REAL; do \
-			REFS=$$(for other in $$REAL; do \
-				[ "$$other" = "$$name" ] || echo ".BR $$other (9),"; \
-			done | sed '$$s/,$$//') && \
-			printf ".SH SEE ALSO\n%s\n" "$$REFS" >> "$$name.9"; \
-		done; \
-	fi
-	@if ls $(TEST_MAN)/*.9 >/dev/null 2>&1; then \
-		cd $(TEST_MAN) && \
-		REAL=$$(for f in *.9; do head -1 "$$f" | grep -q '^\.so' || echo "$${f%.9}"; done | tr '\n' ' ') && \
-		for name in $$REAL; do \
-			REFS=$$(for other in $$REAL; do \
-				[ "$$other" = "$$name" ] || echo ".BR $$other (9),"; \
-			done | sed '$$s/,$$//') && \
-			printf ".SH SEE ALSO\n%s\n" "$$REFS" >> "$$name.9"; \
-		done; \
-	fi
-	@printf $(GREEN)"Man pages ready.\n"$(EOC)
+	@./scripts/gendocs.sh docs
 
 html: docs
-	@printf $(GREEN)"Converting man pages to HTML...\n"$(EOC)
-	@mkdir -p docs/core docs/test
-	@if [ -d $(TEST_MAN) ]; then \
-		for f in $(TEST_MAN)/*.9; do \
-			grep -q '^\.so' "$$f" && continue; \
-			name=$$(basename "$$f" .9); \
-			printf "  converting $$name...\n"; \
-			groff -man -Thtml "$$f" \
-				> "docs/test/$$name.html"; \
-		done; \
-	fi
-	@printf $(GREEN)"Generating docs/pages.json...\n"$(EOC)
-	@( \
-		printf '{\n  "core": ['; \
-		sep=''; \
-		for f in docs/core/*.html; do \
-			[ -f "$$f" ] || continue; \
-			name=$$(basename "$$f" .html); \
-			printf '%s"%s"' "$$sep" "$$name"; sep=', '; \
-		done; \
-		printf '],\n  "test": ['; \
-		sep=''; \
-		for f in docs/test/*.html; do \
-			[ -f "$$f" ] || continue; \
-			name=$$(basename "$$f" .html); \
-			printf '%s"%s"' "$$sep" "$$name"; sep=', '; \
-		done; \
-		printf ']\n}\n'; \
-	) > docs/pages.json
-	@printf $(GREEN)"Docs ready, run 'make serve' to view.\n"$(EOC)
+	@./scripts/gendocs.sh html
 
 dclean:
 	@printf $(RED)"Removing generated docs (preserving docs/index.html)...\n"$(EOC)
