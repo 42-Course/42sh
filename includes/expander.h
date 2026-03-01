@@ -14,7 +14,9 @@
 # define EXPANDER_H
 
 # include "ast.h"
-
+# include "libft.h"
+# include <string.h>
+# include <stdlib.h>
 /*
 ** Expand a single word to a single string (assignments, redir targets)
 ** No field splitting, no globbing
