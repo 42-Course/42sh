@@ -27,6 +27,8 @@
 # include "lexer.h"
 # include <stdlib.h>
 # include <string.h>
+# include <unistd.h>
+# include <sys/wait.h>
 
 /* ========================================================================= */
 /*  Helpers                                                                   */
@@ -44,6 +46,16 @@ static t_token	*nth_token(t_list *head, int n)
 	while (head && n-- > 0)
 		head = head->next;
 	return (head ? TOK(head) : NULL);
+}
+
+static void	assert_token_type(t_list *tokens, int idx, t_token_type expected)
+{
+	t_token	*tok;
+
+	tok = nth_token(tokens, idx);
+	MU_ASSERT("token exists at expected index", tok != NULL);
+	if (tok)
+		MU_ASSERT_INT(expected, tok->type);
 }
 
 /* ========================================================================= */
@@ -279,6 +291,35 @@ static t_token_type	operator_type(const char *s)
 	return (type);
 }
 
+/*
+** Runs read_operator() in a child process to detect hard crashes on malformed
+** operator starts without taking down the whole test process.
+*/
+static int	read_operator_crashes(const char *s)
+{
+	pid_t	pid;
+	int		status;
+	t_list	*node;
+
+	pid = fork();
+	if (pid == 0)
+	{
+		node = read_operator(&s);
+		if (node)
+			lexer_free_tokens(node);
+		exit(0);
+	}
+	if (pid < 0)
+		return (1);
+	if (waitpid(pid, &status, 0) < 0)
+		return (1);
+	if (WIFSIGNALED(status))
+		return (1);
+	if (WIFEXITED(status) && WEXITSTATUS(status) == 0)
+		return (0);
+	return (1);
+}
+
 /**
  * @brief read_operator correctly classifies every single-character operator.
  */
@@ -324,6 +365,16 @@ static void	test_read_operator_io_number(void)
 	MU_ASSERT_INT(2, tok->io_number);
 	MU_ASSERT("cursor advanced past operator", *p == 'f');
 	lexer_free_tokens(node);
+}
+
+/**
+ * @brief read_operator must not crash on malformed digit-prefixed non-operator
+ *        input (e.g. "42x").
+ */
+static void	test_read_operator_malformed_no_crash(void)
+{
+	MU_ASSERT("read_operator does not crash on malformed input",
+		!read_operator_crashes("42x"));
 }
 
 /* ========================================================================= */
@@ -491,6 +542,23 @@ static void	test_tokenize_subshell(void)
 	lexer_free_tokens(tokens);
 }
 
+/**
+ * @brief Newline is a shell command separator and must be tokenized.
+ *
+ * "echo\ncat" should produce WORD NEWLINE WORD EOF.
+ */
+static void	test_tokenize_newline_separator(void)
+{
+	t_list	*tokens;
+
+	tokens = lexer_tokenize("echo\ncat");
+	assert_token_type(tokens, 0, TOK_WORD);
+	assert_token_type(tokens, 1, TOK_NEWLINE);
+	assert_token_type(tokens, 2, TOK_WORD);
+	assert_token_type(tokens, 3, TOK_EOF);
+	lexer_free_tokens(tokens);
+}
+
 /* ========================================================================= */
 /*  Suite entry point                                                         */
 /* ========================================================================= */
@@ -526,6 +594,7 @@ void	test_lexer_suite(void)
 	test_read_operator_single_char();
 	test_read_operator_double_char();
 	test_read_operator_io_number();
+	test_read_operator_malformed_no_crash();
 
 	/* lexer_tokenize end-to-end */
 	test_tokenize_simple_command();
@@ -538,6 +607,7 @@ void	test_lexer_suite(void)
 	test_tokenize_quoted_operators();
 	test_tokenize_io_number();
 	test_tokenize_subshell();
+	test_tokenize_newline_separator();
 }
 
 #endif /* TEST_LEXER_ENABLED */
