@@ -62,7 +62,7 @@ man_to_html() {
         grep -q '^\.so' "$f" && continue
         name=$(basename "$f" .9)
         printf '  converting %s...\n' "$name"
-        man2html "$f" \
+        groff -mandoc -Thtml "$f" \
             | sed 's/Value:\.PP/Value:/g' \
             | perl -0777 -pe \
                 's{<DL COMPACT>\n(<DT>&bull;<DD>\n.*?)</DL>}{"<UL>\n".(do{my $c=$1;$c=~s{<DT>&bull;<DD>\n}{<LI>\n}g;$c})."</UL>"}ges' \

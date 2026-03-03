@@ -33,6 +33,15 @@ typedef enum e_token_type
 	TOK_ERROR
 }	t_token_type;
 
+/**
+ * Operators types
+ */
+typedef struct s_operator
+{
+	const char		*literal;
+	t_token_type	type;
+}	t_operator;
+
 /*
  * Token data node.
  * Stored in a t_list* returned by lexer_tokenize (each node->content is a
@@ -74,14 +83,14 @@ t_list				*token_new(t_token_type type, char *value, int io_number);
 void				token_free(t_token *token);
 
 /*
- * lexer_operator.c
+ * Operator helpers
  */
 int					is_operator(char c);
 int					is_operator_start(const char *line);
 t_list				*read_operator(const char **line);
 
 /*
- * lexer_words.c
+ * Word helpers
  */
 t_list				*read_word(const char **line);
 
