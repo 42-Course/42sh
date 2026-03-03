@@ -1,23 +1,17 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   lexer.h                                            :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: wengzhang <marvin@42.fr>                   +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/22 21:00:00 by wengzhang         #+#    #+#             */
-/*   Updated: 2026/02/28 19:23:43 by jguillem         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+/**
+ * @file lexer.h
+ * @brief Header of the lexer module
+ * @author jguillem
+ */
 
 #ifndef LEXER_H
 # define LEXER_H
 
 # include "libft.h"
 
-/*
-** Token types
-*/
+/**
+ * Token types
+ */
 typedef enum e_token_type
 {
 	TOK_WORD,
@@ -40,13 +34,13 @@ typedef enum e_token_type
 }	t_token_type;
 
 /*
-** Token data node.
-** Stored in a t_list* returned by lexer_tokenize (each node->content is a
-** t_token*). No *next field — traversal is via the t_list wrapper.
-**
-** value:     raw token string (quotes preserved for expander).
-** io_number: fd number before a redirect operator (-1 if none).
-*/
+ * Token data node.
+ * Stored in a t_list* returned by lexer_tokenize (each node->content is a
+ * t_token*). No *next field — traversal is via the t_list wrapper.
+ *
+ * value:     raw token string (quotes preserved for expander).
+ * io_number: fd number before a redirect operator (-1 if none).
+ */
 typedef struct s_token
 {
 	t_token_type	type;
@@ -55,44 +49,45 @@ typedef struct s_token
 }	t_token;
 
 /*
-** Lexer interface
-**
-** lexer_tokenize: tokenize input string.
-**   Returns a t_list* (nodes contain t_token* via node->content).
-**   Returns NULL on error (error already printed to stderr).
-**   Caller must free with lexer_free_tokens().
-**
-** lexer_check_quotes: check for unclosed quotes.
-**   Sets *unclosed_quote to the quote char ('\'', '"') or 0 if balanced.
-**   Returns 1 if open quote found, 0 if balanced.
-**
-** lexer_free_tokens: free entire token list (tokens + strings + nodes).
-*/
+ * Lexer interface
+ *
+ * lexer_tokenize: tokenize input string.
+ *   Returns a t_list* (nodes contain t_token* via node->content).
+ *   Returns NULL on error (error already printed to stderr).
+ *   Caller must free with lexer_free_tokens().
+ *
+ * lexer_check_quotes: check for unclosed quotes.
+ *   Sets *unclosed_quote to the quote char ('\'', '"') or 0 if balanced.
+ *   Returns 1 if open quote found, 0 if balanced.
+ *
+ * lexer_free_tokens: free entire token list (tokens + strings + nodes).
+ * Convenience accessor: get t_token* from a t_list node.
+ */
 t_list				*lexer_tokenize(const char *input);
 int					lexer_check_quotes(const char *input, char *unclosed_quote);
 void				lexer_free_tokens(t_list *tokens);
 
 /*
-** Token helpers (used by lexer internally and by tests)
-*/
+ * Token helpers (used by lexer internally and by tests)
+ */
 t_list				*token_new(t_token_type type, char *value, int io_number);
 void				token_free(t_token *token);
 
 /*
-** lexer_operator.c
-*/
+ * lexer_operator.c
+ */
 int					is_operator(char c);
 int					is_operator_start(const char *line);
 t_list				*read_operator(const char **line);
 
 /*
-** lexer_words.c
-*/
+ * lexer_words.c
+ */
 t_list				*read_word(const char **line);
 
 /*
-** Convenience accessor: get t_token* from a t_list node.
-*/
+ * Convenience accessor: get t_token* from a t_list node.
+ */
 # define TOK(node)	((t_token *)(node)->content)
 
 #endif

@@ -1,19 +1,19 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   lexer_words.c                                      :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: jguillem <jguillem@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/24 16:08:04 by jguillem          #+#    #+#             */
-/*   Updated: 2026/02/27 18:06:03 by jguillem         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+/**
+ * @file lexer_words.c
+ * @brief file to manage words of the prompt command
+ * @author jguillem
+ */
 
 #include <ctype.h>
 #include <string.h>
 #include "lexer.h"
 
+/*
+ * @param flag Pointer to int to toggle
+ * @brief toggle the logic value of an int
+ * @details zero is toggle to 1, non-zero is toggle to 0
+ * @return 0 | 1
+ */
 static void	toggle(int *flag)
 {
 	if (*flag != 0)
@@ -22,6 +22,12 @@ static void	toggle(int *flag)
 		*flag = 1;
 }
 
+/*
+ * @param line The string of the word
+ * @brief Tokenize a worf
+ * @details Delimit the word and tokenize it, manage the \ escape character
+ * @return A t_list *node with a TOK_WORD token as content
+ */
 t_list	*read_word(const char **line)
 {
 	t_list		*tok;

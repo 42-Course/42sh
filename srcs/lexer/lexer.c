@@ -1,14 +1,8 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   lexer.c                                            :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: jguillem <jguillem@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/24 13:30:36 by jguillem          #+#    #+#             */
-/*   Updated: 2026/02/28 19:19:24 by jguillem         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+/**
+ * @file lexer.c
+ * @brief main file of lexer module
+ * @author jguillem
+ */
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -16,6 +10,12 @@
 #include <string.h>
 #include "lexer.h"
 
+/**
+ * @param input The string input from readline
+ * @brief main function of lexer module, construct a linked list of token from an input string.
+ * @details skip spaces and recognize the type of token before adding it in the list. The memory is allocated and the list must be freed.
+ * @return t_list* with t_token* as content
+ */
 t_list	*lexer_tokenize(const char *input)
 {
 	t_list	*head;
@@ -26,7 +26,7 @@ t_list	*lexer_tokenize(const char *input)
 	token = NULL;
 	while (*input)
 	{
-		while (isspace(*input))
+		while (*input != '\n' && isspace(*input))
 			input++;
 		if (!*input)
 			break ;

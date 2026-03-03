@@ -292,8 +292,8 @@ static t_token_type	operator_type(const char *s)
 }
 
 /*
-** Runs read_operator() in a child process to detect hard crashes on malformed
-** operator starts without taking down the whole test process.
+ * Runs read_operator() in a child process to detect hard crashes on malformed
+ * operator starts without taking down the whole test process.
 */
 static int	read_operator_crashes(const char *s)
 {

@@ -1,4 +1,0 @@
-{
-  "core": ["42sh.h", "t_shell"],
-  "test": ["minunit.h", "test_dlist.c", "test_history.c", "test_lexer.c", "test_list.c", "test_runner.c"]
-}

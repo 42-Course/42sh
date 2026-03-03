@@ -1,26 +1,32 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   lexer_operator.c                                   :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: jguillem <jguillem@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/24 15:44:01 by jguillem          #+#    #+#             */
-/*   Updated: 2026/02/27 17:50:51 by jguillem         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+/**
+ * @file lexer_operator.c
+ * @brief file to manage operators of the prompt command
+ * @author jguillem
+ */
 
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
 #include "lexer.h"
 
+/**
+ * @param c character to check
+ * @brief check if a char is the beginning of an operator
+ * @details check if the character is in "&|><;{}\n"
+ * @return 0 | 1
+ */
 int	is_operator(char c)
 {
 	return (c == '&' || c == '|' || c == '>' || c == '<'
 		|| c == ';' || c == '(' || c == ')' || c == '\n');
 }
 
+/**
+ * @param line string of operator to test
+ * @brief check if a string is an operator
+ * @details manage the digits in case of redirection then call is_operator
+ * @return 1 | 0
+ */
 int	is_operator_start(const char *line)
 {
 	if (isdigit(*line))
@@ -34,6 +40,13 @@ int	is_operator_start(const char *line)
 	return (is_operator(*line));
 }
 
+/**
+ * @param line the string of operator
+ * @param io_number the io number to redirect
+ * @brief create a new t_list *node with a t_token *content
+ * @details create a TOK_SEMICOLON
+ * @return t_list *
+ */
 static t_list	*tok_semicolon(const char **line, int io_number)
 {
 	t_list	*tok;
@@ -43,6 +56,13 @@ static t_list	*tok_semicolon(const char **line, int io_number)
 	return (tok);
 }
 
+/**
+ * @param line the string of operator
+ * @param io_number the io number to redirect
+ * @brief create a new t_list *node with a t_token *content
+ * @details create a TOK_NEWLINE
+ * @return t_list *
+ */
 static t_list	*tok_newline(const char **line, int io_number)
 {
 	t_list	*tok;
@@ -52,6 +72,13 @@ static t_list	*tok_newline(const char **line, int io_number)
 	return (tok);
 }
 
+/**
+ * @param line the string of operator
+ * @param io_number the io number to redirect
+ * @brief create a new t_list *node with a t_token *content
+ * @details create a TOK_LPAREN
+ * @return t_list *
+ */
 static t_list	*tok_lparen(const char **line, int io_number)
 {
 	t_list	*tok;
@@ -61,6 +88,13 @@ static t_list	*tok_lparen(const char **line, int io_number)
 	return (tok);
 }
 
+/**
+ * @param line the string of operator
+ * @param io_number the io number to redirect
+ * @brief create a new t_list *node with a t_token *content
+ * @details create a TOK_RPAREN
+ * @return t_list *
+ */
 static t_list	*tok_rparen(const char **line, int io_number)
 {
 	t_list	*tok;
@@ -70,6 +104,13 @@ static t_list	*tok_rparen(const char **line, int io_number)
 	return (tok);
 }
 
+/**
+ * @param line the string of operator
+ * @param io_number the io number to redirect
+ * @brief create a new t_list *node with a t_token *content
+ * @details create a TOK_PIPE or a TOK_OR
+ * @return t_list *
+ */
 static t_list	*tok_vertical_line(const char **line, int io_number)
 {
 	t_list	*tok;
@@ -87,6 +128,13 @@ static t_list	*tok_vertical_line(const char **line, int io_number)
 	return (tok);
 }
 
+/**
+ * @param line the string of operator
+ * @param io_number the io number to redirect
+ * @brief create a new t_list *node with a t_token *content
+ * @details create a TOK_AMPERSAND or a TOK_AND
+ * @return t_list *
+ */
 static t_list	*tok_ampersand(const char **line, int io_number)
 {
 	t_list	*tok;
@@ -104,6 +152,13 @@ static t_list	*tok_ampersand(const char **line, int io_number)
 	return (tok);
 }
 
+/**
+ * @param line the string of operator
+ * @param io_number the io number to redirect
+ * @brief create a new t_list *node with a t_token *content
+ * @details create a TOK_HEREDOC, a TOK_REDIR_DUP_IN or a TOK_REDIR_IN
+ * @return t_list *
+ */
 static t_list	*tok_redir_in(const char **line, int io_number)
 {
 	t_list	*tok;
@@ -126,6 +181,13 @@ static t_list	*tok_redir_in(const char **line, int io_number)
 	return (tok);
 }
 
+/**
+ * @param line the string of operator
+ * @param io_number the io number to redirect
+ * @brief create a new t_list *node with a t_token *content
+ * @details create a TOK_REDIR_APPEND, a TOK_REDIR_DUP_OUT or a TOK_REDIR_OUT
+ * @return t_list *
+ */
 static t_list	*tok_redir_out(const char **line, int io_number)
 {
 	t_list	*tok;
@@ -148,6 +210,11 @@ static t_list	*tok_redir_out(const char **line, int io_number)
 	return (tok);
 }
 
+/*
+ * @param the string of the operator
+ * @brief extract the file descriptor before the operator
+ * @return an int
+ */
 static int	extract_io_number(const char **line)
 {
 	int	io_number;
@@ -162,6 +229,12 @@ static int	extract_io_number(const char **line)
 	return (io_number);
 }
 
+/*
+ * @param the string of the operator
+ * @brief read the operator and tokenize it
+ * @details choose the good function to tokenize
+ * @return a t_list* node
+ */
 t_list	*read_operator(const char **line)
 {
 	t_list	*tok;
@@ -183,6 +256,8 @@ t_list	*read_operator(const char **line)
 	operators = ";\n()|&<>";
 	while (operators[i] && operators[i] != **line)
 		i++;
+	if (!operators[i])
+		return (NULL);
 	tok = operator_tokenize[i](line, io_number);
 	return (tok);
 }
