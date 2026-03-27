@@ -1,5 +1,5 @@
 # ----- Toolchain -----
-CC			= c99
+CC			= cc
 NAME		= 42sh
 TEST_NAME	= 42sh_test
 
@@ -29,6 +29,7 @@ DBGFLAGS	= -g -fsanitize=address -fsanitize=undefined -fsanitize=leak -DDEBUG
 TEST_FLAGS	=
 # For example: Uncomment once srcs/history/ is implemented:
 # TEST_FLAGS += -DTEST_HISTORY_ENABLED
+TEST_FLAGS += -DTEST_EXECUTOR_ENABLED
 
 # ----- Source discovery (recursive) -----
 SRCS		= $(shell find $(SRC_PATH) -name '*.c')
