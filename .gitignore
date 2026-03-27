@@ -1,7 +1,12 @@
 .claude*
 CLAUDE*
-docs/tests/*
+docs/test/*
 docs/core/*
 obj
 obj/*
 .DS_Store
+tokenizations
+tokenizations/*
+42sh
+42sh_test
+Libft/libft.a

@@ -13,13 +13,16 @@ TEST_PATH	= tests
 
 # ----- Base flags -----
 CFLAGS		= $(foreach D, $(HEADER_PATH), -I$(D)) \
+			  -D_POSIX_C_SOURCE=200809L \
 			  -Wall -Wextra -Werror \
-			  -MD -MP # -std=c99
+			  -MD -MP
+
 
 LDFLAGS		= -L$(LIB_PATH) -lft -lreadline -ltermcap
 
 # ----- Debug flags (only for `make debug`) -----
 DBGFLAGS	= -g -fsanitize=address -fsanitize=undefined -fsanitize=leak -DDEBUG
+DBGFLAGS	+= -DFT_EXTRA_VERBOSE
 
 # ----- Test feature flags -----
 # Each flag enables one test suite.  When a suite passes permanently:
@@ -30,6 +33,10 @@ TEST_FLAGS	=
 # For example: Uncomment once srcs/history/ is implemented:
 # TEST_FLAGS += -DTEST_HISTORY_ENABLED
 TEST_FLAGS += -DTEST_EXECUTOR_ENABLED
+# TEST_FLAGS	= -DTEST_HISTORY_ENABLED
+TEST_FLAGS += -DTEST_LEXER_ENABLED
+TEST_FLAGS += -DTEST_LIST_ENABLED
+TEST_FLAGS += -DTEST_DLIST_ENABLED
 
 # ----- Source discovery (recursive) -----
 SRCS		= $(shell find $(SRC_PATH) -name '*.c')
@@ -57,6 +64,7 @@ all: $(NAME)
 
 $(NAME): $(LIB) $(OBJS)
 	@$(CC) $(OBJS) $(LDFLAGS) -o $@
+	@printf "\n"$(CYAN)"  $(CC) $(OBJS) $(LDFLAGS) -o $@"$(EOC)"\n"
 	@printf $(GREEN)"$(NAME): OK\n"$(EOC)
 
 # Debug build: full rebuild with ASAN + UBSan + DEBUG define
@@ -70,7 +78,7 @@ debug: fclean
 # Test build: compile test binary (TEST_FLAGS enables individual suites)
 test: $(LIB) $(TEST_OBJS)
 	@$(CC) $(TEST_OBJS) $(LDFLAGS) -o $(TEST_NAME)
-	@printf $(GREEN)"running tests...\n"$(EOC)
+	@printf "\n"$(GREEN)"running tests...\n"$(EOC)
 	@./$(TEST_NAME)
 
 # ---- Object rules ----
@@ -79,13 +87,13 @@ test: $(LIB) $(TEST_OBJS)
 $(OBJ_PATH)/%.o: $(SRC_PATH)/%.c
 	@mkdir -p $(@D)
 	@$(CC) $(CFLAGS) -c $< -o $@
-	@printf $(CYAN)"  CC  $<\n"$(EOC)
+	@printf $(CYAN)"  $(CC) $(CFLAGS) -c $< -o $@\r"$(EOC)
 
 # Test objects: tests/*.c  ->  obj/test/*.o  (TEST_FLAGS applied here)
 $(OBJ_PATH)/test/%.o: $(TEST_PATH)/%.c
 	@mkdir -p $(@D)
 	@$(CC) $(CFLAGS) $(TEST_FLAGS) -c $< -o $@
-	@printf $(CYAN)"  CC  $< [test]\n"$(EOC)
+	@printf $(CYAN)"  $(CC) $(CFLAGS) $(TEST_FLAGS) -c $< -o $@ [test]\r"$(EOC)
 
 # ---- Library ----
 
@@ -111,80 +119,13 @@ re: fclean all
 #   root Doxyfile  → 42sh core     → docs/core/
 #   tests/Doxyfile → test suite    → docs/test/
 # docs/index.html is the static viewer (version-controlled, never removed).
-
-CORE_MAN	= docs/core/man/man9
-TEST_MAN	= docs/test/man/man9
+# All generation logic lives in scripts/gendocs.sh.
 
 docs:
-	@printf $(GREEN)"[1/2] Generating core man pages...\n"$(EOC)
-	@doxygen Doxyfile
-	@printf $(GREEN)"[2/2] Generating test man pages...\n"$(EOC)
-	@cd $(TEST_PATH) && doxygen Doxyfile
-	@printf $(GREEN)"Adding SEE ALSO cross-references...\n"$(EOC)
-	@if ls $(CORE_MAN)/*.9 >/dev/null 2>&1; then \
-		cd $(CORE_MAN) && \
-		REAL=$$(for f in *.9; do head -1 "$$f" | grep -q '^\.so' || echo "$${f%.9}"; done | tr '\n' ' ') && \
-		for name in $$REAL; do \
-			REFS=$$(for other in $$REAL; do \
-				[ "$$other" = "$$name" ] || echo ".BR $$other (9),"; \
-			done | sed '$$s/,$$//') && \
-			printf ".SH SEE ALSO\n%s\n" "$$REFS" >> "$$name.9"; \
-		done; \
-	fi
-	@if ls $(TEST_MAN)/*.9 >/dev/null 2>&1; then \
-		cd $(TEST_MAN) && \
-		REAL=$$(for f in *.9; do head -1 "$$f" | grep -q '^\.so' || echo "$${f%.9}"; done | tr '\n' ' ') && \
-		for name in $$REAL; do \
-			REFS=$$(for other in $$REAL; do \
-				[ "$$other" = "$$name" ] || echo ".BR $$other (9),"; \
-			done | sed '$$s/,$$//') && \
-			printf ".SH SEE ALSO\n%s\n" "$$REFS" >> "$$name.9"; \
-		done; \
-	fi
-	@printf $(GREEN)"Man pages ready.\n"$(EOC)
+	@./scripts/gendocs.sh docs
 
 html: docs
-	@printf $(GREEN)"Converting man pages to HTML...\n"$(EOC)
-	@mkdir -p docs/core docs/test
-	@if [ -d $(CORE_MAN) ]; then \
-		for f in $(CORE_MAN)/*.9; do \
-			head -1 "$$f" | grep -q '^\.so' && continue; \
-			name=$$(basename "$$f" .9); \
-			man2html "$$f" \
-			| sed 's/Value:\.PP/Value:/g' \
-			| perl -0777 -pe \
-				's{<DL COMPACT>\n(<DT>&bull;<DD>\n.*?)</DL>}{"<UL>\n".(do{my $$c=$$1;$$c=~s{<DT>&bull;<DD>\n}{<LI>\n}g;$$c})."</UL>"}ges' \
-			> "docs/core/$$name.html"; \
-		done; \
-	fi
-	@for f in $(TEST_MAN)/*.9; do \
-		head -1 "$$f" | grep -q '^\.so' && continue; \
-		name=$$(basename "$$f" .9); \
-		man2html "$$f" \
-			| sed 's/Value:\.PP/Value:/g' \
-			| perl -0777 -pe \
-				's{<DL COMPACT>\n(<DT>&bull;<DD>\n.*?)</DL>}{"<UL>\n".(do{my $$c=$$1;$$c=~s{<DT>&bull;<DD>\n}{<LI>\n}g;$$c})."</UL>"}ges' \
-			> "docs/test/$$name.html"; \
-	done
-	@printf $(GREEN)"Generating docs/pages.json...\n"$(EOC)
-	@( \
-		printf '{\n  "core": ['; \
-		sep=''; \
-		for f in docs/core/*.html; do \
-			[ -f "$$f" ] || continue; \
-			name=$$(basename "$$f" .html); \
-			printf '%s"%s"' "$$sep" "$$name"; sep=', '; \
-		done; \
-		printf '],\n  "test": ['; \
-		sep=''; \
-		for f in docs/test/*.html; do \
-			[ -f "$$f" ] || continue; \
-			name=$$(basename "$$f" .html); \
-			printf '%s"%s"' "$$sep" "$$name"; sep=', '; \
-		done; \
-		printf ']\n}\n'; \
-	) > docs/pages.json
-	@printf $(GREEN)"Docs ready, run 'make serve' to view.\n"$(EOC)
+	@./scripts/gendocs.sh html
 
 dclean:
 	@printf $(RED)"Removing generated docs (preserving docs/index.html)...\n"$(EOC)
@@ -196,24 +137,30 @@ serve: html
 	@printf $(GREEN)"Press Ctrl+C to stop.\n"$(EOC)
 	@cd docs && python3 -m http.server 8080
 
+# ---- Git hooks ----
+
+install-hooks:
+	@git config core.hooksPath .githooks
+	@printf $(GREEN)"Git hooks installed (core.hooksPath → .githooks)\n"$(EOC)
+
 # ---- Help ----
 
 help:
 	@printf $(WHITE)"42sh Makefile\n"$(EOC)
 	@printf "\n"
 	@printf "Targets:\n"
-	@printf "  "$(GREEN)"all"$(EOC)"     — build $(NAME) (default)\n"
-	@printf "  "$(GREEN)"debug"$(EOC)"   — build with AddressSanitizer + UBSan\n"
-	@printf "  "$(GREEN)"test"$(EOC)"    — build and run the test suite\n"
-	@printf "  "$(GREEN)"docs"$(EOC)"    — generate man pages (core + tests)\n"
-	@printf "  "$(GREEN)"html"$(EOC)"    — convert to HTML + build docs/pages.json\n"
-	@printf "  "$(GREEN)"serve"$(EOC)"   — build HTML and serve at localhost:8080\n"
-	@printf "  "$(RED)"dclean"$(EOC)"  — remove docs/core, docs/test, docs/pages.json\n"
-	@printf "  "$(RED)"clean"$(EOC)"   — remove object files\n"
-	@printf "  "$(RED)"fclean"$(EOC)"  — remove objects, binaries, and docs\n"
-	@printf "  "$(CYAN)"re"$(EOC)"      — rebuild from scratch\n"
-	@printf "  "$(CYAN)"norme"$(EOC)"   — run norminette\n"
-	@printf "  "$(CYAN)"help"$(EOC)"    — show this message\n"
+	@printf "  "$(GREEN)"all"$(EOC)"           — build $(NAME) (default)\n"
+	@printf "  "$(GREEN)"debug"$(EOC)"         — build with AddressSanitizer + UBSan\n"
+	@printf "  "$(GREEN)"test"$(EOC)"          — build and run the test suite\n"
+	@printf "  "$(GREEN)"docs"$(EOC)"          — generate man pages (core + tests)\n"
+	@printf "  "$(GREEN)"html"$(EOC)"          — convert to HTML + build docs/pages.json\n"
+	@printf "  "$(GREEN)"serve"$(EOC)"         — build HTML and serve at localhost:8080\n"
+	@printf "  "$(RED)"dclean"$(EOC)"        — remove docs/core, docs/test, docs/pages.json\n"
+	@printf "  "$(RED)"clean"$(EOC)"         — remove object files\n"
+	@printf "  "$(RED)"fclean"$(EOC)"        — remove objects, binaries, and docs\n"
+	@printf "  "$(CYAN)"re"$(EOC)"            — rebuild from scratch\n"
+	@printf "  "$(CYAN)"install-hooks"$(EOC)" — set up Git hooks from .githooks/\n"
+	@printf "  "$(CYAN)"help"$(EOC)"          — show this message\n"
 	@printf "\n"
 	@printf "Usage:\n"
 	@printf "  make           # build 42sh\n"
@@ -224,4 +171,4 @@ help:
 
 -include $(DEPS)
 
-.PHONY: all debug test docs html dclean serve clean fclean re norme help
+.PHONY: all debug test docs html dclean serve clean fclean re help install-hooks
