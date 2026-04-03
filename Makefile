@@ -1,5 +1,5 @@
 # ----- Toolchain -----
-CC			= cc
+CC			= c99
 NAME		= 42sh
 TEST_NAME	= 42sh_test
 
@@ -31,7 +31,6 @@ DBGFLAGS	+= -DFT_EXTRA_VERBOSE
 #   3. Remove the corresponding -D flag here.
 TEST_FLAGS	=
 # For example: Uncomment once srcs/history/ is implemented:
-# TEST_FLAGS += -DTEST_HISTORY_ENABLED
 TEST_FLAGS += -DTEST_EXECUTOR_ENABLED
 # TEST_FLAGS	= -DTEST_HISTORY_ENABLED
 TEST_FLAGS += -DTEST_LEXER_ENABLED
