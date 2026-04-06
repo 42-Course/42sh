@@ -6,6 +6,7 @@
 
 #include "42sh.h"
 #include "executor.h"
+#include "signals.h"
 #include <string.h>
 
 /**
@@ -171,7 +172,7 @@ static void	exec_child(t_shell *shell, t_cmd *cmd)
 	ft_putstr_fd(": ", 2);
 	ft_putendl_fd(strerror(errno), 2);
 	free(path);
-	exit(126);
+	_exit(126);
 }
 
 int	execute_simple_command(t_shell *shell, t_cmd *cmd)
@@ -195,6 +196,8 @@ int	execute_simple_command(t_shell *shell, t_cmd *cmd)
 	}
 	if (pid == 0)
 		exec_child(shell, cmd);
+	signals_setup_executing();
 	waitpid(pid, &wstatus, 0);
+	signals_setup_interactive();
 	return (get_exit_status(wstatus));
 }
