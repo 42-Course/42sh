@@ -1,26 +1,20 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   signal_exec.c                                    :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: wengzhang <marvin@42.fr>                   +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/04/06 00:00:00 by wengzhang         #+#    #+#             */
-/*   Updated: 2026/04/06 00:00:00 by wengzhang        ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+/**
+ * @file signal_exec.c
+ * @brief Signal handling for execution context.
+ * @author pulgamecanica wengzhang
+ */
 
 #include "signals.h"
 #include <stddef.h>
 
-/*
-** Set up signal handlers for executing context (parent waiting for fg child).
-**
-** SIGINT  — ignored (let signal reach the child process)
-** SIGQUIT — ignored (let signal reach the child process)
-** SIGTSTP — ignored (let signal reach the child process)
-**
-** The parent simply waits; the child handles or dies from the signal.
+/**
+ * @brief Set up signal handlers for executing context (parent waiting for fg child).
+ *
+ * @details SIGINT  — ignored (let signal reach the child process)
+ * @details SIGQUIT — ignored (let signal reach the child process)
+ * @details SIGTSTP — ignored (let signal reach the child process)
+ *
+ * @note The parent simply waits; the child handles or dies from the signal.
 */
 void	signals_setup_executing(void)
 {

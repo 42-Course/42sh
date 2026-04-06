@@ -1,14 +1,9 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   expander.c                                       :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: wengzhang <marvin@42.fr>                   +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/04/06 00:00:00 by wengzhang         #+#    #+#             */
-/*   Updated: 2026/04/06 00:00:00 by wengzhang        ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+/**
+ * @file expander.c
+ * @brief Word expansion functions for the 42sh shell.
+ *
+ * @author pulgamecanica wengzhang
+*/
 
 #include "42sh.h"
 #include "expander.h"

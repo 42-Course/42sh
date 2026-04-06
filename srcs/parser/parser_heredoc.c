@@ -1,0 +1,284 @@
+/**
+ * @file parser_heredoc.c
+ * @brief file to handle heredoc
+ * @author jguillem
+ */
+#include "parser.h"
+
+volatile sig_atomic_t	g_sigint_heredoc = 0;
+
+/*
+ * @param begin char pointer : the begin of the dest
+ * @param len size_t : the len of the dest
+ * @param read size_t : the len of the src
+ * @param src char pointer : the src to append
+ * @brief helper function for read heredoc
+ * @details allocate memory and contatenate dest and src
+ * @return a char pointer on the heredoc content
+ */
+static char	*result_concat(char *begin, size_t *len, size_t read, char *src)
+{
+	char	*tmp;
+	char	*result;
+
+	tmp = realloc(begin, *len + read + 1);
+	if (!tmp)
+	{
+		free(begin);
+		return (NULL);
+	}
+	result = tmp;
+	memcpy(result + *len, src, read);
+	result[*len + read] = '\0';
+	*len += read;
+	return (result);
+}
+
+/**
+ * @param delimiter : const char pointer of the string representing EOF
+ * @param prompt : the prompt symbol of the heredoc
+ * @brief read the user input and store each line
+ * @return a char pointer on the content of the heredoc
+ */
+static char	*read_heredoc(const char *delimiter, const char *prompt)
+{
+	char		*line;
+	char		*result;
+	size_t		result_len;
+
+	result = NULL;
+	line = NULL;
+	result_len = 0;
+	while (!g_sigint_heredoc)
+	{
+		line = readline(prompt);
+		if (!line)
+		{
+			fprintf(stderr,
+				"\nwarning: here-document delimited by end-of-file (wanted`%s')\n",
+				delimiter);
+			break;
+		}
+		if (strcmp(line, delimiter) == 0)
+		{
+			free(line);
+			break;
+		}
+		result = result_concat(result, &result_len, strlen(line), line);
+		result = result_concat(result, &result_len, 1, "\n");
+		free(line);
+		if (!result)
+			break ;
+	}
+	if (g_sigint_heredoc)
+	{
+		free(result);
+		return (NULL);
+	}
+	return (result);
+}
+
+/**
+ * @param redir pointer on a struct s_redir
+ * @param pipefd the 2 ends of the pipe
+ * @brief read from the pipe out
+ */
+static void	read_heredoc_from_pipe(t_redir *redir, int pipefd[2])
+{
+	char	buffer[1024];
+	ssize_t	n;
+	char	*result = NULL;
+	size_t	len = 0;
+
+	while ((n = read(pipefd[0], buffer, sizeof(buffer))) > 0)
+		result = result_concat(result, &len, n, buffer);
+	close(pipefd[0]);
+	redir->heredoc_content = result;
+}
+
+/**
+ * @param redir pointer on a struct s_redir
+ * @brief create a fork for the heredoc collecting
+ * @brief in order to catch SIGINT only at the heredoc level
+ * @return 0 | -1
+ */
+static int	fork_heredoc(t_redir *redir)
+{
+	int		pipefd[2];
+	pid_t	pid;
+	int		status;
+	char	*res;
+
+	if (pipe(pipefd) == -1)
+		return (-1);
+	pid = fork();
+	if (pid == -1)
+		return (-1);
+	if (pid == 0) //CHILD PROCESS
+	{
+		signal(SIGINT, SIG_DFL);
+		close(pipefd[0]);
+		res = read_heredoc(redir->heredoc_delim, "> ");
+		if (!res)
+		{
+			close(pipefd[1]);
+			exit(130);
+		}
+		write(pipefd[1], res, strlen(res));
+		free(res);
+		close(pipefd[1]);
+		exit(0);
+	}
+	else // PARENT PROCESS
+	{
+		close(pipefd[1]);
+		waitpid(pid, &status, 0);
+		if (WIFSIGNALED(status) || WEXITSTATUS(status == 130))
+		{
+			close(pipefd[0]);
+			g_sigint_heredoc = 1;
+			return (-1);
+		}
+		read_heredoc_from_pipe(redir, pipefd);
+		return (0);
+	}
+}
+
+/**
+ * @param lst : a struct s_list pointer
+ * @brief helper function for collect heredocs from command or subshell
+ * @details store redirections
+ */
+static int	collect_heredocs_from_list(t_list *lst)
+{
+	t_redir	*redir;
+
+	while (lst)
+	{
+		redir = lst->content;
+		if (redir && redir->type == TOK_HEREDOC)
+			if (fork_heredoc(redir) == -1)
+				return (-1);
+		lst = lst->next;
+	}
+	return (0);
+}
+
+/**
+ * @param cmd : struct s_cmd pointer
+ * @brief collect redirections of commands
+ */
+static int	collect_heredocs_from_command(t_cmd *cmd)
+{
+	if (cmd)
+		collect_heredocs_from_list(cmd->redirs);
+	return (0);
+}
+
+/**
+ * @param group : struct s_group pointer
+ * @brief collect redirections of group
+ */
+static int	collect_heredocs_from_group(t_group *group)
+{
+	if (group)
+		collect_heredocs_from_list(group->redirs);
+	return (0);
+}
+
+/**
+ * @param redir : t_redir struct
+ * @brief fill the heredoc_delim and heredoc_quoted fields of the t_redir struct
+ */
+void	heredoc_expand_config(t_redir *redir)
+{
+	char	quote;
+	char	*end;
+
+	if (redir->type == TOK_HEREDOC)
+	{
+		if (redir->target[0] == '\'' || redir->target[0] == '"')
+		{
+			redir->heredoc_quoted = 1;
+			quote = redir->target[0];
+			end = strrchr(redir->target, quote);
+			if (end > redir->target)
+			{
+				redir->heredoc_delim
+					= strndup(redir->target + 1, end - redir->target - 1);
+			}
+			else
+				redir->heredoc_delim = strdup(redir->target);
+		}
+		else
+			redir->heredoc_delim = strdup(redir->target);
+	}
+}
+
+/**
+ * @param ast : a pointer on a struct s_ast
+ * @param shell : the shell struct
+ * @brief traverses the ast tree and collect heredocs content, stopping on SIGINT
+ * @return 0 on success, -1 on SIGINT
+ */
+static int	ast_walk(t_ast *ast, t_shell *shell)
+{
+	if (!ast)
+		return(0) ;
+	if (ast->type == NODE_COMMAND)
+		return (collect_heredocs_from_command(ast->data.cmd));
+	else if (ast->type == NODE_SUBSHELL || ast->type == NODE_BLOCK)
+	{
+		if (collect_heredocs_from_group(ast->data.group) == -1)
+			return (-1);
+		return (ast_walk(ast->data.group->child, shell));
+	}
+	else if (ast->type == NODE_PIPE
+		|| ast->type == NODE_AND
+		|| ast->type == NODE_OR
+		|| ast->type == NODE_SEQUENCE
+		|| ast->type == NODE_BACKGROUND)
+	{
+		if (ast_walk(ast->data.binary->left, shell) == -1)
+			return (-1);
+		return (ast_walk(ast->data.binary->right,shell));
+	}
+	return (0);
+}
+
+/*
+ * @brief SIGINT handler used during heredoc collect
+ */
+static void	heredoc_sigint_handler(int signal)
+{
+	(void)signal;
+	g_sigint_heredoc = 1;
+	write(STDIN_FILENO, "\n", 1);
+	rl_replace_line("", 0);
+	rl_done = 1;
+}
+
+/**
+ * @param ast : struct s_ast pointer
+ * @param shell : struct s_shell pointer
+ * @brief stop ast walking and collect heredoc on SIGINT
+ * @return 0 on success, -1 on SIGINT
+ */
+int	parser_collect_heredocs(t_ast *ast, t_shell *shell)
+{
+	struct sigaction	sa_heredoc;
+	struct sigaction	sa_old;
+	int					ret;
+
+	sigemptyset(&sa_heredoc.sa_mask);
+	sa_heredoc.sa_flags = 0;
+	sa_heredoc.sa_handler = heredoc_sigint_handler;
+	sigaction(SIGINT, &sa_heredoc, &sa_old);
+	if (g_sigint_heredoc)
+		shell->last_exit_status = 130;
+	g_sigint_heredoc = 0;
+	ret = ast_walk(ast, shell);
+	sigaction(SIGINT, &sa_old, NULL);
+	g_sigint_heredoc = 0;
+	return (ret);
+}
