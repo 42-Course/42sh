@@ -45,7 +45,10 @@ DEPS		= $(OBJS:.o=.d)
 # Test sources: all .c under tests/ + project sources except main.c
 TEST_SRCS	= $(shell find $(TEST_PATH) -name '*.c' 2>/dev/null)
 PROJ_NO_MAIN= $(filter-out $(SRC_PATH)/main.c, \
-			  $(filter-out $(SRC_PATH)/signals/%, $(SRCS)))
+			  $(filter-out $(SRC_PATH)/signals/%, \
+			  $(filter-out $(SRC_PATH)/variables/%, \
+			  $(filter-out $(SRC_PATH)/expander/%, \
+			  $(filter-out $(SRC_PATH)/builtins/builtins.c, $(SRCS))))))
 TEST_OBJS	= $(patsubst $(TEST_PATH)/%.c, $(OBJ_PATH)/test/%.o, $(TEST_SRCS)) \
 			  $(patsubst $(SRC_PATH)/%.c,  $(OBJ_PATH)/%.o,      $(PROJ_NO_MAIN))
 
