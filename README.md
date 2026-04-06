@@ -12,6 +12,8 @@ scratch on top of a custom `libft` standard library.
 The pipeline is: **line editor → lexer → parser → expander → executor**,
 with job control and signal handling wired in at the executor level.
 
+## LINKS: [Docs](https://leowz.github.io/42sh/docs/) & [Visualizer](https://leowz.github.io/42sh/viz/)
+
 ## Building
 
 ```bash
