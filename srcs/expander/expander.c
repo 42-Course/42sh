@@ -1,29 +1,42 @@
+/**
+ * @file expander.c
+ * @brief Word expansion functions for the 42sh shell.
+ *
+ * @author pulgamecanica wengzhang
+*/
+
+#include "42sh.h"
 #include "expander.h"
+#include "ast.h"
 
-char	**expand_word_to_fields(struct s_shell *shell, const char *word)
+/* TODO P3: implement word expansion ($VAR, quotes, field splitting, globbing) */
+
+char	*expand_word(t_shell *shell, const char *word)
 {
-	if (!shell || word) {
+	(void)shell;
+	if (!word)
 		return (NULL);
-	}
-	
-
-}
-int	expand_command(struct s_shell *shell, t_cmd *cmd)
-{
-	if (!shell || !cmd ) {
-		return (-1);
-	}
-	char **new_argv = NULL;
-
-
-	return (0);
+	return (ft_strdup(word));
 }
 
-
-int						expand_command(struct s_shell *shell, t_cmd *cmd)
+char	**expand_word_to_fields(t_shell *shell, const char *word)
 {
-	if (!shell || !cmd) {
-		return (-1);
-	}
+	char	**fields;
+
+	(void)shell;
+	if (!word)
+		return (NULL);
+	fields = malloc(sizeof(char *) * 2);
+	if (!fields)
+		return (NULL);
+	fields[0] = ft_strdup(word);
+	fields[1] = NULL;
+	return (fields);
+}
+
+int	expand_command(t_shell *shell, t_cmd *cmd)
+{
+	(void)shell;
+	(void)cmd;
 	return (0);
 }
