@@ -38,6 +38,7 @@ TEST_FLAGS += -DTEST_LIST_ENABLED
 TEST_FLAGS += -DTEST_DLIST_ENABLED
 TEST_FLAGS += -DTEST_BTREE_ENABLED
 TEST_FLAGS += -DTEST_PARSER_ENABLED
+TEST_FLAGS += -DTEST_BUILTIN_ECHO_ENABLED
 
 # ----- Source discovery (recursive) -----
 SRCS		= $(shell find $(SRC_PATH) -name '*.c')
@@ -116,7 +117,7 @@ fclean: clean dclean
 re: fclean all
 
 valgrind:
-	valgrind --gen-suppressions=yes --suppressions=suppression.file --leak-check=full --show-leak-kinds=all --track-origins=yes --log-file=valgrind-out.txt ./42sh
+	valgrind --gen-suppressions=yes --suppressions=suppression.file --track-fds=yes --leak-check=full --show-leak-kinds=all --track-origins=yes --log-file=valgrind-out.txt ./42sh
 
 # ---- Documentation ----
 # Two Doxyfiles produce XML consumed by Sphinx/Breathe:
