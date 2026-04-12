@@ -339,6 +339,7 @@ static void test_echo_e_n_combined(void)
 static void test_echo_n_e_combined(void)
 {
 	t_shell shell;
+
 	char	buf[BUFSIZE];
 	char	*argv[] = {"echo", "-n", "-e", "foo\\tbar"};
 
@@ -349,6 +350,7 @@ static void test_echo_n_e_combined(void)
 static void test_echo_dash_alone(void)
 {
 	t_shell shell;
+
 	char	buf[BUFSIZE];
 	char	*argv[] = {"echo", "-"};
 
@@ -359,6 +361,7 @@ static void test_echo_dash_alone(void)
 static void test_echo_double_dash(void)
 {
 	t_shell shell;
+
 	char	buf[BUFSIZE];
 	char	*argv[] = {"echo", "--", "hello"};
 
@@ -369,6 +372,7 @@ static void test_echo_double_dash(void)
 static void test_echo_no_escape_without_e(void)
 {
 	t_shell shell;
+
 	char	buf[BUFSIZE];
 	char	*argv[] = {"echo", "foo\\nbar"};
 
@@ -379,11 +383,13 @@ static void test_echo_no_escape_without_e(void)
 void	test_builtin_echo_suite(void)
 {
 	test_echo_return_and_status();
+
 	// test_echo_no_args();
 	test_echo_single_word();
 	test_echo_multiple_words();
 	test_echo_empty_string_arg();
 	test_echo_n_suppresses_newline();
+
 	// test_echo_n_alone();
 	test_echo_n_multiple_words();
 	test_echo_e_newline();
