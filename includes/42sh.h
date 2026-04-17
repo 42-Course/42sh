@@ -20,6 +20,7 @@
 # include <term.h>
 # include <readline/readline.h>
 # include <readline/history.h>
+# include <string.h>
 # include "history.h"
 # include "libft.h"
 # include "variables.h"

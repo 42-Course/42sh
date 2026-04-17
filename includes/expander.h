@@ -14,9 +14,11 @@
 # define EXPANDER_H
 
 # include "ast.h"
+# include "42sh.h"
 # include "libft.h"
 # include <string.h>
 # include <stdlib.h>
+# include <stdbool.h>
 /*
 ** Expand a single word to a single string (assignments, redir targets)
 ** No field splitting, no globbing
@@ -36,4 +38,22 @@ char					**expand_word_to_fields(struct s_shell *shell,
 */
 int						expand_command(struct s_shell *shell, t_cmd *cmd);
 
+/**
+ * TODO : the whole function
+ * @brief receive a dollar variable input and search in env the said variable
+ * 			NOTE : there is two paramater that seems irrelevant to me, I am just
+ * 					following the plan for now.
+ * @param shell the whole shell structure
+ * @param input the variable to expand
+ * @param pos the position of the input in the command string (might be irrelevant)
+ * @param in_double_quote check if input is in double quote (might be irrelevant)
+ * 
+ * @return expanded Dollard variable if !NULL else an empty string 
+ */
+char *expand_dollar(t_shell * shell, char *input, size_t pos, bool in_double_quote);
+
+/**
+ * TODO the whole function
+ */
+char * expand_tilde(t_shell * shell, char * input, size_t pos);
 #endif
