@@ -84,7 +84,7 @@ int	var_set(t_shell *shell, const char *name, const char *value) {
 			free(temp);
 			return (1);
 		}
-		ft_dlstadd_back(&shell->variables, new_node);
+		ft_lstadd(&shell->variables, new_node);
 	}
 
 	shell->env_dirty = 1;
@@ -170,7 +170,7 @@ int	var_export(t_shell *shell, const char *name) {
 			free(temp);
 			return (1);
 		}
-		ft_dlstadd_back(&shell->variables, new_node);
+		ft_lstadd(&shell->variables, new_node);
 
 	} else {
 		temp->exported = 1;
@@ -240,7 +240,7 @@ char **var_get_environ(t_shell *shell) {
     return env;
 }
 
-static int set_name(char **dst, char *src, size_t *position) {
+static int set_name(char **dst, char *src, int *position) {
 
 	size_t start_pos = *position;
 	size_t curr_pos = start_pos;
@@ -263,7 +263,7 @@ static int set_name(char **dst, char *src, size_t *position) {
 	return (0);
 }
 
-static int set_value(char **dst, char *src, size_t *position) {
+static int set_value(char **dst, char *src, int *position) {
 
 	size_t start_pos = *position;
 	size_t curr_pos = start_pos;
