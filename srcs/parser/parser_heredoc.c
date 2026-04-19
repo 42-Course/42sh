@@ -135,7 +135,11 @@ static int	fork_heredoc(t_redir *redir)
 		return (-1);
 	pid = fork();
 	if (pid == -1)
+	{
+		close(pipefd[0]);
+		close(pipefd[1]);
 		return (-1);
+	}
 	if (pid == 0) //CHILD PROCESS
 	{
 		signal(SIGINT, SIG_DFL);
@@ -155,7 +159,7 @@ static int	fork_heredoc(t_redir *redir)
 	{
 		close(pipefd[1]);
 		waitpid(pid, &status, 0);
-		if (WIFSIGNALED(status) || WEXITSTATUS(status == 130))
+		if (WIFSIGNALED(status) || WEXITSTATUS(status) == 130)
 		{
 			close(pipefd[0]);
 			g_sigint_heredoc = 1;
