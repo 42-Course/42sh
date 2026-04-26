@@ -141,28 +141,39 @@ static void	test_wexitstatus_exit130_detected(void)
 }
 
 /**
- * @brief Heredoc content is correctly piped to command via setup_heredoc.
- * @details Directly tests the executor path: heredoc_content → pipe → stdin.
- *          Bypasses parser_collect_heredocs (which needs interactive readline).
+ * @brief Executor path: heredoc_fd is correctly dup'd onto stdin.
+ * @details After the parser refactor, the heredoc body is pre-written
+ *          into a pipe by the parser and the read-end fd is stored in
+ *          redir->heredoc_fd. The executor's setup_redirections must
+ *          dup that fd onto stdin so the consumer command reads the
+ *          heredoc body. This test simulates the parser side with a
+ *          real pipe and verifies the executor side wires it up.
  */
 static void	test_heredoc_content_passed_to_command(void)
 {
 	t_redir	redir;
-	int		fd;
+	t_list	*redirs;
+	int		pipefd[2];
+	int		saved_fds[3];
 	char	buf[256];
 	ssize_t	n;
 
+	MU_ASSERT("pipe created", pipe(pipefd) == 0);
+	MU_ASSERT("write to pipe",
+		write(pipefd[1], "hello heredoc\n", 14) == 14);
+	close(pipefd[1]);
 	memset(&redir, 0, sizeof(redir));
 	redir.type = TOK_HEREDOC;
 	redir.fd = -1;
-	redir.heredoc_content = strdup("hello heredoc\n");
-	fd = setup_heredoc(&redir);
-	MU_ASSERT("heredoc pipe fd valid", fd >= 0);
-	n = read(fd, buf, sizeof(buf) - 1);
+	redir.heredoc_fd = pipefd[0];
+	redirs = ft_lstnew(&redir);
+	MU_ASSERT("setup_redirections OK",
+		setup_redirections(redirs, saved_fds) == 0);
+	n = read(0, buf, sizeof(buf) - 1);
 	buf[n] = '\0';
+	restore_redirections(saved_fds);
 	MU_ASSERT_STR("heredoc content correct", "hello heredoc\n", buf);
-	close(fd);
-	free(redir.heredoc_content);
+	ft_lstdelone(&redirs, NULL);
 }
 
 /**
@@ -178,36 +189,53 @@ static void	test_heredoc_wrong_command_exits(void)
 }
 
 /**
- * @brief Multiple heredoc pipes can be set up without leaking fds.
+ * @brief Executor reuses heredoc_fd correctly across two redirs.
+ * @details Two t_redir values, each fed by its own pipe, should both
+ *          land their content on stdin successfully when run through
+ *          setup_redirections in turn.
  */
 static void	test_heredoc_multiple_setup(void)
 {
 	t_redir	redir;
-	int		fd1;
-	int		fd2;
+	t_list	*redirs;
+	int		pipefd[2];
+	int		saved_fds[3];
 	char	buf[256];
 	ssize_t	n;
 
+	MU_ASSERT("first pipe", pipe(pipefd) == 0);
+	MU_ASSERT("write first",
+		write(pipefd[1], "first\n", 6) == 6);
+	close(pipefd[1]);
 	memset(&redir, 0, sizeof(redir));
 	redir.type = TOK_HEREDOC;
 	redir.fd = -1;
-	redir.heredoc_content = strdup("first\n");
-	fd1 = setup_heredoc(&redir);
-	MU_ASSERT("first heredoc fd valid", fd1 >= 0);
-	n = read(fd1, buf, sizeof(buf) - 1);
+	redir.heredoc_fd = pipefd[0];
+	redirs = ft_lstnew(&redir);
+	MU_ASSERT("setup first OK",
+		setup_redirections(redirs, saved_fds) == 0);
+	n = read(0, buf, sizeof(buf) - 1);
 	buf[n] = '\0';
+	restore_redirections(saved_fds);
 	MU_ASSERT_STR("first heredoc content", "first\n", buf);
-	close(fd1);
-	free(redir.heredoc_content);
+	ft_lstdelone(&redirs, NULL);
 
-	redir.heredoc_content = strdup("second\n");
-	fd2 = setup_heredoc(&redir);
-	MU_ASSERT("second heredoc fd valid", fd2 >= 0);
-	n = read(fd2, buf, sizeof(buf) - 1);
+	MU_ASSERT("second pipe", pipe(pipefd) == 0);
+	MU_ASSERT("write second",
+		write(pipefd[1], "second\n", 7) == 7);
+	close(pipefd[1]);
+	memset(&redir, 0, sizeof(redir));
+	redir.type = TOK_HEREDOC;
+	redir.fd = -1;
+	redir.heredoc_fd = pipefd[0];
+	redirs = ft_lstnew(&redir);
+	MU_ASSERT("setup second OK",
+		setup_redirections(redirs, saved_fds) == 0);
+	n = read(0, buf, sizeof(buf) - 1);
 	buf[n] = '\0';
+	restore_redirections(saved_fds);
 	MU_ASSERT_STR("second heredoc content", "second\n", buf);
-	close(fd2);
-	free(redir.heredoc_content);
+	ft_lstdelone(&redirs, NULL);
 }
 
 /* ================================================================
