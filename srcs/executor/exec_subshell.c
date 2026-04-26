@@ -1,6 +1,6 @@
 /**
- * @file command_search.c
- * @brief Command search functionality for 42sh.
+ * @file exec_subshell.c
+ * @brief Subshell, block, and background execution for 42sh.
  * @author wengzhang, pulgamecanica
  */
 
@@ -37,7 +37,9 @@ int	execute_subshell(t_shell *shell, t_ast *ast)
 		status = executor_execute(shell, ast->data.group->child);
 		_exit(status);
 	}
+	signals_setup_executing();
 	waitpid(pid, &wstatus, 0);
+	signals_setup_interactive();
 	return (get_exit_status(wstatus));
 }
 

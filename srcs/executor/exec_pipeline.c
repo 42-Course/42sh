@@ -6,6 +6,7 @@
 
 #include "42sh.h"
 #include "executor.h"
+#include "signals.h"
 #include <string.h>
 
 /**
@@ -67,6 +68,7 @@ static void	pipe_child(t_shell *shell, t_ast *cmd_ast,
 
 	i = info[0];
 	n = info[1];
+	setpgid(0, info[2]);
 	signals_setup_child();
 	if (i > 0)
 		dup2(pipes[i - 1][0], STDIN_FILENO);
@@ -89,7 +91,7 @@ static void	pipe_child(t_shell *shell, t_ast *cmd_ast,
 		exec_pipeline_external(shell, cmd_ast->data.cmd);
 	}
 	status = executor_execute(shell, cmd_ast);
-	exit(status);
+	_exit(status);
 }
 
 /**
@@ -114,7 +116,39 @@ void	exec_pipeline_external(t_shell *shell, t_cmd *cmd)
 	ft_putstr_fd(cmd->argv[0], 2);
 	ft_putstr_fd(": ", 2);
 	ft_putendl_fd(strerror(errno), 2);
-	exit(126);
+	free(path);
+	_exit(126);
+}
+
+static int	pipeline_fork_loop(t_shell *shell, t_ast **cmds,
+		int pipes[][2], pid_t pids[MAX_PIPELINE])
+{
+	int	n;
+	int	i;
+	int	info[3];
+
+	n = pids[MAX_PIPELINE - 1];
+	i = -1;
+	while (++i < n)
+	{
+		pids[i] = fork();
+		if (pids[i] == -1)
+		{
+			close_pipes(pipes, n - 1);
+			while (--i >= 0)
+				waitpid(pids[i], NULL, 0);
+			return (-1);
+		}
+		if (pids[i] == 0)
+		{
+			info[0] = i;
+			info[1] = n;
+			info[2] = (i == 0) ? 0 : pids[0];
+			pipe_child(shell, cmds[i], pipes, info);
+		}
+		setpgid(pids[i], pids[0]);
+	}
+	return (0);
 }
 
 int	execute_pipeline(t_shell *shell, t_ast *ast)
@@ -125,29 +159,25 @@ int	execute_pipeline(t_shell *shell, t_ast *ast)
 	int		n;
 	int		i;
 	int		wstatus;
-	int		info[3];
 
 	n = collect_pipeline(ast, cmds, MAX_PIPELINE);
 	i = -1;
 	while (++i < n - 1)
-		if (pipe(pipes[i]) == -1)
-			return (1);
-	i = -1;
-	while (++i < n)
 	{
-		pids[i] = fork();
-		if (pids[i] == -1)
-			return (1);
-		if (pids[i] == 0)
+		if (pipe(pipes[i]) == -1)
 		{
-			info[0] = i;
-			info[1] = n;
-			pipe_child(shell, cmds[i], pipes, info);
+			close_pipes(pipes, i);
+			return (1);
 		}
 	}
+	pids[MAX_PIPELINE - 1] = n;
+	if (pipeline_fork_loop(shell, cmds, pipes, pids) == -1)
+		return (1);
 	close_pipes(pipes, n - 1);
+	signals_setup_executing();
 	i = -1;
 	while (++i < n)
 		waitpid(pids[i], &wstatus, 0);
+	signals_setup_interactive();
 	return (get_exit_status(wstatus));
 }
