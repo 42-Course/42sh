@@ -56,4 +56,14 @@ char *expand_dollar(t_shell * shell, char *input, size_t pos, bool in_double_quo
  * TODO the whole function
  */
 char * expand_tilde(t_shell * shell, char * input, size_t pos);
+
+/**
+ * TODO the whole function
+ */
+char *expand_braced_variable(t_shell * shell, char *input, size_t pos, bool in_double_quote);
+
+char *expand_word_internal(t_shell *shell, char *input);
+
+char *expand_arithmetic(t_shell *shell, char *input, size_t pos);
+
 #endif

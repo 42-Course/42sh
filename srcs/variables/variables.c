@@ -32,6 +32,7 @@ t_var	*var_get(t_shell *shell, const char *name) {
 	return (NULL);
 }
 
+
 char	*var_get_value(t_shell *shell, const char *name) {
 	t_list *temp = shell->variables;
 
