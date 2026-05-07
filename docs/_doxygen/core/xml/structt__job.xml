@@ -1,0 +1,120 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.2" xml:lang="en-US">
+  <compounddef id="structt__job" kind="struct" language="C++" prot="public">
+    <compoundname>t_job</compoundname>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structt__job_1aea2864720746b36e531a743ee4d5b3a9" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int t_job::id</definition>
+        <argsstring></argsstring>
+        <name>id</name>
+        <qualifiedname>t_job::id</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/job_control.h" line="53" column="4" bodyfile="includes/job_control.h" bodystart="53" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structt__job_1a16327d5f89bf91b9b14cd519e0d4d7dc" prot="public" static="no" mutable="no">
+        <type>pid_t</type>
+        <definition>pid_t t_job::pgid</definition>
+        <argsstring></argsstring>
+        <name>pgid</name>
+        <qualifiedname>t_job::pgid</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/job_control.h" line="54" column="6" bodyfile="includes/job_control.h" bodystart="54" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structt__job_1a3f5c857f99412155fab21f83ef0d3329" prot="public" static="no" mutable="no">
+        <type>char *</type>
+        <definition>char* t_job::cmd_line</definition>
+        <argsstring></argsstring>
+        <name>cmd_line</name>
+        <qualifiedname>t_job::cmd_line</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/job_control.h" line="55" column="5" bodyfile="includes/job_control.h" bodystart="55" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structt__job_1ae883dd9d96eab86af7f936b27ac68587" prot="public" static="no" mutable="no">
+        <type>t_list *</type>
+        <definition>t_list* t_job::processes</definition>
+        <argsstring></argsstring>
+        <name>processes</name>
+        <qualifiedname>t_job::processes</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/job_control.h" line="56" column="7" bodyfile="includes/job_control.h" bodystart="56" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structt__job_1a488e1fbe0331677eb1f9b201e495b031" prot="public" static="no" mutable="no">
+        <type>t_job_status</type>
+        <definition>t_job_status t_job::status</definition>
+        <argsstring></argsstring>
+        <name>status</name>
+        <qualifiedname>t_job::status</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/job_control.h" line="57" column="13" bodyfile="includes/job_control.h" bodystart="57" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structt__job_1a5c2c78fbd3f3357009362962c77feee4" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int t_job::notified</definition>
+        <argsstring></argsstring>
+        <name>notified</name>
+        <qualifiedname>t_job::notified</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/job_control.h" line="58" column="4" bodyfile="includes/job_control.h" bodystart="58" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structt__job_1a6aedbd36d0c5be17437ce852c537e568" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int t_job::foreground</definition>
+        <argsstring></argsstring>
+        <name>foreground</name>
+        <qualifiedname>t_job::foreground</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/job_control.h" line="59" column="4" bodyfile="includes/job_control.h" bodystart="59" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="includes/job_control.h" line="51" column="1" bodyfile="includes/job_control.h" bodystart="52" bodyend="60"/>
+    <listofallmembers>
+      <member refid="structt__job_1a3f5c857f99412155fab21f83ef0d3329" prot="public" virt="non-virtual"><scope>t_job</scope><name>cmd_line</name></member>
+      <member refid="structt__job_1a6aedbd36d0c5be17437ce852c537e568" prot="public" virt="non-virtual"><scope>t_job</scope><name>foreground</name></member>
+      <member refid="structt__job_1aea2864720746b36e531a743ee4d5b3a9" prot="public" virt="non-virtual"><scope>t_job</scope><name>id</name></member>
+      <member refid="structt__job_1a5c2c78fbd3f3357009362962c77feee4" prot="public" virt="non-virtual"><scope>t_job</scope><name>notified</name></member>
+      <member refid="structt__job_1a16327d5f89bf91b9b14cd519e0d4d7dc" prot="public" virt="non-virtual"><scope>t_job</scope><name>pgid</name></member>
+      <member refid="structt__job_1ae883dd9d96eab86af7f936b27ac68587" prot="public" virt="non-virtual"><scope>t_job</scope><name>processes</name></member>
+      <member refid="structt__job_1a488e1fbe0331677eb1f9b201e495b031" prot="public" virt="non-virtual"><scope>t_job</scope><name>status</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

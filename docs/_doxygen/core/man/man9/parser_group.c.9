@@ -1,0 +1,162 @@
+.TH "srcs/parser/parser_group.c" 9 "Version pulgamecanica" "42sh" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+srcs/parser/parser_group.c \- file for parse group  
+
+.SH SYNOPSIS
+.br
+.PP
+\fR#include 'parser\&.h'\fP
+.br
+
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBt_ast\fP * \fBast_new_group\fP (\fBt_node_type\fP type, \fBt_ast\fP *child, t_list *redirs)"
+.br
+.RI "helper function for the parse_subshell function "
+.ti -1c
+.RI "static \fBt_ast\fP * \fBparse_group\fP (\fBt_parser\fP *p, \fBt_ast\fP *child, \fBt_node_type\fP node)"
+.br
+.RI "factorization of the end of parse_subshell and parse_block "
+.ti -1c
+.RI "\fBt_ast\fP * \fBparse_subshell\fP (\fBt_parser\fP *p)"
+.br
+.RI "create a new NODE_SUBSHELL with its child and redirs "
+.ti -1c
+.RI "\fBt_ast\fP * \fBparse_block\fP (\fBt_parser\fP *p)"
+.br
+.RI "create a new NODE_BLOCK with its child and redirs "
+.in -1c
+.SH "Detailed Description"
+.PP 
+file for parse group 
+
+
+.PP
+\fBAuthor\fP
+.RS 4
+jguillem 
+.RE
+.PP
+
+.SH "Function Documentation"
+.PP 
+.SS "\fBt_ast\fP * ast_new_group (\fBt_node_type\fP type, \fBt_ast\fP * child, t_list * redirs)"
+
+.PP
+helper function for the parse_subshell function 
+.PP
+\fBParameters\fP
+.RS 4
+\fItype\fP enum e_node_type 
+.br
+\fIchild\fP struct s_ast 
+.br
+\fIredirs\fP struct s_list with a \fBt_redir\fP * as content 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+pointer on struct s_ast 
+.RE
+.PP
+
+.SS "\fBt_ast\fP * parse_block (\fBt_parser\fP * p)"
+
+.PP
+create a new NODE_BLOCK with its child and redirs 
+.PP
+\fBParameters\fP
+.RS 4
+\fIp\fP struct s_parser pointer 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+pointer on struct s_ast 
+.RE
+.PP
+
+.SS "static \fBt_ast\fP * parse_group (\fBt_parser\fP * p, \fBt_ast\fP * child, \fBt_node_type\fP node)\fR [static]\fP"
+
+.PP
+factorization of the end of parse_subshell and parse_block 
+.PP
+\fBParameters\fP
+.RS 4
+\fIp\fP struct s_parser pointer 
+.br
+\fIchild\fP struct s_ast pointer @paran node enum e_node_type 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+pointer on struct s_ast 
+.RE
+.PP
+
+.SS "\fBt_ast\fP * parse_subshell (\fBt_parser\fP * p)"
+
+.PP
+create a new NODE_SUBSHELL with its child and redirs 
+.PP
+\fBParameters\fP
+.RS 4
+\fIp\fP struct s_parser pointer 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+pointer on struct s_ast 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for 42sh from the source code\&.
+.SH SEE ALSO
+.BR 42sh.h (9),
+.BR ast_display.c (9),
+.BR ast.h (9),
+.BR builtin.c (9),
+.BR builtin_history.c (9),
+.BR builtins.h (9),
+.BR command_search.c (9),
+.BR exec_command.c (9),
+.BR exec_logical.c (9),
+.BR exec_pipeline.c (9),
+.BR exec_utils.c (9),
+.BR executor.c (9),
+.BR executor.h (9),
+.BR expander.c (9),
+.BR heredoc.c (9),
+.BR history.c (9),
+.BR history.h (9),
+.BR lexer.c (9),
+.BR lexer_display.c (9),
+.BR lexer.h (9),
+.BR lexer_operator.c (9),
+.BR lexer_words.c (9),
+.BR memory.c (9),
+.BR parser_and_or.c (9),
+.BR parser.c (9),
+.BR parser_command.c (9),
+.BR parser.h (9),
+.BR parser_heredoc.c (9),
+.BR parser_list.c (9),
+.BR parser_pipeline.c (9),
+.BR signal_child.c (9),
+.BR signal_exec.c (9),
+.BR signals.h (9),
+.BR t_ast (9),
+.BR t_binary (9),
+.BR t_cmd (9),
+.BR t_group (9),
+.BR t_operator (9),
+.BR t_parser (9),
+.BR t_redir (9),
+.BR t_shell (9),
+.BR t_token (9)

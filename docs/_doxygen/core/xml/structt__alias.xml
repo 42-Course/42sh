@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.2" xml:lang="en-US">
+  <compounddef id="structt__alias" kind="struct" language="C++" prot="public">
+    <compoundname>t_alias</compoundname>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structt__alias_1a5ebddb254c47e01a0560431b38f05281" prot="public" static="no" mutable="no">
+        <type>char *</type>
+        <definition>char* t_alias::name</definition>
+        <argsstring></argsstring>
+        <name>name</name>
+        <qualifiedname>t_alias::name</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/variables.h" line="35" column="5" bodyfile="includes/variables.h" bodystart="35" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structt__alias_1aedfea1bfb035e898535a9671c089f54e" prot="public" static="no" mutable="no">
+        <type>char *</type>
+        <definition>char* t_alias::value</definition>
+        <argsstring></argsstring>
+        <name>value</name>
+        <qualifiedname>t_alias::value</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/variables.h" line="36" column="5" bodyfile="includes/variables.h" bodystart="36" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="includes/variables.h" line="33" column="1" bodyfile="includes/variables.h" bodystart="34" bodyend="37"/>
+    <listofallmembers>
+      <member refid="structt__alias_1a5ebddb254c47e01a0560431b38f05281" prot="public" virt="non-virtual"><scope>t_alias</scope><name>name</name></member>
+      <member refid="structt__alias_1aedfea1bfb035e898535a9671c089f54e" prot="public" virt="non-virtual"><scope>t_alias</scope><name>value</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

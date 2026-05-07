@@ -1,0 +1,678 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.2" xml:lang="en-US">
+  <compounddef id="exec__command_8c" kind="file" language="C++">
+    <compoundname>exec_command.c</compoundname>
+    <includes refid="42sh_8h" local="yes">42sh.h</includes>
+    <includes refid="executor_8h" local="yes">executor.h</includes>
+    <includes local="no">string.h</includes>
+    <incdepgraph>
+      <node id="2">
+        <label>42sh.h</label>
+        <link refid="42sh_8h"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="19" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+      </node>
+      <node id="23">
+        <label>ast.h</label>
+        <link refid="ast_8h"/>
+        <childnode refid="24" relation="include">
+        </childnode>
+      </node>
+      <node id="25">
+        <label>builtins.h</label>
+        <link refid="builtins_8h"/>
+      </node>
+      <node id="22">
+        <label>executor.h</label>
+        <link refid="executor_8h"/>
+        <childnode refid="23" relation="include">
+        </childnode>
+        <childnode refid="25" relation="include">
+        </childnode>
+        <childnode refid="26" relation="include">
+        </childnode>
+      </node>
+      <node id="26">
+        <label>expander.h</label>
+        <link refid="expander_8h_source"/>
+        <childnode refid="23" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="27" relation="include">
+        </childnode>
+      </node>
+      <node id="16">
+        <label>history.h</label>
+        <link refid="history_8h"/>
+      </node>
+      <node id="19">
+        <label>job_control.h</label>
+        <link refid="job__control_8h_source"/>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+      </node>
+      <node id="24">
+        <label>lexer.h</label>
+        <link refid="lexer_8h"/>
+        <childnode refid="17" relation="include">
+        </childnode>
+      </node>
+      <node id="20">
+        <label>signals.h</label>
+        <link refid="signals_8h"/>
+        <childnode refid="21" relation="include">
+        </childnode>
+      </node>
+      <node id="18">
+        <label>variables.h</label>
+        <link refid="variables_8h_source"/>
+      </node>
+      <node id="1">
+        <label>srcs/executor/exec_command.c</label>
+        <link refid="exec__command_8c"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+      </node>
+      <node id="6">
+        <label>errno.h</label>
+      </node>
+      <node id="7">
+        <label>fcntl.h</label>
+      </node>
+      <node id="17">
+        <label>libft.h</label>
+      </node>
+      <node id="14">
+        <label>readline/history.h</label>
+      </node>
+      <node id="13">
+        <label>readline/readline.h</label>
+      </node>
+      <node id="21">
+        <label>signal.h</label>
+      </node>
+      <node id="27">
+        <label>stdbool.h</label>
+      </node>
+      <node id="3">
+        <label>stdio.h</label>
+      </node>
+      <node id="5">
+        <label>stdlib.h</label>
+      </node>
+      <node id="15">
+        <label>string.h</label>
+      </node>
+      <node id="10">
+        <label>sys/stat.h</label>
+      </node>
+      <node id="8">
+        <label>sys/types.h</label>
+      </node>
+      <node id="9">
+        <label>sys/wait.h</label>
+      </node>
+      <node id="12">
+        <label>term.h</label>
+      </node>
+      <node id="11">
+        <label>termios.h</label>
+      </node>
+      <node id="4">
+        <label>unistd.h</label>
+      </node>
+    </incdepgraph>
+    <sectiondef kind="func">
+      <memberdef kind="function" id="exec__command_8c_1a73aa789f19d78c8533e8d4aa6907fa9c" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>static void apply_assignments</definition>
+        <argsstring>(t_shell *shell, t_list *assigns, int do_export)</argsstring>
+        <name>apply_assignments</name>
+        <param>
+          <type><ref refid="structt__shell" kindref="compound">t_shell</ref> *</type>
+          <declname>shell</declname>
+        </param>
+        <param>
+          <type>t_list *</type>
+          <declname>assigns</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>do_export</declname>
+        </param>
+        <briefdescription>
+<para>Apply assignments permanently to shell variables. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Used when command is empty (bare assignment) or in child for execve. <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>shell</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The shell instance. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>assigns</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The list of assignments. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>do_export</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Whether to export the variables. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="srcs/executor/exec_command.c" line="18" column="12" bodyfile="srcs/executor/exec_command.c" bodystart="18" bodyend="35"/>
+      </memberdef>
+      <memberdef kind="function" id="exec__command_8c_1a0de325da5ae68b6ac34b1626a7dc66b0" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>static int exec_assignment_only</definition>
+        <argsstring>(t_shell *shell, t_cmd *cmd)</argsstring>
+        <name>exec_assignment_only</name>
+        <param>
+          <type><ref refid="structt__shell" kindref="compound">t_shell</ref> *</type>
+          <declname>shell</declname>
+        </param>
+        <param>
+          <type><ref refid="structt__cmd" kindref="compound">t_cmd</ref> *</type>
+          <declname>cmd</declname>
+        </param>
+        <briefdescription>
+<para>Handle empty command (just assignments and/or redirections). </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Example: FOO=bar or FOO=bar &gt; file <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>shell</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The shell instance. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>cmd</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The command structure. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>0 on success, 1 on failure. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="srcs/executor/exec_command.c" line="44" column="11" bodyfile="srcs/executor/exec_command.c" bodystart="44" bodyend="56"/>
+      </memberdef>
+      <memberdef kind="function" id="exec__command_8c_1a95dbb95edbd59e28b8b1b93fd09aeb42" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>static int save_and_apply_assigns</definition>
+        <argsstring>(t_shell *shell, t_list *assigns, char **old_names, char **old_vals)</argsstring>
+        <name>save_and_apply_assigns</name>
+        <param>
+          <type><ref refid="structt__shell" kindref="compound">t_shell</ref> *</type>
+          <declname>shell</declname>
+        </param>
+        <param>
+          <type>t_list *</type>
+          <declname>assigns</declname>
+        </param>
+        <param>
+          <type>char **</type>
+          <declname>old_names</declname>
+        </param>
+        <param>
+          <type>char **</type>
+          <declname>old_vals</declname>
+        </param>
+        <briefdescription>
+<para>Save old values, apply temporary assignments for builtin scope. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>old_names/old_vals arrays store what to restore afterward. <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>shell</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The shell instance. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>assigns</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The list of assignments. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>old_names</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Array to store old variable names. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>old_vals</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Array to store old variable values. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Count of saved assignments. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="srcs/executor/exec_command.c" line="67" column="11" bodyfile="srcs/executor/exec_command.c" bodystart="67" bodyend="91"/>
+      </memberdef>
+      <memberdef kind="function" id="exec__command_8c_1a6304ebdcb4b79fa4cadc233d22c6f981" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>static void restore_assigns</definition>
+        <argsstring>(t_shell *shell, char **old_names, char **old_vals, int count)</argsstring>
+        <name>restore_assigns</name>
+        <param>
+          <type><ref refid="structt__shell" kindref="compound">t_shell</ref> *</type>
+          <declname>shell</declname>
+        </param>
+        <param>
+          <type>char **</type>
+          <declname>old_names</declname>
+        </param>
+        <param>
+          <type>char **</type>
+          <declname>old_vals</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>count</declname>
+        </param>
+        <briefdescription>
+<para>Restore old variable values after builtin execution. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>shell</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The shell instance. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>old_names</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Array of old variable names. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>old_vals</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Array of old variable values. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>count</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Number of assignments to restore. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="srcs/executor/exec_command.c" line="100" column="12" bodyfile="srcs/executor/exec_command.c" bodystart="100" bodyend="116"/>
+      </memberdef>
+      <memberdef kind="function" id="exec__command_8c_1a3b79e4e47fe5d00cd0d0d87c30e954b9" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>static int exec_builtin</definition>
+        <argsstring>(t_shell *shell, t_cmd *cmd, t_builtin_fn fn)</argsstring>
+        <name>exec_builtin</name>
+        <param>
+          <type><ref refid="structt__shell" kindref="compound">t_shell</ref> *</type>
+          <declname>shell</declname>
+        </param>
+        <param>
+          <type><ref refid="structt__cmd" kindref="compound">t_cmd</ref> *</type>
+          <declname>cmd</declname>
+        </param>
+        <param>
+          <type><ref refid="builtins_8h_1ac8cd553bb18027ffff282e381d33c601" kindref="member">t_builtin_fn</ref></type>
+          <declname>fn</declname>
+        </param>
+        <briefdescription>
+<para>Execute a builtin with temporary assignments and redirections. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Assignments are scoped to this command only, then restored. <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>shell</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The shell instance. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>cmd</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The command structure. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>fn</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The builtin function to execute. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The exit status of the builtin. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="srcs/executor/exec_command.c" line="126" column="11" bodyfile="srcs/executor/exec_command.c" bodystart="126" bodyend="145"/>
+      </memberdef>
+      <memberdef kind="function" id="exec__command_8c_1ad322c9cda57efe8a46003e4c8f0d2990" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>static void exec_child</definition>
+        <argsstring>(t_shell *shell, t_cmd *cmd)</argsstring>
+        <name>exec_child</name>
+        <param>
+          <type><ref refid="structt__shell" kindref="compound">t_shell</ref> *</type>
+          <declname>shell</declname>
+        </param>
+        <param>
+          <type><ref refid="structt__cmd" kindref="compound">t_cmd</ref> *</type>
+          <declname>cmd</declname>
+        </param>
+        <briefdescription>
+<para>Child process: apply assignments, set up redirections, exec. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>shell</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The shell instance. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>cmd</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The command structure. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="srcs/executor/exec_command.c" line="152" column="12" bodyfile="srcs/executor/exec_command.c" bodystart="152" bodyend="175"/>
+      </memberdef>
+      <memberdef kind="function" id="exec__command_8c_1a0e12907f55849d2aa88e96d8394c9373" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int execute_simple_command</definition>
+        <argsstring>(t_shell *shell, t_cmd *cmd)</argsstring>
+        <name>execute_simple_command</name>
+        <param>
+          <type><ref refid="structt__shell" kindref="compound">t_shell</ref> *</type>
+          <declname>shell</declname>
+        </param>
+        <param>
+          <type><ref refid="structt__cmd" kindref="compound">t_cmd</ref> *</type>
+          <declname>cmd</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="srcs/executor/exec_command.c" line="177" column="4" bodyfile="srcs/executor/exec_command.c" bodystart="177" bodyend="200"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Command execution functionality for 42sh. </para>
+    </briefdescription>
+    <detaileddescription>
+<para><simplesect kind="author"><para>wengzhang, pulgamecanica </para>
+</simplesect>
+</para>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="normal"></highlight></codeline>
+<codeline lineno="6"><highlight class="normal"></highlight></codeline>
+<codeline lineno="7"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="42sh_8h" kindref="compound">42sh.h</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="8"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="executor_8h" kindref="compound">executor.h</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="9"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;string.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="10"><highlight class="normal"></highlight></codeline>
+<codeline lineno="18"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="exec__command_8c_1a73aa789f19d78c8533e8d4aa6907fa9c" kindref="member">apply_assignments</ref>(<ref refid="structt__shell" kindref="compound">t_shell</ref><sp/>*shell,<sp/>t_list<sp/>*assigns,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>do_export)</highlight></codeline>
+<codeline lineno="19"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="20"><highlight class="normal"><sp/><sp/><sp/><sp/>t_list<sp/><sp/>*node;</highlight></codeline>
+<codeline lineno="21"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/><sp/><sp/><sp/>*name;</highlight></codeline>
+<codeline lineno="22"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/><sp/><sp/><sp/>*value;</highlight></codeline>
+<codeline lineno="23"><highlight class="normal"></highlight></codeline>
+<codeline lineno="24"><highlight class="normal"><sp/><sp/><sp/><sp/>node<sp/>=<sp/>assigns;</highlight></codeline>
+<codeline lineno="25"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">while</highlight><highlight class="normal"><sp/>(node)</highlight></codeline>
+<codeline lineno="26"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="27"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="executor_8h_1adfc974609bf3404693e579212d74e1f8" kindref="member">split_assignment</ref>((</highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*)node-&gt;content,<sp/>&amp;name,<sp/>&amp;value);</highlight></codeline>
+<codeline lineno="28"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="42sh_8h_1a7449c0accbffef4d5206e9ca409d1352" kindref="member">var_set</ref>(shell,<sp/>name,<sp/>value);</highlight></codeline>
+<codeline lineno="29"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(do_export)</highlight></codeline>
+<codeline lineno="30"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="42sh_8h_1a6b45d6b8582d4547fff4a50af896d820" kindref="member">var_export</ref>(shell,<sp/>name);</highlight></codeline>
+<codeline lineno="31"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>free(name);</highlight></codeline>
+<codeline lineno="32"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>free(value);</highlight></codeline>
+<codeline lineno="33"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>node<sp/>=<sp/>node-&gt;next;</highlight></codeline>
+<codeline lineno="34"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="35"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="36"><highlight class="normal"></highlight></codeline>
+<codeline lineno="44"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><sp/><ref refid="exec__command_8c_1a0de325da5ae68b6ac34b1626a7dc66b0" kindref="member">exec_assignment_only</ref>(<ref refid="structt__shell" kindref="compound">t_shell</ref><sp/>*shell,<sp/><ref refid="structt__cmd" kindref="compound">t_cmd</ref><sp/>*cmd)</highlight></codeline>
+<codeline lineno="45"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="46"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>saved_fds[3];</highlight></codeline>
+<codeline lineno="47"><highlight class="normal"></highlight></codeline>
+<codeline lineno="48"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="exec__command_8c_1a73aa789f19d78c8533e8d4aa6907fa9c" kindref="member">apply_assignments</ref>(shell,<sp/>cmd-&gt;assignments,<sp/>0);</highlight></codeline>
+<codeline lineno="49"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(cmd-&gt;redirs)</highlight></codeline>
+<codeline lineno="50"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="51"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<ref refid="executor_8h_1a9b33cb188925fd4bdbfe0a0b67e063ab" kindref="member">setup_redirections</ref>(cmd-&gt;redirs,<sp/>saved_fds)<sp/>==<sp/>-1)</highlight></codeline>
+<codeline lineno="52"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>(1);</highlight></codeline>
+<codeline lineno="53"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="executor_8h_1a745761ea2f87e3968790c84e434b349e" kindref="member">restore_redirections</ref>(saved_fds);</highlight></codeline>
+<codeline lineno="54"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="55"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>(0);</highlight></codeline>
+<codeline lineno="56"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="57"><highlight class="normal"></highlight></codeline>
+<codeline lineno="67"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><sp/><ref refid="exec__command_8c_1a95dbb95edbd59e28b8b1b93fd09aeb42" kindref="member">save_and_apply_assigns</ref>(<ref refid="structt__shell" kindref="compound">t_shell</ref><sp/>*shell,<sp/>t_list<sp/>*assigns,</highlight></codeline>
+<codeline lineno="68"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>**old_names,<sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>**old_vals)</highlight></codeline>
+<codeline lineno="69"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="70"><highlight class="normal"><sp/><sp/><sp/><sp/>t_list<sp/><sp/>*node;</highlight></codeline>
+<codeline lineno="71"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/><sp/><sp/><sp/>*name;</highlight></codeline>
+<codeline lineno="72"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/><sp/><sp/><sp/>*value;</highlight></codeline>
+<codeline lineno="73"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/><sp/><sp/><sp/>*prev;</highlight></codeline>
+<codeline lineno="74"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>i;</highlight></codeline>
+<codeline lineno="75"><highlight class="normal"></highlight></codeline>
+<codeline lineno="76"><highlight class="normal"><sp/><sp/><sp/><sp/>i<sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="77"><highlight class="normal"><sp/><sp/><sp/><sp/>node<sp/>=<sp/>assigns;</highlight></codeline>
+<codeline lineno="78"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">while</highlight><highlight class="normal"><sp/>(node)</highlight></codeline>
+<codeline lineno="79"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="80"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="executor_8h_1adfc974609bf3404693e579212d74e1f8" kindref="member">split_assignment</ref>((</highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*)node-&gt;content,<sp/>&amp;name,<sp/>&amp;value);</highlight></codeline>
+<codeline lineno="81"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>prev<sp/>=<sp/><ref refid="42sh_8h_1a34d64e2d617b8150135833725de494b5" kindref="member">var_get_value</ref>(shell,<sp/>name);</highlight></codeline>
+<codeline lineno="82"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>old_names[i]<sp/>=<sp/>ft_strdup(name);</highlight></codeline>
+<codeline lineno="83"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>old_vals[i]<sp/>=<sp/>prev<sp/>?<sp/>ft_strdup(prev)<sp/>:<sp/>NULL;</highlight></codeline>
+<codeline lineno="84"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="42sh_8h_1a7449c0accbffef4d5206e9ca409d1352" kindref="member">var_set</ref>(shell,<sp/>name,<sp/>value);</highlight></codeline>
+<codeline lineno="85"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>free(name);</highlight></codeline>
+<codeline lineno="86"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>free(value);</highlight></codeline>
+<codeline lineno="87"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>i++;</highlight></codeline>
+<codeline lineno="88"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>node<sp/>=<sp/>node-&gt;next;</highlight></codeline>
+<codeline lineno="89"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="90"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>(i);</highlight></codeline>
+<codeline lineno="91"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="92"><highlight class="normal"></highlight></codeline>
+<codeline lineno="100"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="exec__command_8c_1a6304ebdcb4b79fa4cadc233d22c6f981" kindref="member">restore_assigns</ref>(<ref refid="structt__shell" kindref="compound">t_shell</ref><sp/>*shell,<sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>**old_names,</highlight></codeline>
+<codeline lineno="101"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>**old_vals,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>count)</highlight></codeline>
+<codeline lineno="102"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="103"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i;</highlight></codeline>
+<codeline lineno="104"><highlight class="normal"></highlight></codeline>
+<codeline lineno="105"><highlight class="normal"><sp/><sp/><sp/><sp/>i<sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="106"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">while</highlight><highlight class="normal"><sp/>(i<sp/>&lt;<sp/>count)</highlight></codeline>
+<codeline lineno="107"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="108"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(old_vals[i])</highlight></codeline>
+<codeline lineno="109"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="42sh_8h_1a7449c0accbffef4d5206e9ca409d1352" kindref="member">var_set</ref>(shell,<sp/>old_names[i],<sp/>old_vals[i]);</highlight></codeline>
+<codeline lineno="110"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="111"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="42sh_8h_1a66ca6a16bd8984e1444cdcc49449e500" kindref="member">var_unset</ref>(shell,<sp/>old_names[i]);</highlight></codeline>
+<codeline lineno="112"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>free(old_names[i]);</highlight></codeline>
+<codeline lineno="113"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>free(old_vals[i]);</highlight></codeline>
+<codeline lineno="114"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>i++;</highlight></codeline>
+<codeline lineno="115"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="116"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="117"><highlight class="normal"></highlight></codeline>
+<codeline lineno="126"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><sp/><ref refid="exec__command_8c_1a3b79e4e47fe5d00cd0d0d87c30e954b9" kindref="member">exec_builtin</ref>(<ref refid="structt__shell" kindref="compound">t_shell</ref><sp/>*shell,<sp/><ref refid="structt__cmd" kindref="compound">t_cmd</ref><sp/>*cmd,<sp/><ref refid="builtins_8h_1ac8cd553bb18027ffff282e381d33c601" kindref="member">t_builtin_fn</ref><sp/>fn)</highlight></codeline>
+<codeline lineno="127"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="128"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>saved_fds[3];</highlight></codeline>
+<codeline lineno="129"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>status;</highlight></codeline>
+<codeline lineno="130"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/><sp/><sp/><sp/>*old_names[64];</highlight></codeline>
+<codeline lineno="131"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/><sp/><sp/><sp/>*old_vals[64];</highlight></codeline>
+<codeline lineno="132"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>assign_count;</highlight></codeline>
+<codeline lineno="133"><highlight class="normal"></highlight></codeline>
+<codeline lineno="134"><highlight class="normal"><sp/><sp/><sp/><sp/>assign_count<sp/>=<sp/><ref refid="exec__command_8c_1a95dbb95edbd59e28b8b1b93fd09aeb42" kindref="member">save_and_apply_assigns</ref>(shell,<sp/>cmd-&gt;assignments,</highlight></codeline>
+<codeline lineno="135"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>old_names,<sp/>old_vals);</highlight></codeline>
+<codeline lineno="136"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<ref refid="executor_8h_1a9b33cb188925fd4bdbfe0a0b67e063ab" kindref="member">setup_redirections</ref>(cmd-&gt;redirs,<sp/>saved_fds)<sp/>==<sp/>-1)</highlight></codeline>
+<codeline lineno="137"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="138"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="exec__command_8c_1a6304ebdcb4b79fa4cadc233d22c6f981" kindref="member">restore_assigns</ref>(shell,<sp/>old_names,<sp/>old_vals,<sp/>assign_count);</highlight></codeline>
+<codeline lineno="139"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>(1);</highlight></codeline>
+<codeline lineno="140"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="141"><highlight class="normal"><sp/><sp/><sp/><sp/>status<sp/>=<sp/>fn(shell,<sp/>cmd-&gt;argc,<sp/>cmd-&gt;argv);</highlight></codeline>
+<codeline lineno="142"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="executor_8h_1a745761ea2f87e3968790c84e434b349e" kindref="member">restore_redirections</ref>(saved_fds);</highlight></codeline>
+<codeline lineno="143"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="exec__command_8c_1a6304ebdcb4b79fa4cadc233d22c6f981" kindref="member">restore_assigns</ref>(shell,<sp/>old_names,<sp/>old_vals,<sp/>assign_count);</highlight></codeline>
+<codeline lineno="144"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>(status);</highlight></codeline>
+<codeline lineno="145"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="146"><highlight class="normal"></highlight></codeline>
+<codeline lineno="152"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="exec__command_8c_1ad322c9cda57efe8a46003e4c8f0d2990" kindref="member">exec_child</ref>(<ref refid="structt__shell" kindref="compound">t_shell</ref><sp/>*shell,<sp/><ref refid="structt__cmd" kindref="compound">t_cmd</ref><sp/>*cmd)</highlight></codeline>
+<codeline lineno="153"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="154"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/><sp/><sp/><sp/>*path;</highlight></codeline>
+<codeline lineno="155"><highlight class="normal"></highlight></codeline>
+<codeline lineno="156"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="signals_8h_1aae998bb6e93b7d3297a66ce4fe974998" kindref="member">signals_setup_child</ref>();</highlight></codeline>
+<codeline lineno="157"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="exec__command_8c_1a73aa789f19d78c8533e8d4aa6907fa9c" kindref="member">apply_assignments</ref>(shell,<sp/>cmd-&gt;assignments,<sp/>1);</highlight></codeline>
+<codeline lineno="158"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<ref refid="executor_8h_1a9b33cb188925fd4bdbfe0a0b67e063ab" kindref="member">setup_redirections</ref>(cmd-&gt;redirs,<sp/>NULL)<sp/>==<sp/>-1)</highlight></codeline>
+<codeline lineno="159"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>_exit(1);</highlight></codeline>
+<codeline lineno="160"><highlight class="normal"><sp/><sp/><sp/><sp/>path<sp/>=<sp/><ref refid="executor_8h_1ae2070267d1e53aa5bc6ac0dc0c85b1b8" kindref="member">find_command</ref>(shell,<sp/>cmd-&gt;argv[0]);</highlight></codeline>
+<codeline lineno="161"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(!path)</highlight></codeline>
+<codeline lineno="162"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="163"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ft_putstr_fd(</highlight><highlight class="stringliteral">&quot;42sh:<sp/>&quot;</highlight><highlight class="normal">,<sp/>2);</highlight></codeline>
+<codeline lineno="164"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ft_putstr_fd(cmd-&gt;argv[0],<sp/>2);</highlight></codeline>
+<codeline lineno="165"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ft_putendl_fd(</highlight><highlight class="stringliteral">&quot;:<sp/>command<sp/>not<sp/>found&quot;</highlight><highlight class="normal">,<sp/>2);</highlight></codeline>
+<codeline lineno="166"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>_exit(127);</highlight></codeline>
+<codeline lineno="167"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="168"><highlight class="normal"><sp/><sp/><sp/><sp/>execve(path,<sp/>cmd-&gt;argv,<sp/><ref refid="42sh_8h_1a10f5ed3e1876c045b7edde6a89ebf7b7" kindref="member">var_get_environ</ref>(shell));</highlight></codeline>
+<codeline lineno="169"><highlight class="normal"><sp/><sp/><sp/><sp/>ft_putstr_fd(</highlight><highlight class="stringliteral">&quot;42sh:<sp/>&quot;</highlight><highlight class="normal">,<sp/>2);</highlight></codeline>
+<codeline lineno="170"><highlight class="normal"><sp/><sp/><sp/><sp/>ft_putstr_fd(cmd-&gt;argv[0],<sp/>2);</highlight></codeline>
+<codeline lineno="171"><highlight class="normal"><sp/><sp/><sp/><sp/>ft_putstr_fd(</highlight><highlight class="stringliteral">&quot;:<sp/>&quot;</highlight><highlight class="normal">,<sp/>2);</highlight></codeline>
+<codeline lineno="172"><highlight class="normal"><sp/><sp/><sp/><sp/>ft_putendl_fd(strerror(errno),<sp/>2);</highlight></codeline>
+<codeline lineno="173"><highlight class="normal"><sp/><sp/><sp/><sp/>free(path);</highlight></codeline>
+<codeline lineno="174"><highlight class="normal"><sp/><sp/><sp/><sp/>exit(126);</highlight></codeline>
+<codeline lineno="175"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="176"><highlight class="normal"></highlight></codeline>
+<codeline lineno="177"><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="executor_8h_1a7fb5f0020e176d996687d2ef8b923273" kindref="member">execute_simple_command</ref>(<ref refid="structt__shell" kindref="compound">t_shell</ref><sp/>*shell,<sp/><ref refid="structt__cmd" kindref="compound">t_cmd</ref><sp/>*cmd)</highlight></codeline>
+<codeline lineno="178"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="179"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="builtins_8h_1ac8cd553bb18027ffff282e381d33c601" kindref="member">t_builtin_fn</ref><sp/><sp/><sp/><sp/>fn;</highlight></codeline>
+<codeline lineno="180"><highlight class="normal"><sp/><sp/><sp/><sp/>pid_t<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>pid;</highlight></codeline>
+<codeline lineno="181"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>wstatus;</highlight></codeline>
+<codeline lineno="182"><highlight class="normal"></highlight></codeline>
+<codeline lineno="183"><highlight class="normal"><sp/><sp/><sp/><sp/>expand_command(shell,<sp/>cmd);</highlight></codeline>
+<codeline lineno="184"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(!cmd-&gt;argv<sp/>||<sp/>!cmd-&gt;argv[0])</highlight></codeline>
+<codeline lineno="185"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>(<ref refid="exec__command_8c_1a0de325da5ae68b6ac34b1626a7dc66b0" kindref="member">exec_assignment_only</ref>(shell,<sp/>cmd));</highlight></codeline>
+<codeline lineno="186"><highlight class="normal"><sp/><sp/><sp/><sp/>fn<sp/>=<sp/><ref refid="builtins_8h_1af7cec1ad3b2a77ab22f75eb271f8eb14" kindref="member">builtin_get</ref>(cmd-&gt;argv[0]);</highlight></codeline>
+<codeline lineno="187"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(fn)</highlight></codeline>
+<codeline lineno="188"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>(<ref refid="exec__command_8c_1a3b79e4e47fe5d00cd0d0d87c30e954b9" kindref="member">exec_builtin</ref>(shell,<sp/>cmd,<sp/>fn));</highlight></codeline>
+<codeline lineno="189"><highlight class="normal"><sp/><sp/><sp/><sp/>pid<sp/>=<sp/>fork();</highlight></codeline>
+<codeline lineno="190"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(pid<sp/>==<sp/>-1)</highlight></codeline>
+<codeline lineno="191"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="192"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ft_putstr_fd(</highlight><highlight class="stringliteral">&quot;42sh:<sp/>fork:<sp/>&quot;</highlight><highlight class="normal">,<sp/>2);</highlight></codeline>
+<codeline lineno="193"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ft_putendl_fd(strerror(errno),<sp/>2);</highlight></codeline>
+<codeline lineno="194"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>(1);</highlight></codeline>
+<codeline lineno="195"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="196"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(pid<sp/>==<sp/>0)</highlight></codeline>
+<codeline lineno="197"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="exec__command_8c_1ad322c9cda57efe8a46003e4c8f0d2990" kindref="member">exec_child</ref>(shell,<sp/>cmd);</highlight></codeline>
+<codeline lineno="198"><highlight class="normal"><sp/><sp/><sp/><sp/>waitpid(pid,<sp/>&amp;wstatus,<sp/>0);</highlight></codeline>
+<codeline lineno="199"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>(<ref refid="executor_8h_1a1c76237e804221f0b304bb911f2d9871" kindref="member">get_exit_status</ref>(wstatus));</highlight></codeline>
+<codeline lineno="200"><highlight class="normal">}</highlight></codeline>
+    </programlisting>
+    <location file="srcs/executor/exec_command.c"/>
+  </compounddef>
+</doxygen>

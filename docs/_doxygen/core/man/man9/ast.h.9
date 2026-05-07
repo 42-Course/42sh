@@ -1,0 +1,232 @@
+.TH "includes/ast.h" 9 "Version pulgamecanica" "42sh" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+includes/ast.h \- Abstract Syntax Tree definitions for the 42sh shell\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+\fR#include 'lexer\&.h'\fP
+.br
+
+.SS "Data Structures"
+
+.in +1c
+.ti -1c
+.RI "struct \fBt_redir\fP"
+.br
+.RI "Redirection data node\&. "
+.ti -1c
+.RI "struct \fBt_cmd\fP"
+.br
+.RI "Simple command data\&. "
+.ti -1c
+.RI "struct \fBt_binary\fP"
+.br
+.RI "Binary operation data (pipe, &&, ||, ;) "
+.ti -1c
+.RI "struct \fBt_group\fP"
+.br
+.RI "Group data (subshell, block, background)\&. "
+.ti -1c
+.RI "struct \fBt_ast\fP"
+.br
+.RI "AST node - union-based for zero-overhead dispatch\&. "
+.in -1c
+.SS "Macros"
+
+.in +1c
+.ti -1c
+.RI "#define \fBREDIR\fP(node)"
+.br
+.RI "Convenience accessor: get t_redir* from a t_list node\&. "
+.in -1c
+.SS "Enumerations"
+
+.in +1c
+.ti -1c
+.RI "enum \fBt_node_type\fP "
+.br
+.RI "AST node types\&. "
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBt_ast\fP * \fBast_new_command\fP (\fBt_cmd\fP *cmd)"
+.br
+.RI "AST construction helpers\&. "
+.ti -1c
+.RI "\fBt_ast\fP * \fBast_new_binary\fP (\fBt_node_type\fP type, \fBt_ast\fP *left, \fBt_ast\fP *right)"
+.br
+.RI "create and allocate new binary ast node "
+.ti -1c
+.RI "\fBt_ast\fP * \fBast_new_group\fP (\fBt_node_type\fP type, \fBt_ast\fP *child, t_list *redirs)"
+.br
+.RI "helper function for the parse_subshell function "
+.ti -1c
+.RI "void \fBast_free\fP (\fBt_ast\fP *node)"
+.br
+.RI "free ast recursively "
+.ti -1c
+.RI "\fBt_redir\fP * \fBredir_new\fP (\fBt_token_type\fP type, int fd, char *target)"
+.br
+.RI "Redirection helpers\&. "
+.ti -1c
+.RI "void \fBredir_free\fP (\fBt_redir\fP *redir)"
+.br
+.RI "free \fBt_redir\fP helper "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Abstract Syntax Tree definitions for the 42sh shell\&. 
+
+
+.PP
+\fBAuthor\fP
+.RS 4
+jguillem pulgamecanica 
+.RE
+.PP
+
+.SH "Enumeration Type Documentation"
+.PP 
+.SS "enum \fBt_node_type\fP"
+
+.PP
+AST node types\&. 
+.PP
+\fBNote\fP
+.RS 4
+Important to don't change the order 
+.RE
+.PP
+
+.SH "Function Documentation"
+.PP 
+.SS "void ast_free (\fBt_ast\fP * node)"
+
+.PP
+free ast recursively 
+.PP
+\fBParameters\fP
+.RS 4
+\fInode\fP \fBt_ast\fP struct 
+.RE
+.PP
+
+.SS "\fBt_ast\fP * ast_new_binary (\fBt_node_type\fP type, \fBt_ast\fP * left, \fBt_ast\fP * right)"
+
+.PP
+create and allocate new binary ast node 
+.PP
+\fBParameters\fP
+.RS 4
+\fItype\fP enum e_node_type 
+.br
+\fIleft\fP struct s_ast pointer 
+.br
+\fIright\fP struct s_ast pointer 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+struct s_ast pointer 
+.RE
+.PP
+
+.SS "\fBt_ast\fP * ast_new_command (\fBt_cmd\fP * cmd)"
+
+.PP
+AST construction helpers\&. AST construction helpers\&.
+
+.PP
+\fBParameters\fP
+.RS 4
+\fIcmd\fP struct s_cmd 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+pointer on struct s_ast 
+.RE
+.PP
+
+.SS "\fBt_ast\fP * ast_new_group (\fBt_node_type\fP type, \fBt_ast\fP * child, t_list * redirs)"
+
+.PP
+helper function for the parse_subshell function 
+.PP
+\fBParameters\fP
+.RS 4
+\fItype\fP enum e_node_type 
+.br
+\fIchild\fP struct s_ast 
+.br
+\fIredirs\fP struct s_list with a \fBt_redir\fP * as content 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+pointer on struct s_ast 
+.RE
+.PP
+
+.SS "void redir_free (\fBt_redir\fP * redir)"
+
+.PP
+free \fBt_redir\fP helper 
+.PP
+\fBParameters\fP
+.RS 4
+\fIredir\fP \fBt_redir\fP struct 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for 42sh from the source code\&.
+.SH SEE ALSO
+.BR 42sh.h (9),
+.BR ast_display.c (9),
+.BR builtin.c (9),
+.BR builtin_history.c (9),
+.BR builtins.h (9),
+.BR command_search.c (9),
+.BR exec_command.c (9),
+.BR exec_logical.c (9),
+.BR exec_pipeline.c (9),
+.BR exec_utils.c (9),
+.BR executor.c (9),
+.BR executor.h (9),
+.BR expander.c (9),
+.BR heredoc.c (9),
+.BR history.c (9),
+.BR history.h (9),
+.BR lexer.c (9),
+.BR lexer_display.c (9),
+.BR lexer.h (9),
+.BR lexer_operator.c (9),
+.BR lexer_words.c (9),
+.BR memory.c (9),
+.BR parser_and_or.c (9),
+.BR parser.c (9),
+.BR parser_command.c (9),
+.BR parser_group.c (9),
+.BR parser.h (9),
+.BR parser_heredoc.c (9),
+.BR parser_list.c (9),
+.BR parser_pipeline.c (9),
+.BR signal_child.c (9),
+.BR signal_exec.c (9),
+.BR signals.h (9),
+.BR t_ast (9),
+.BR t_binary (9),
+.BR t_cmd (9),
+.BR t_group (9),
+.BR t_operator (9),
+.BR t_parser (9),
+.BR t_redir (9),
+.BR t_shell (9),
+.BR t_token (9)

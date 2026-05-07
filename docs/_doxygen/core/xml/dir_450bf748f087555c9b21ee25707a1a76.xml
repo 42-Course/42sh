@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.2" xml:lang="en-US">
+  <compounddef id="dir_450bf748f087555c9b21ee25707a1a76" kind="dir">
+    <compoundname>srcs/lexer</compoundname>
+    <innerfile refid="lexer_8c">lexer.c</innerfile>
+    <innerfile refid="lexer__display_8c">lexer_display.c</innerfile>
+    <innerfile refid="lexer__operator_8c">lexer_operator.c</innerfile>
+    <innerfile refid="lexer__words_8c">lexer_words.c</innerfile>
+    <innerfile refid="token_8c">token.c</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="srcs/lexer/"/>
+  </compounddef>
+</doxygen>

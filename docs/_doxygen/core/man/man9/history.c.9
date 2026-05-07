@@ -1,0 +1,140 @@
+.TH "srcs/history/history.c" 9 "Version pulgamecanica" "42sh" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+srcs/history/history.c \- Command history management using GNU Readline\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+\fR#include '42sh\&.h'\fP
+.br
+
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBhistory_init\fP (\fBt_shell\fP *shell)"
+.br
+.RI "Initialize the history subsystem\&. "
+.ti -1c
+.RI "char * \fBhistory_file_path\fP (void)"
+.br
+.RI "Determine the path to the history file based on environment variables\&. "
+.ti -1c
+.RI "void \fBhistory_load\fP (const char *file_path)"
+.br
+.RI "Load the command history from a file into readline's in-memory history list\&. "
+.ti -1c
+.RI "void \fBhistory_save\fP (const char *file_path)"
+.br
+.RI "Save the in-memory command history list to a file\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Command history management using GNU Readline\&. 
+
+This module provides functions to initialize the command history subsystem, determine the history file path, load history from a file, and save history to a file\&.
+
+.PP
+The history file is determined by checking the $HISTFILE environment variable first, and if that is not set, falling back to $HOME/\&.sh_history\&. The history is loaded into memory at shell startup and saved back to disk on shell exit\&.
+
+.PP
+\fBAuthor\fP
+.RS 4
+pulgamecanica 
+.RE
+.PP
+
+.SH "Function Documentation"
+.PP 
+.SS "char * history_file_path (void )"
+
+.PP
+Determine the path to the history file based on environment variables\&. Follows POSIX-compliant lookup order: first checks $HISTFILE, then falls back to $HOME/\&.sh_history\&. Returns a malloc'd string that the caller must free\&. 
+.PP
+\fBReturns\fP
+.RS 4
+A malloc'd string with the history file path, or NULL if neither variable is set or valid\&. 
+.RE
+.PP
+
+.SS "void history_init (\fBt_shell\fP * shell)"
+
+.PP
+Initialize the history subsystem\&. This sets up readline's history handling and loads the history file if available\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIshell\fP The main shell state struct, used to store the history file path\&. 
+.RE
+.PP
+
+.SS "void history_load (const char * file_path)"
+
+.PP
+Load the command history from a file into readline's in-memory history list\&. This function uses readline's \fRread_history()\fP to populate the history list\&. If \fRfile_path\fP is NULL, this function does nothing\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIfile_path\fP The path to the history file to load, or NULL to skip loading\&. 
+.RE
+.PP
+
+.SS "void history_save (const char * file_path)"
+
+.PP
+Save the in-memory command history list to a file\&. This function uses readline's \fRwrite_history()\fP to write the history list to disk\&. If \fRfile_path\fP is NULL, this function does nothing\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIfile_path\fP The path to the history file to save, or NULL to skip saving\&. 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for 42sh from the source code\&.
+.SH SEE ALSO
+.BR 42sh.h (9),
+.BR ast_display.c (9),
+.BR ast.h (9),
+.BR builtin.c (9),
+.BR builtin_history.c (9),
+.BR builtins.h (9),
+.BR command_search.c (9),
+.BR exec_command.c (9),
+.BR exec_logical.c (9),
+.BR exec_pipeline.c (9),
+.BR exec_utils.c (9),
+.BR executor.c (9),
+.BR executor.h (9),
+.BR expander.c (9),
+.BR heredoc.c (9),
+.BR history.h (9),
+.BR lexer.c (9),
+.BR lexer_display.c (9),
+.BR lexer.h (9),
+.BR lexer_operator.c (9),
+.BR lexer_words.c (9),
+.BR memory.c (9),
+.BR parser_and_or.c (9),
+.BR parser.c (9),
+.BR parser_command.c (9),
+.BR parser_group.c (9),
+.BR parser.h (9),
+.BR parser_heredoc.c (9),
+.BR parser_list.c (9),
+.BR parser_pipeline.c (9),
+.BR signal_child.c (9),
+.BR signal_exec.c (9),
+.BR signals.h (9),
+.BR t_ast (9),
+.BR t_binary (9),
+.BR t_cmd (9),
+.BR t_group (9),
+.BR t_operator (9),
+.BR t_parser (9),
+.BR t_redir (9),
+.BR t_shell (9),
+.BR t_token (9)

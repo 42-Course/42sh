@@ -1,0 +1,144 @@
+.TH "t_shell" 9 "Version pulgamecanica" "42sh" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+t_shell \- Central runtime state of the shell — one instance lives in \fRmain()\fP\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fR#include <42sh\&.h>\fP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "t_list * \fBaliases\fP"
+.br
+.ti -1c
+.RI "char * \fBcmd_entrypoint\fP"
+.br
+.ti -1c
+.RI "t_job * \fBcurrent_job\fP"
+.br
+.ti -1c
+.RI "char ** \fBenv\fP"
+.br
+.ti -1c
+.RI "int \fBenv_dirty\fP"
+.br
+.ti -1c
+.RI "int \fBexit_confirmed\fP"
+.br
+.ti -1c
+.RI "char * \fBhistory_file\fP"
+.br
+.ti -1c
+.RI "int \fBinteractive\fP"
+.br
+.ti -1c
+.RI "t_list * \fBjobs\fP"
+.br
+.ti -1c
+.RI "int \fBlast_exit_status\fP"
+.br
+.ti -1c
+.RI "struct termios \fBoriginal_termios\fP"
+.br
+.ti -1c
+.RI "int \fBrunning\fP"
+.br
+.ti -1c
+.RI "pid_t \fBshell_pgid\fP"
+.br
+.ti -1c
+.RI "int \fBterminal_fd\fP"
+.br
+.ti -1c
+.RI "t_list * \fBvariables\fP"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Central runtime state of the shell — one instance lives in \fRmain()\fP\&. 
+
+This struct holds all global state, including variables, jobs, history file path, and terminal settings\&. 
+.SH "Field Documentation"
+.PP 
+.SS "t_list* t_shell::aliases"
+\fRt_alias*\fP list; alias table\&. 
+.SS "char* t_shell::cmd_entrypoint"
+-c command string, or NULL\&. 
+.SS "t_job* t_shell::current_job"
+Most recent job (\fR%+\fP / \fR%%\fP)\&. 
+.SS "char** t_shell::env"
+Cached NULL-terminated array for execve\&. 
+.SS "int t_shell::env_dirty"
+1 when \fRenv\fP needs rebuild before next execve\&. 
+.SS "int t_shell::exit_confirmed"
+Double-exit guard when stopped jobs exist\&. 
+.SS "char* t_shell::history_file"
+Path from $HISTFILE or $HOME/\&.sh_history\&. 
+.SS "int t_shell::interactive"
+1 if stdin is a TTY (prompt + readline active)\&. 
+.SS "t_list* t_shell::jobs"
+\fRt_job*\fP list; all known jobs\&. 
+.SS "int t_shell::last_exit_status"
+Value of \fR$?\fP\&. 
+.SS "struct termios t_shell::original_termios"
+Saved terminal attributes, restored on exit\&. 
+.SS "int t_shell::running"
+Main loop flag; set to 0 to exit\&. 
+.SS "pid_t t_shell::shell_pgid"
+Shell's own process group id\&. 
+.SS "int t_shell::terminal_fd"
+File descriptor of the controlling terminal\&. 
+.SS "t_list* t_shell::variables"
+\fRt_var*\fP list; all shell/env variables\&. 
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for 42sh from the source code\&.
+.SH SEE ALSO
+.BR 42sh.h (9),
+.BR ast_display.c (9),
+.BR ast.h (9),
+.BR builtin.c (9),
+.BR builtin_history.c (9),
+.BR builtins.h (9),
+.BR command_search.c (9),
+.BR exec_command.c (9),
+.BR exec_logical.c (9),
+.BR exec_pipeline.c (9),
+.BR exec_utils.c (9),
+.BR executor.c (9),
+.BR executor.h (9),
+.BR expander.c (9),
+.BR heredoc.c (9),
+.BR history.c (9),
+.BR history.h (9),
+.BR lexer.c (9),
+.BR lexer_display.c (9),
+.BR lexer.h (9),
+.BR lexer_operator.c (9),
+.BR lexer_words.c (9),
+.BR memory.c (9),
+.BR parser_and_or.c (9),
+.BR parser.c (9),
+.BR parser_command.c (9),
+.BR parser_group.c (9),
+.BR parser.h (9),
+.BR parser_heredoc.c (9),
+.BR parser_list.c (9),
+.BR parser_pipeline.c (9),
+.BR signal_child.c (9),
+.BR signal_exec.c (9),
+.BR signals.h (9),
+.BR t_ast (9),
+.BR t_binary (9),
+.BR t_cmd (9),
+.BR t_group (9),
+.BR t_operator (9),
+.BR t_parser (9),
+.BR t_redir (9),
+.BR t_token (9)

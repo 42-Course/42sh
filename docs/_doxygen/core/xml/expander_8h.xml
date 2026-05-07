@@ -1,0 +1,509 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.2" xml:lang="en-US">
+  <compounddef id="expander_8h" kind="file" language="C++">
+    <compoundname>expander.h</compoundname>
+    <includes refid="ast_8h" local="yes">ast.h</includes>
+    <includes refid="42sh_8h" local="yes">42sh.h</includes>
+    <includes local="yes">libft.h</includes>
+    <includes local="no">string.h</includes>
+    <includes local="no">stdlib.h</includes>
+    <includes local="no">stdbool.h</includes>
+    <includedby refid="executor_8h" local="yes">includes/executor.h</includedby>
+    <includedby refid="expand__arithmetic_8c" local="yes">srcs/expander/expand_arithmetic.c</includedby>
+    <includedby refid="expand__parameter_8c" local="yes">srcs/expander/expand_parameter.c</includedby>
+    <includedby refid="expand__tilde_8c" local="yes">srcs/expander/expand_tilde.c</includedby>
+    <includedby refid="expand__word_8c" local="yes">srcs/expander/expand_word.c</includedby>
+    <includedby refid="expander_8c" local="yes">srcs/expander/expander.c</includedby>
+    <incdepgraph>
+      <node id="5">
+        <label>42sh.h</label>
+        <link refid="42sh_8h"/>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="19" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>ast.h</label>
+        <link refid="ast_8h"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>includes/expander.h</label>
+        <link refid="expander_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="24" relation="include">
+        </childnode>
+      </node>
+      <node id="19">
+        <label>history.h</label>
+        <link refid="history_8h"/>
+      </node>
+      <node id="21">
+        <label>job_control.h</label>
+        <link refid="job__control_8h_source"/>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>lexer.h</label>
+        <link refid="lexer_8h"/>
+        <childnode refid="4" relation="include">
+        </childnode>
+      </node>
+      <node id="22">
+        <label>signals.h</label>
+        <link refid="signals_8h"/>
+        <childnode refid="23" relation="include">
+        </childnode>
+      </node>
+      <node id="20">
+        <label>variables.h</label>
+        <link refid="variables_8h_source"/>
+      </node>
+      <node id="9">
+        <label>errno.h</label>
+      </node>
+      <node id="10">
+        <label>fcntl.h</label>
+      </node>
+      <node id="4">
+        <label>libft.h</label>
+      </node>
+      <node id="17">
+        <label>readline/history.h</label>
+      </node>
+      <node id="16">
+        <label>readline/readline.h</label>
+      </node>
+      <node id="23">
+        <label>signal.h</label>
+      </node>
+      <node id="24">
+        <label>stdbool.h</label>
+      </node>
+      <node id="6">
+        <label>stdio.h</label>
+      </node>
+      <node id="8">
+        <label>stdlib.h</label>
+      </node>
+      <node id="18">
+        <label>string.h</label>
+      </node>
+      <node id="13">
+        <label>sys/stat.h</label>
+      </node>
+      <node id="11">
+        <label>sys/types.h</label>
+      </node>
+      <node id="12">
+        <label>sys/wait.h</label>
+      </node>
+      <node id="15">
+        <label>term.h</label>
+      </node>
+      <node id="14">
+        <label>termios.h</label>
+      </node>
+      <node id="7">
+        <label>unistd.h</label>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="2">
+        <label>includes/executor.h</label>
+        <link refid="executor_8h"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>includes/expander.h</label>
+        <link refid="expander_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>srcs/executor/command_search.c</label>
+        <link refid="command__search_8c"/>
+      </node>
+      <node id="4">
+        <label>srcs/executor/exec_command.c</label>
+        <link refid="exec__command_8c"/>
+      </node>
+      <node id="5">
+        <label>srcs/executor/exec_logical.c</label>
+        <link refid="exec__logical_8c"/>
+      </node>
+      <node id="6">
+        <label>srcs/executor/exec_pipeline.c</label>
+        <link refid="exec__pipeline_8c"/>
+      </node>
+      <node id="7">
+        <label>srcs/executor/exec_utils.c</label>
+        <link refid="exec__utils_8c"/>
+      </node>
+      <node id="8">
+        <label>srcs/executor/executor.c</label>
+        <link refid="executor_8c"/>
+      </node>
+      <node id="9">
+        <label>srcs/executor/heredoc.c</label>
+        <link refid="heredoc_8c"/>
+      </node>
+      <node id="10">
+        <label>srcs/expander/expander.c</label>
+        <link refid="expander_8c"/>
+      </node>
+    </invincdepgraph>
+    <sectiondef kind="func">
+      <memberdef kind="function" id="expander_8h_1ada9cec41d992160afe3c5d53e484aadd" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>char *</type>
+        <definition>char * expand_word</definition>
+        <argsstring>(struct s_shell *shell, const char *word)</argsstring>
+        <name>expand_word</name>
+        <param>
+          <type>struct s_shell *</type>
+          <declname>shell</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>word</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/expander.h" line="26" column="5" bodyfile="srcs/expander/expander.c" bodystart="12" bodyend="21" declfile="includes/expander.h" declline="26" declcolumn="5"/>
+      </memberdef>
+      <memberdef kind="function" id="expander_8h_1a8634ebdbcb6318b8c5fa38f3f45268a8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>char **</type>
+        <definition>char ** expand_word_to_fields</definition>
+        <argsstring>(struct s_shell *shell, const char *word)</argsstring>
+        <name>expand_word_to_fields</name>
+        <param>
+          <type>struct s_shell *</type>
+          <declname>shell</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>word</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/expander.h" line="32" column="5" bodyfile="srcs/expander/expand_parameter.c" bodystart="3" bodyend="16" declfile="includes/expander.h" declline="32" declcolumn="5"/>
+      </memberdef>
+      <memberdef kind="function" id="expander_8h_1aa734ed5b5c9cc36156b1bd86db5a64de" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int expand_command</definition>
+        <argsstring>(struct s_shell *shell, t_cmd *cmd)</argsstring>
+        <name>expand_command</name>
+        <param>
+          <type>struct s_shell *</type>
+          <declname>shell</declname>
+        </param>
+        <param>
+          <type><ref refid="structt__cmd" kindref="compound">t_cmd</ref> *</type>
+          <declname>cmd</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/expander.h" line="39" column="4" bodyfile="srcs/expander/expander.c" bodystart="23" bodyend="56" declfile="includes/expander.h" declline="39" declcolumn="4"/>
+      </memberdef>
+      <memberdef kind="function" id="expander_8h_1a04e7df8c74e82b48d4b96339673e6c95" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>char *</type>
+        <definition>char * expand_dollar</definition>
+        <argsstring>(t_shell *shell, char *input, size_t pos, bool in_double_quote)</argsstring>
+        <name>expand_dollar</name>
+        <param>
+          <type><ref refid="structt__shell" kindref="compound">t_shell</ref> *</type>
+          <declname>shell</declname>
+        </param>
+        <param>
+          <type>char *</type>
+          <declname>input</declname>
+        </param>
+        <param>
+          <type>size_t</type>
+          <declname>pos</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>in_double_quote</declname>
+        </param>
+        <briefdescription>
+<para>receive a dollar variable input and search in env the said variable NOTE : there is two paramater that seems irrelevant to me, I am just following the plan for now. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>TODO : the whole function <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>shell</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the whole shell structure </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>input</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the variable to expand </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>pos</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the position of the input in the command string (might be irrelevant) </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>in_double_quote</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>check if input is in double quote (might be irrelevant)</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>expanded Dollard variable if !NULL else an empty string </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/expander.h" line="53" column="6" bodyfile="srcs/expander/expand_parameter.c" bodystart="18" bodyend="35" declfile="includes/expander.h" declline="53" declcolumn="6"/>
+      </memberdef>
+      <memberdef kind="function" id="expander_8h_1a73a97b2210f3b9df771a81d80f773668" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>char *</type>
+        <definition>char * expand_tilde</definition>
+        <argsstring>(t_shell *shell, char *input, size_t pos)</argsstring>
+        <name>expand_tilde</name>
+        <param>
+          <type><ref refid="structt__shell" kindref="compound">t_shell</ref> *</type>
+          <declname>shell</declname>
+        </param>
+        <param>
+          <type>char *</type>
+          <declname>input</declname>
+        </param>
+        <param>
+          <type>size_t</type>
+          <declname>pos</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>TODO the whole function </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/expander.h" line="58" column="7" bodyfile="srcs/expander/expand_tilde.c" bodystart="3" bodyend="19" declfile="includes/expander.h" declline="58" declcolumn="7"/>
+      </memberdef>
+      <memberdef kind="function" id="expander_8h_1afd9a92ee3ea7ff3335bb713d8fe169df" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>char *</type>
+        <definition>char * expand_braced_variable</definition>
+        <argsstring>(t_shell *shell, char *input, size_t pos, bool in_double_quote)</argsstring>
+        <name>expand_braced_variable</name>
+        <param>
+          <type><ref refid="structt__shell" kindref="compound">t_shell</ref> *</type>
+          <declname>shell</declname>
+        </param>
+        <param>
+          <type>char *</type>
+          <declname>input</declname>
+        </param>
+        <param>
+          <type>size_t</type>
+          <declname>pos</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>in_double_quote</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>TODO the whole function </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/expander.h" line="63" column="6" bodyfile="srcs/expander/expand_parameter.c" bodystart="37" bodyend="58" declfile="includes/expander.h" declline="63" declcolumn="6"/>
+      </memberdef>
+      <memberdef kind="function" id="expander_8h_1a5c7db11e7777a922731fc2d2178e5012" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>char *</type>
+        <definition>char * expand_word_internal</definition>
+        <argsstring>(t_shell *shell, char *input)</argsstring>
+        <name>expand_word_internal</name>
+        <param>
+          <type><ref refid="structt__shell" kindref="compound">t_shell</ref> *</type>
+          <declname>shell</declname>
+        </param>
+        <param>
+          <type>char *</type>
+          <declname>input</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/expander.h" line="65" column="6" bodyfile="srcs/expander/expand_word.c" bodystart="16" bodyend="94" declfile="includes/expander.h" declline="65" declcolumn="6"/>
+      </memberdef>
+      <memberdef kind="function" id="expander_8h_1ab0f9f573a682a4884e681564a29dd82d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>char *</type>
+        <definition>char * expand_arithmetic</definition>
+        <argsstring>(t_shell *shell, char *input, size_t pos)</argsstring>
+        <name>expand_arithmetic</name>
+        <param>
+          <type><ref refid="structt__shell" kindref="compound">t_shell</ref> *</type>
+          <declname>shell</declname>
+        </param>
+        <param>
+          <type>char *</type>
+          <declname>input</declname>
+        </param>
+        <param>
+          <type>size_t</type>
+          <declname>pos</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/expander.h" line="67" column="6" bodyfile="srcs/expander/expand_arithmetic.c" bodystart="3" bodyend="35" declfile="includes/expander.h" declline="67" declcolumn="6"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">/*<sp/>**************************************************************************<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="2"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="3"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>:::<sp/><sp/><sp/><sp/><sp/><sp/>::::::::<sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="4"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/>expander.h<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>:+:<sp/><sp/><sp/><sp/><sp/><sp/>:+:<sp/><sp/><sp/><sp/>:+:<sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="5"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>+:+<sp/>+:+<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>+:+<sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="6"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/>By:<sp/>wengzhang<sp/>&lt;marvin@42.fr&gt;<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>+#+<sp/><sp/>+:+<sp/><sp/><sp/><sp/><sp/><sp/><sp/>+#+<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="7"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>+#+#+#+#+#+<sp/><sp/><sp/>+#+<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="8"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/>Created:<sp/>2026/02/22<sp/>21:00:00<sp/>by<sp/>wengzhang<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>#+#<sp/><sp/><sp/><sp/>#+#<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="9"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/>Updated:<sp/>2026/02/22<sp/>21:00:00<sp/>by<sp/>wengzhang<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>###<sp/><sp/><sp/>########.fr<sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="10"><highlight class="normal"></highlight><highlight class="comment">/*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"></highlight><highlight class="comment">/*<sp/>**************************************************************************<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="12"><highlight class="normal"></highlight></codeline>
+<codeline lineno="13"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>EXPANDER_H</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="14"><highlight class="normal"></highlight><highlight class="preprocessor">#<sp/>define<sp/>EXPANDER_H</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="15"><highlight class="normal"></highlight></codeline>
+<codeline lineno="16"><highlight class="normal"></highlight><highlight class="preprocessor">#<sp/>include<sp/>&quot;<ref refid="ast_8h" kindref="compound">ast.h</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="17"><highlight class="normal"></highlight><highlight class="preprocessor">#<sp/>include<sp/>&quot;<ref refid="42sh_8h" kindref="compound">42sh.h</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="18"><highlight class="normal"></highlight><highlight class="preprocessor">#<sp/>include<sp/>&quot;libft.h&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="19"><highlight class="normal"></highlight><highlight class="preprocessor">#<sp/>include<sp/>&lt;string.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="20"><highlight class="normal"></highlight><highlight class="preprocessor">#<sp/>include<sp/>&lt;stdlib.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="21"><highlight class="normal"></highlight><highlight class="preprocessor">#<sp/>include<sp/>&lt;stdbool.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="22"><highlight class="normal"></highlight><highlight class="comment">/*</highlight></codeline>
+<codeline lineno="23"><highlight class="comment">**<sp/>Expand<sp/>a<sp/>single<sp/>word<sp/>to<sp/>a<sp/>single<sp/>string<sp/>(assignments,<sp/>redir<sp/>targets)</highlight></codeline>
+<codeline lineno="24"><highlight class="comment">**<sp/>No<sp/>field<sp/>splitting,<sp/>no<sp/>globbing</highlight></codeline>
+<codeline lineno="25"><highlight class="comment">*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="26"><highlight class="normal"></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*expand_word(</highlight><highlight class="keyword">struct</highlight><highlight class="normal"><sp/>s_shell<sp/>*shell,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*word);</highlight></codeline>
+<codeline lineno="27"><highlight class="normal"></highlight></codeline>
+<codeline lineno="28"><highlight class="normal"></highlight><highlight class="comment">/*</highlight></codeline>
+<codeline lineno="29"><highlight class="comment">**<sp/>Expand<sp/>a<sp/>single<sp/>word<sp/>to<sp/>multiple<sp/>fields<sp/>(argv<sp/>words)</highlight></codeline>
+<codeline lineno="30"><highlight class="comment">**<sp/>Includes<sp/>field<sp/>splitting<sp/>and<sp/>globbing</highlight></codeline>
+<codeline lineno="31"><highlight class="comment">*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="32"><highlight class="normal"></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>**expand_word_to_fields(</highlight><highlight class="keyword">struct</highlight><highlight class="normal"><sp/>s_shell<sp/>*shell,</highlight></codeline>
+<codeline lineno="33"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*word);</highlight></codeline>
+<codeline lineno="34"><highlight class="normal"></highlight></codeline>
+<codeline lineno="35"><highlight class="normal"></highlight><highlight class="comment">/*</highlight></codeline>
+<codeline lineno="36"><highlight class="comment">**<sp/>Expand<sp/>a<sp/>whole<sp/>command<sp/>node<sp/>(argv,<sp/>assignments,<sp/>redirections)</highlight></codeline>
+<codeline lineno="37"><highlight class="comment">**<sp/>Called<sp/>by<sp/>executor<sp/>before<sp/>running<sp/>each<sp/>simple<sp/>command</highlight></codeline>
+<codeline lineno="38"><highlight class="comment">*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="39"><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>expand_command(</highlight><highlight class="keyword">struct</highlight><highlight class="normal"><sp/>s_shell<sp/>*shell,<sp/><ref refid="structt__cmd" kindref="compound">t_cmd</ref><sp/>*cmd);</highlight></codeline>
+<codeline lineno="40"><highlight class="normal"></highlight></codeline>
+<codeline lineno="53"><highlight class="normal"></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*expand_dollar(<ref refid="structt__shell" kindref="compound">t_shell</ref><sp/>*<sp/>shell,<sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*input,<sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>pos,<sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>in_double_quote);</highlight></codeline>
+<codeline lineno="54"><highlight class="normal"></highlight></codeline>
+<codeline lineno="58"><highlight class="normal"></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*<sp/>expand_tilde(<ref refid="structt__shell" kindref="compound">t_shell</ref><sp/>*<sp/>shell,<sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*<sp/>input,<sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>pos);</highlight></codeline>
+<codeline lineno="59"><highlight class="normal"></highlight></codeline>
+<codeline lineno="63"><highlight class="normal"></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*expand_braced_variable(<ref refid="structt__shell" kindref="compound">t_shell</ref><sp/>*<sp/>shell,<sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*input,<sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>pos,<sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>in_double_quote);</highlight></codeline>
+<codeline lineno="64"><highlight class="normal"></highlight></codeline>
+<codeline lineno="65"><highlight class="normal"></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*expand_word_internal(<ref refid="structt__shell" kindref="compound">t_shell</ref><sp/>*shell,<sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*input);</highlight></codeline>
+<codeline lineno="66"><highlight class="normal"></highlight></codeline>
+<codeline lineno="67"><highlight class="normal"></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*expand_arithmetic(<ref refid="structt__shell" kindref="compound">t_shell</ref><sp/>*shell,<sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*input,<sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>pos);</highlight></codeline>
+<codeline lineno="68"><highlight class="normal"></highlight></codeline>
+<codeline lineno="69"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight></codeline>
+    </programlisting>
+    <location file="includes/expander.h"/>
+  </compounddef>
+</doxygen>

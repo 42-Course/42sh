@@ -1,0 +1,377 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.2" xml:lang="en-US">
+  <compounddef id="lexer__operator_8c" kind="file" language="C++">
+    <compoundname>lexer_operator.c</compoundname>
+    <includes local="no">stdlib.h</includes>
+    <includes local="no">string.h</includes>
+    <includes local="no">ctype.h</includes>
+    <includes refid="lexer_8h" local="yes">lexer.h</includes>
+    <incdepgraph>
+      <node id="5">
+        <label>lexer.h</label>
+        <link refid="lexer_8h"/>
+        <childnode refid="6" relation="include">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>srcs/lexer/lexer_operator.c</label>
+        <link refid="lexer__operator_8c"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+      </node>
+      <node id="4">
+        <label>ctype.h</label>
+      </node>
+      <node id="6">
+        <label>libft.h</label>
+      </node>
+      <node id="2">
+        <label>stdlib.h</label>
+      </node>
+      <node id="3">
+        <label>string.h</label>
+      </node>
+    </incdepgraph>
+    <sectiondef kind="var">
+      <memberdef kind="variable" id="lexer__operator_8c_1ab0fc5edcef708ca1a0972b07086647ff" prot="public" static="yes" mutable="no">
+        <type>const <ref refid="structt__operator" kindref="compound">t_operator</ref></type>
+        <definition>const t_operator operators[]</definition>
+        <argsstring>[]</argsstring>
+        <name>operators</name>
+        <initializer>= {
+	{&quot;;&quot;,	<ref refid="lexer_8h_1a328c1f5764a8cc2b1deb5e0313ea7345aea2ea79171e8d0363830add7169ff88f" kindref="member">TOK_SEMICOLON</ref>},
+	{&quot;\n&quot;,	<ref refid="lexer_8h_1a328c1f5764a8cc2b1deb5e0313ea7345af95d944540ec4759be1efca8422b1db7" kindref="member">TOK_NEWLINE</ref>},
+	{&quot;(&quot;,	<ref refid="lexer_8h_1a328c1f5764a8cc2b1deb5e0313ea7345a0607bdf3b8400b235f239e77154df0b7" kindref="member">TOK_LPAREN</ref>},
+	{&quot;)&quot;,	<ref refid="lexer_8h_1a328c1f5764a8cc2b1deb5e0313ea7345a98dec59d44e12030f1693d1e5d064c98" kindref="member">TOK_RPAREN</ref>},
+	{&quot;||&quot;,	<ref refid="lexer_8h_1a328c1f5764a8cc2b1deb5e0313ea7345a780be26c548e285625baea0cba46490c" kindref="member">TOK_OR</ref>},
+	{&quot;|&quot;,	<ref refid="lexer_8h_1a328c1f5764a8cc2b1deb5e0313ea7345a8150d50bac50a6a46e46d189ed394aae" kindref="member">TOK_PIPE</ref>},
+	{&quot;&amp;&amp;&quot;,	<ref refid="lexer_8h_1a328c1f5764a8cc2b1deb5e0313ea7345aded8a8d44c88f59c76bc60bb60a63db8" kindref="member">TOK_AND</ref>},
+	{&quot;&amp;&quot;,	<ref refid="lexer_8h_1a328c1f5764a8cc2b1deb5e0313ea7345a1546fa20cd468e689fca59579121ef1c" kindref="member">TOK_AMPERSAND</ref>},
+	{&quot;&lt;&lt;&quot;,	<ref refid="lexer_8h_1a328c1f5764a8cc2b1deb5e0313ea7345a9b40a95fa23ef4a54e5cedaa96906f91" kindref="member">TOK_HEREDOC</ref>},
+	{&quot;&lt;&amp;&quot;,	<ref refid="lexer_8h_1a328c1f5764a8cc2b1deb5e0313ea7345af160143a78e902f4cdbdce1abeee3ed6" kindref="member">TOK_REDIR_DUP_IN</ref>},
+	{&quot;&lt;&quot;,	<ref refid="lexer_8h_1a328c1f5764a8cc2b1deb5e0313ea7345ac247272d679194a325744db17694173d" kindref="member">TOK_REDIR_IN</ref>},
+	{&quot;&gt;&gt;&quot;,	<ref refid="lexer_8h_1a328c1f5764a8cc2b1deb5e0313ea7345a6eba1c95a1dcec308cac9239230d17b0" kindref="member">TOK_REDIR_APPEND</ref>},
+	{&quot;&gt;&amp;&quot;,	<ref refid="lexer_8h_1a328c1f5764a8cc2b1deb5e0313ea7345a2f29fa5191997134b67b05c42bb4ecb0" kindref="member">TOK_REDIR_DUP_OUT</ref>},
+	{&quot;&gt;&quot;,	<ref refid="lexer_8h_1a328c1f5764a8cc2b1deb5e0313ea7345ae74ff38c194862cd72d1d67cc61b60f5" kindref="member">TOK_REDIR_OUT</ref>},
+	{NULL,	0}
+}</initializer>
+        <briefdescription>
+<para>array of struct s_operator struct </para>
+        </briefdescription>
+        <detaileddescription>
+<para>match literal representation and token type</para>
+<para>important to keep long operators before short ones (e.g. &amp;&amp; and &amp;)</para>
+<para>this allow strncmp to works properly </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="srcs/lexer/lexer_operator.c" line="18" column="24" bodyfile="srcs/lexer/lexer_operator.c" bodystart="18" bodyend="34"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="func">
+      <memberdef kind="function" id="lexer__operator_8c_1ac0adaba5911ba26850654b342ecab44f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int is_operator</definition>
+        <argsstring>(char c)</argsstring>
+        <name>is_operator</name>
+        <param>
+          <type>char</type>
+          <declname>c</declname>
+        </param>
+        <briefdescription>
+<para>check if a char is the beginning of an operator </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>c</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>character to check</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+check if the character is in &quot;&amp;|&gt;&lt;;{}\n&quot; <simplesect kind="return"><para>0 | 1 </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="srcs/lexer/lexer_operator.c" line="42" column="4" bodyfile="srcs/lexer/lexer_operator.c" bodystart="42" bodyend="54"/>
+      </memberdef>
+      <memberdef kind="function" id="lexer__operator_8c_1a21c9d7779f366b3b51ac455e9c045ae3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int is_operator_start</definition>
+        <argsstring>(const char *line)</argsstring>
+        <name>is_operator_start</name>
+        <param>
+          <type>const char *</type>
+          <declname>line</declname>
+        </param>
+        <briefdescription>
+<para>check if a string is an operator </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>line</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>string of operator to test</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+manage the digits in case of redirection then call is_operator <simplesect kind="return"><para>1 | 0 </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="srcs/lexer/lexer_operator.c" line="62" column="4" bodyfile="srcs/lexer/lexer_operator.c" bodystart="62" bodyend="73"/>
+      </memberdef>
+      <memberdef kind="function" id="lexer__operator_8c_1aee0c9ba66e04fc64217be3941c6af5db" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>static int extract_io_number</definition>
+        <argsstring>(const char **line)</argsstring>
+        <name>extract_io_number</name>
+        <param>
+          <type>const char **</type>
+          <declname>line</declname>
+        </param>
+        <briefdescription>
+<para>extract the file descriptor before the operator </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>the</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>string of the operator </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>an int </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="srcs/lexer/lexer_operator.c" line="80" column="11" bodyfile="srcs/lexer/lexer_operator.c" bodystart="80" bodyend="92"/>
+      </memberdef>
+      <memberdef kind="function" id="lexer__operator_8c_1a6249975f4b01abd7ac65771d22d212f2" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>t_list *</type>
+        <definition>static t_list * create_operator_token</definition>
+        <argsstring>(const char **line, int io_number, const char *literal, t_token_type type)</argsstring>
+        <name>create_operator_token</name>
+        <param>
+          <type>const char **</type>
+          <declname>line</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>io_number</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>literal</declname>
+        </param>
+        <param>
+          <type><ref refid="lexer_8h_1a328c1f5764a8cc2b1deb5e0313ea7345" kindref="member">t_token_type</ref></type>
+          <declname>type</declname>
+        </param>
+        <briefdescription>
+<para>Create a new t_list token node. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>line</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Address of the string to tokenize </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>io_number</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>file descriptor for redirection </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>literal</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>representation of the operator </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>type</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>A <ref refid="lexer_8h_1a328c1f5764a8cc2b1deb5e0313ea7345" kindref="member">t_token_type</ref> </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>A t_list token node </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="srcs/lexer/lexer_operator.c" line="102" column="14" bodyfile="srcs/lexer/lexer_operator.c" bodystart="102" bodyend="113"/>
+      </memberdef>
+      <memberdef kind="function" id="lexer__operator_8c_1aeebfb557b3c89324e0e84c7ea844701b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>t_list *</type>
+        <definition>t_list * read_operator</definition>
+        <argsstring>(const char **line)</argsstring>
+        <name>read_operator</name>
+        <param>
+          <type>const char **</type>
+          <declname>line</declname>
+        </param>
+        <briefdescription>
+<para>read the operator and tokenize it </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>the</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>string of the operator</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+choose the good function to tokenize <simplesect kind="return"><para>a t_list* node </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="srcs/lexer/lexer_operator.c" line="121" column="7" bodyfile="srcs/lexer/lexer_operator.c" bodystart="121" bodyend="141"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>file to manage operators of the prompt command </para>
+    </briefdescription>
+    <detaileddescription>
+<para><simplesect kind="author"><para>jguillem </para>
+</simplesect>
+</para>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="normal"></highlight></codeline>
+<codeline lineno="6"><highlight class="normal"></highlight></codeline>
+<codeline lineno="7"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;stdlib.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="8"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;string.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="9"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;ctype.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="10"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="lexer_8h" kindref="compound">lexer.h</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"></highlight></codeline>
+<codeline lineno="18"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="structt__operator" kindref="compound">t_operator</ref><sp/><ref refid="lexer__operator_8c_1ab0fc5edcef708ca1a0972b07086647ff" kindref="member">operators</ref>[]<sp/>=<sp/>{</highlight></codeline>
+<codeline lineno="19"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight><highlight class="stringliteral">&quot;;&quot;</highlight><highlight class="normal">,<sp/><sp/><sp/><ref refid="lexer_8h_1a328c1f5764a8cc2b1deb5e0313ea7345aea2ea79171e8d0363830add7169ff88f" kindref="member">TOK_SEMICOLON</ref>},</highlight></codeline>
+<codeline lineno="20"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight><highlight class="stringliteral">&quot;\n&quot;</highlight><highlight class="normal">,<sp/><sp/><ref refid="lexer_8h_1a328c1f5764a8cc2b1deb5e0313ea7345af95d944540ec4759be1efca8422b1db7" kindref="member">TOK_NEWLINE</ref>},</highlight></codeline>
+<codeline lineno="21"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight><highlight class="stringliteral">&quot;(&quot;</highlight><highlight class="normal">,<sp/><sp/><sp/><ref refid="lexer_8h_1a328c1f5764a8cc2b1deb5e0313ea7345a0607bdf3b8400b235f239e77154df0b7" kindref="member">TOK_LPAREN</ref>},</highlight></codeline>
+<codeline lineno="22"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight><highlight class="stringliteral">&quot;)&quot;</highlight><highlight class="normal">,<sp/><sp/><sp/><ref refid="lexer_8h_1a328c1f5764a8cc2b1deb5e0313ea7345a98dec59d44e12030f1693d1e5d064c98" kindref="member">TOK_RPAREN</ref>},</highlight></codeline>
+<codeline lineno="23"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight><highlight class="stringliteral">&quot;||&quot;</highlight><highlight class="normal">,<sp/><sp/><ref refid="lexer_8h_1a328c1f5764a8cc2b1deb5e0313ea7345a780be26c548e285625baea0cba46490c" kindref="member">TOK_OR</ref>},</highlight></codeline>
+<codeline lineno="24"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight><highlight class="stringliteral">&quot;|&quot;</highlight><highlight class="normal">,<sp/><sp/><sp/><ref refid="lexer_8h_1a328c1f5764a8cc2b1deb5e0313ea7345a8150d50bac50a6a46e46d189ed394aae" kindref="member">TOK_PIPE</ref>},</highlight></codeline>
+<codeline lineno="25"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight><highlight class="stringliteral">&quot;&amp;&amp;&quot;</highlight><highlight class="normal">,<sp/><sp/><ref refid="lexer_8h_1a328c1f5764a8cc2b1deb5e0313ea7345aded8a8d44c88f59c76bc60bb60a63db8" kindref="member">TOK_AND</ref>},</highlight></codeline>
+<codeline lineno="26"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight><highlight class="stringliteral">&quot;&amp;&quot;</highlight><highlight class="normal">,<sp/><sp/><sp/><ref refid="lexer_8h_1a328c1f5764a8cc2b1deb5e0313ea7345a1546fa20cd468e689fca59579121ef1c" kindref="member">TOK_AMPERSAND</ref>},</highlight></codeline>
+<codeline lineno="27"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight><highlight class="stringliteral">&quot;&lt;&lt;&quot;</highlight><highlight class="normal">,<sp/><sp/><ref refid="lexer_8h_1a328c1f5764a8cc2b1deb5e0313ea7345a9b40a95fa23ef4a54e5cedaa96906f91" kindref="member">TOK_HEREDOC</ref>},</highlight></codeline>
+<codeline lineno="28"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight><highlight class="stringliteral">&quot;&lt;&amp;&quot;</highlight><highlight class="normal">,<sp/><sp/><ref refid="lexer_8h_1a328c1f5764a8cc2b1deb5e0313ea7345af160143a78e902f4cdbdce1abeee3ed6" kindref="member">TOK_REDIR_DUP_IN</ref>},</highlight></codeline>
+<codeline lineno="29"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight><highlight class="stringliteral">&quot;&lt;&quot;</highlight><highlight class="normal">,<sp/><sp/><sp/><ref refid="lexer_8h_1a328c1f5764a8cc2b1deb5e0313ea7345ac247272d679194a325744db17694173d" kindref="member">TOK_REDIR_IN</ref>},</highlight></codeline>
+<codeline lineno="30"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight><highlight class="stringliteral">&quot;&gt;&gt;&quot;</highlight><highlight class="normal">,<sp/><sp/><ref refid="lexer_8h_1a328c1f5764a8cc2b1deb5e0313ea7345a6eba1c95a1dcec308cac9239230d17b0" kindref="member">TOK_REDIR_APPEND</ref>},</highlight></codeline>
+<codeline lineno="31"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight><highlight class="stringliteral">&quot;&gt;&amp;&quot;</highlight><highlight class="normal">,<sp/><sp/><ref refid="lexer_8h_1a328c1f5764a8cc2b1deb5e0313ea7345a2f29fa5191997134b67b05c42bb4ecb0" kindref="member">TOK_REDIR_DUP_OUT</ref>},</highlight></codeline>
+<codeline lineno="32"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight><highlight class="stringliteral">&quot;&gt;&quot;</highlight><highlight class="normal">,<sp/><sp/><sp/><ref refid="lexer_8h_1a328c1f5764a8cc2b1deb5e0313ea7345ae74ff38c194862cd72d1d67cc61b60f5" kindref="member">TOK_REDIR_OUT</ref>},</highlight></codeline>
+<codeline lineno="33"><highlight class="normal"><sp/><sp/><sp/><sp/>{NULL,<sp/><sp/>0}</highlight></codeline>
+<codeline lineno="34"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="35"><highlight class="normal"></highlight></codeline>
+<codeline lineno="42"><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="lexer__operator_8c_1ac0adaba5911ba26850654b342ecab44f" kindref="member">is_operator</ref>(</highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>c)</highlight></codeline>
+<codeline lineno="43"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="44"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i;</highlight></codeline>
+<codeline lineno="45"><highlight class="normal"></highlight></codeline>
+<codeline lineno="46"><highlight class="normal"><sp/><sp/><sp/><sp/>i<sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="47"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">while</highlight><highlight class="normal"><sp/>(<ref refid="lexer__operator_8c_1ab0fc5edcef708ca1a0972b07086647ff" kindref="member">operators</ref>[i].literal)</highlight></codeline>
+<codeline lineno="48"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="49"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<ref refid="lexer__operator_8c_1ab0fc5edcef708ca1a0972b07086647ff" kindref="member">operators</ref>[i].literal[0]<sp/>==<sp/>c)</highlight></codeline>
+<codeline lineno="50"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>(1);</highlight></codeline>
+<codeline lineno="51"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>i++;</highlight></codeline>
+<codeline lineno="52"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="53"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>(0);</highlight></codeline>
+<codeline lineno="54"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="55"><highlight class="normal"></highlight></codeline>
+<codeline lineno="62"><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="lexer__operator_8c_1a21c9d7779f366b3b51ac455e9c045ae3" kindref="member">is_operator_start</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*line)</highlight></codeline>
+<codeline lineno="63"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="64"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(isdigit(*line))</highlight></codeline>
+<codeline lineno="65"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="66"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">while</highlight><highlight class="normal"><sp/>(*line<sp/>&amp;&amp;<sp/>isdigit(*line))</highlight></codeline>
+<codeline lineno="67"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>line++;</highlight></codeline>
+<codeline lineno="68"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(*line<sp/>==<sp/></highlight><highlight class="charliteral">&apos;&lt;&apos;</highlight><highlight class="normal"><sp/>||<sp/>*line<sp/>==<sp/></highlight><highlight class="charliteral">&apos;&gt;&apos;</highlight><highlight class="normal">)</highlight></codeline>
+<codeline lineno="69"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>(1);</highlight></codeline>
+<codeline lineno="70"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>(0);</highlight></codeline>
+<codeline lineno="71"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="72"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>(<ref refid="lexer__operator_8c_1ac0adaba5911ba26850654b342ecab44f" kindref="member">is_operator</ref>(*line));</highlight></codeline>
+<codeline lineno="73"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="74"><highlight class="normal"></highlight></codeline>
+<codeline lineno="80"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><sp/><ref refid="lexer__operator_8c_1aee0c9ba66e04fc64217be3941c6af5db" kindref="member">extract_io_number</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>**line)</highlight></codeline>
+<codeline lineno="81"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="82"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>io_number;</highlight></codeline>
+<codeline lineno="83"><highlight class="normal"></highlight></codeline>
+<codeline lineno="84"><highlight class="normal"><sp/><sp/><sp/><sp/>io_number<sp/>=<sp/>-1;</highlight></codeline>
+<codeline lineno="85"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(isdigit(**line))</highlight></codeline>
+<codeline lineno="86"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="87"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>io_number<sp/>=<sp/>atoi(*line);</highlight></codeline>
+<codeline lineno="88"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">while</highlight><highlight class="normal"><sp/>(isdigit(**line))</highlight></codeline>
+<codeline lineno="89"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>(*line)++;</highlight></codeline>
+<codeline lineno="90"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="91"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>(io_number);</highlight></codeline>
+<codeline lineno="92"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="93"><highlight class="normal"></highlight></codeline>
+<codeline lineno="102"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/>t_list<sp/><sp/><sp/>*<ref refid="lexer__operator_8c_1a6249975f4b01abd7ac65771d22d212f2" kindref="member">create_operator_token</ref>(</highlight></codeline>
+<codeline lineno="103"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>**line,</highlight></codeline>
+<codeline lineno="104"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>io_number,</highlight></codeline>
+<codeline lineno="105"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>*literal,</highlight></codeline>
+<codeline lineno="106"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="lexer_8h_1a328c1f5764a8cc2b1deb5e0313ea7345" kindref="member">t_token_type</ref><sp/><sp/><sp/><sp/>type)</highlight></codeline>
+<codeline lineno="107"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="108"><highlight class="normal"><sp/><sp/><sp/><sp/>t_list<sp/><sp/>*tok;</highlight></codeline>
+<codeline lineno="109"><highlight class="normal"></highlight></codeline>
+<codeline lineno="110"><highlight class="normal"><sp/><sp/><sp/><sp/>tok<sp/>=<sp/><ref refid="lexer_8h_1ace55f1d9ae19a71a752c95e4be32cd7d" kindref="member">token_new</ref>(type,<sp/>strdup(literal),<sp/>io_number);</highlight></codeline>
+<codeline lineno="111"><highlight class="normal"><sp/><sp/><sp/><sp/>(*line)<sp/>+=<sp/>strlen(literal);</highlight></codeline>
+<codeline lineno="112"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>(tok);</highlight></codeline>
+<codeline lineno="113"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="114"><highlight class="normal"></highlight></codeline>
+<codeline lineno="121"><highlight class="normal">t_list<sp/><sp/>*<ref refid="lexer__operator_8c_1aeebfb557b3c89324e0e84c7ea844701b" kindref="member">read_operator</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>**line)</highlight></codeline>
+<codeline lineno="122"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="123"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>i;</highlight></codeline>
+<codeline lineno="124"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>io_number;</highlight></codeline>
+<codeline lineno="125"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/><sp/>len;</highlight></codeline>
+<codeline lineno="126"><highlight class="normal"></highlight></codeline>
+<codeline lineno="127"><highlight class="normal"><sp/><sp/><sp/><sp/>io_number<sp/>=<sp/><ref refid="lexer__operator_8c_1aee0c9ba66e04fc64217be3941c6af5db" kindref="member">extract_io_number</ref>(line);</highlight></codeline>
+<codeline lineno="128"><highlight class="normal"><sp/><sp/><sp/><sp/>i<sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="129"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">while</highlight><highlight class="normal"><sp/>(<ref refid="lexer__operator_8c_1ab0fc5edcef708ca1a0972b07086647ff" kindref="member">operators</ref>[i].literal)</highlight></codeline>
+<codeline lineno="130"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="131"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>len<sp/>=<sp/>strlen(<ref refid="lexer__operator_8c_1ab0fc5edcef708ca1a0972b07086647ff" kindref="member">operators</ref>[i].literal);</highlight></codeline>
+<codeline lineno="132"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(strncmp(*line,<sp/><ref refid="lexer__operator_8c_1ab0fc5edcef708ca1a0972b07086647ff" kindref="member">operators</ref>[i].literal,<sp/>len)<sp/>==<sp/>0)</highlight></codeline>
+<codeline lineno="133"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>(<ref refid="lexer__operator_8c_1a6249975f4b01abd7ac65771d22d212f2" kindref="member">create_operator_token</ref>(</highlight></codeline>
+<codeline lineno="134"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>line,</highlight></codeline>
+<codeline lineno="135"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>io_number,</highlight></codeline>
+<codeline lineno="136"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="lexer__operator_8c_1ab0fc5edcef708ca1a0972b07086647ff" kindref="member">operators</ref>[i].literal,</highlight></codeline>
+<codeline lineno="137"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="lexer__operator_8c_1ab0fc5edcef708ca1a0972b07086647ff" kindref="member">operators</ref>[i].type));</highlight></codeline>
+<codeline lineno="138"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>i++;</highlight></codeline>
+<codeline lineno="139"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="140"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>(NULL);</highlight></codeline>
+<codeline lineno="141"><highlight class="normal">}</highlight></codeline>
+    </programlisting>
+    <location file="srcs/lexer/lexer_operator.c"/>
+  </compounddef>
+</doxygen>

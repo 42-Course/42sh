@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.2" xml:lang="en-US">
+  <compounddef id="dir_73fd5dee633911ed69d619172a0d67dd" kind="dir">
+    <compoundname>srcs/parser</compoundname>
+    <innerfile refid="ast__display_8c">ast_display.c</innerfile>
+    <innerfile refid="memory_8c">memory.c</innerfile>
+    <innerfile refid="parser_8c">parser.c</innerfile>
+    <innerfile refid="parser__and__or_8c">parser_and_or.c</innerfile>
+    <innerfile refid="parser__command_8c">parser_command.c</innerfile>
+    <innerfile refid="parser__group_8c">parser_group.c</innerfile>
+    <innerfile refid="parser__heredoc_8c">parser_heredoc.c</innerfile>
+    <innerfile refid="parser__list_8c">parser_list.c</innerfile>
+    <innerfile refid="parser__pipeline_8c">parser_pipeline.c</innerfile>
+    <innerfile refid="parser__utils_8c">parser_utils.c</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="srcs/parser/"/>
+  </compounddef>
+</doxygen>

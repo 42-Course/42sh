@@ -1,0 +1,129 @@
+.TH "srcs/parser/parser.c" 9 "Version pulgamecanica" "42sh" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+srcs/parser/parser.c \- main file of parser module  
+
+.SH SYNOPSIS
+.br
+.PP
+\fR#include <fcntl\&.h>\fP
+.br
+\fR#include 'parser\&.h'\fP
+.br
+
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "\fBt_ast\fP * \fBparser_parse\fP (t_list *tokens, \fBt_shell\fP *shell)"
+.br
+.RI "receive a tokens from lexer and build an ast binary tree "
+.in -1c
+.SH "Detailed Description"
+.PP 
+main file of parser module 
+
+file for parser utils functions
+
+.PP
+\fBAuthor\fP
+.RS 4
+jguillem, pulgamecanica
+
+.PP
+jguillem 
+.RE
+.PP
+
+.SH "Function Documentation"
+.PP 
+.SS "\fBt_ast\fP * parser_parse (t_list * tokens, \fBt_shell\fP * shell)"
+
+.PP
+receive a tokens from lexer and build an ast binary tree consume a t_list* of tokens and return the AST root\&.
+
+.PP
+\fBParameters\fP
+.RS 4
+\fItokens\fP pointer on a struct s_list of tokens 
+.br
+\fIshell\fP pointer on a struct s_shell
+.RE
+.PP
+this is the main function of the parser module
+
+.PP
+call parse list which wrap all the layers and check for EOF
+
+.PP
+parse_list (";" and "&" separators) -> parse_and_or
+
+.PP
+parse_and_or ("&&" and "||" separators) -> parse_pipeline
+
+.PP
+parse_pipeline ("|" separator) -> parse_command
+
+.PP
+parse_command (read simple command) -> parse_subshell
+
+.PP
+parse_subshell recurse on parse_list
+
+.PP
+parse_heredoc walk ast and collect heredocs
+
+.PP
+\fBReturns\fP
+.RS 4
+\fBt_ast\fP struct 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for 42sh from the source code\&.
+.SH SEE ALSO
+.BR 42sh.h (9),
+.BR ast_display.c (9),
+.BR ast.h (9),
+.BR builtin.c (9),
+.BR builtin_history.c (9),
+.BR builtins.h (9),
+.BR command_search.c (9),
+.BR exec_command.c (9),
+.BR exec_logical.c (9),
+.BR exec_pipeline.c (9),
+.BR exec_utils.c (9),
+.BR executor.c (9),
+.BR executor.h (9),
+.BR expander.c (9),
+.BR heredoc.c (9),
+.BR history.c (9),
+.BR history.h (9),
+.BR lexer.c (9),
+.BR lexer_display.c (9),
+.BR lexer.h (9),
+.BR lexer_operator.c (9),
+.BR lexer_words.c (9),
+.BR memory.c (9),
+.BR parser_and_or.c (9),
+.BR parser_command.c (9),
+.BR parser_group.c (9),
+.BR parser.h (9),
+.BR parser_heredoc.c (9),
+.BR parser_list.c (9),
+.BR parser_pipeline.c (9),
+.BR signal_child.c (9),
+.BR signal_exec.c (9),
+.BR signals.h (9),
+.BR t_ast (9),
+.BR t_binary (9),
+.BR t_cmd (9),
+.BR t_group (9),
+.BR t_operator (9),
+.BR t_parser (9),
+.BR t_redir (9),
+.BR t_shell (9),
+.BR t_token (9)

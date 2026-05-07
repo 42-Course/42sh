@@ -1,0 +1,264 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.2" xml:lang="en-US">
+  <compounddef id="test__runner_8c" kind="file" language="C++">
+    <compoundname>test_runner.c</compoundname>
+    <includes refid="minunit_8h" local="yes">minunit.h</includes>
+    <incdepgraph>
+      <node id="2">
+        <label>minunit.h</label>
+        <link refid="minunit_8h"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>test_runner.c</label>
+        <link refid="test__runner_8c"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>stdio.h</label>
+      </node>
+      <node id="4">
+        <label>string.h</label>
+      </node>
+    </incdepgraph>
+    <sectiondef kind="var">
+      <memberdef kind="variable" id="test__runner_8c_1ac51733f344bcae0e1919ff3b50b48aab" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int g_mu_passed</definition>
+        <argsstring></argsstring>
+        <name>g_mu_passed</name>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Running total of assertions that passed.</para>
+<para>Defined in <ref refid="test__runner_8c" kindref="compound">test_runner.c</ref>; all test translation units share this counter through the <computeroutput>extern</computeroutput> declaration in this header. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="test_runner.c" line="24" column="4" bodyfile="test_runner.c" bodystart="24" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="test__runner_8c_1a38b980a3609d2ef4b9f54d25c94a43b2" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int g_mu_failed</definition>
+        <argsstring></argsstring>
+        <name>g_mu_failed</name>
+        <initializer>= 0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Running total of assertions that failed.</para>
+<para>A non-zero value causes MU_SUMMARY() to return exit code 1 so that <computeroutput>make</computeroutput> can detect and report test failures. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="test_runner.c" line="25" column="4" bodyfile="test_runner.c" bodystart="25" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="func">
+      <memberdef kind="function" id="test__runner_8c_1a56a44d58871d24693590a2a2a5929410" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void test_dlist_suite</definition>
+        <argsstring>(void)</argsstring>
+        <name>test_dlist_suite</name>
+        <param>
+          <type>void</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Run all doubly-linked list assertions.</para>
+<para>Builds a three-node list <computeroutput>[1 &lt;-&gt; 2 &lt;-&gt; 3]</computeroutput>, verifies size, forward and backward links, sentinel NULL values at both ends, then calls ft_dlstclear() and asserts the head pointer is NULL afterwards. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="test_runner.c" line="28" column="5" bodyfile="test_dlist.c" bodystart="30" bodyend="59" declfile="test_runner.c" declline="28" declcolumn="5"/>
+      </memberdef>
+      <memberdef kind="function" id="test__runner_8c_1ad88047b8cb23d2d51d9b331a013b922f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void test_list_suite</definition>
+        <argsstring>(void)</argsstring>
+        <name>test_list_suite</name>
+        <param>
+          <type>void</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Run all singly-linked list assertions.</para>
+<para>Builds an append-order list <computeroutput>[alpha(1) -&gt; beta(2) -&gt; gamma(3)]</computeroutput>, verifies ft_lstsize() and forward traversal via <computeroutput>-&gt;next</computeroutput>, then exercises ft_lstdel() (freeing all nodes with del_dummy) and asserts the head pointer is NULL afterwards.</para>
+<para>A second sub-test uses ft_lstadd() (prepend) to verify that two nodes inserted as <computeroutput>[first, second]</computeroutput> are stored as <computeroutput>[second -&gt; first]</computeroutput> in the list.</para>
+<para><blockquote><para><bold>Precondition:</bold> <computeroutput>Libft/srcs/ft_stdlib/</computeroutput> must be compiled and linked. </para>
+</blockquote></para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="test_runner.c" line="29" column="5" bodyfile="test_list.c" bodystart="77" bodyend="115" declfile="test_runner.c" declline="29" declcolumn="5"/>
+      </memberdef>
+      <memberdef kind="function" id="test__runner_8c_1a953c023e7d1c6765a76f380b8e116f83" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void test_history_suite</definition>
+        <argsstring>(void)</argsstring>
+        <name>test_history_suite</name>
+        <param>
+          <type>void</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Run all history module assertions.</para>
+<para><itemizedlist>
+<listitem><para>history_file_path: $HISTFILE takes priority.</para>
+</listitem><listitem><para>history_file_path: falls back to $HOME/.sh_history when $HISTFILE unset.</para>
+</listitem><listitem><para>history_save / history_load round-trip preserves all entries. </para>
+</listitem></itemizedlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="test_runner.c" line="30" column="5" bodyfile="test_history.c" bodystart="31" bodyend="72" declfile="test_runner.c" declline="30" declcolumn="5"/>
+      </memberdef>
+      <memberdef kind="function" id="test__runner_8c_1adb32f52edd3d95e6521cbc9e01c97db3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void test_executor_suite</definition>
+        <argsstring>(void)</argsstring>
+        <name>test_executor_suite</name>
+        <param>
+          <type>void</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="test_runner.c" line="31" column="5" bodyfile="test_executor.c" bodystart="1524" bodyend="1576" declfile="test_runner.c" declline="31" declcolumn="5"/>
+      </memberdef>
+      <memberdef kind="function" id="test__runner_8c_1a3f55654cb0ab6091503e15145037ad77" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void test_lexer_suite</definition>
+        <argsstring>(void)</argsstring>
+        <name>test_lexer_suite</name>
+        <param>
+          <type>void</type>
+        </param>
+        <briefdescription>
+<para>Run all lexer unit tests. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Called by <ref refid="test__runner_8c" kindref="compound">test_runner.c</ref> via MU_RUN(test_lexer_suite). </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="test_runner.c" line="32" column="5" bodyfile="test_lexer.c" bodystart="571" bodyend="611" declfile="test_runner.c" declline="32" declcolumn="5"/>
+      </memberdef>
+      <memberdef kind="function" id="test__runner_8c_1ab9171ba079f04aae04ecfef8e1cf8998" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void test_btree_suite</definition>
+        <argsstring>(void)</argsstring>
+        <name>test_btree_suite</name>
+        <param>
+          <type>void</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="test_runner.c" line="33" column="5" bodyfile="test_btree.c" bodystart="23" bodyend="54" declfile="test_runner.c" declline="33" declcolumn="5"/>
+      </memberdef>
+      <memberdef kind="function" id="test__runner_8c_1aa1d98fd6af93411a354e0163e8c609fa" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void test_parser_suite</definition>
+        <argsstring>(void)</argsstring>
+        <name>test_parser_suite</name>
+        <param>
+          <type>void</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="test_runner.c" line="34" column="5" bodyfile="test_parser.c" bodystart="682" bodyend="724" declfile="test_runner.c" declline="34" declcolumn="5"/>
+      </memberdef>
+      <memberdef kind="function" id="test__runner_8c_1a840291bc02cba5474a4cb46a9b9566fe" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int main</definition>
+        <argsstring>(void)</argsstring>
+        <name>main</name>
+        <param>
+          <type>void</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="test_runner.c" line="36" column="4" bodyfile="test_runner.c" bodystart="36" bodyend="49"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Entry point for the 42sh unit test suite. </para>
+    </briefdescription>
+    <detaileddescription>
+<para><simplesect kind="author"><para>pulgamecanica (arosado-)</para>
+</simplesect>
+Run with: <computeroutput>make test</computeroutput></para>
+<sect1 id="test__runner_8c_1autotoc_md7_1s1"><sect2 id="test__runner_8c_1autotoc_md7">
+<title>How to Graduate a Test</title><para><itemizedlist>
+<listitem><para>1. Implement the module under <computeroutput>srcs/MODULE/</computeroutput>.</para>
+</listitem><listitem><para>2. Add <computeroutput>-DTEST_MODULE_ENABLED</computeroutput> to <computeroutput>TEST_FLAGS</computeroutput> in the root Makefile.</para>
+</listitem><listitem><para>3. Verify all MU_ASSERT lines pass with <computeroutput>make test</computeroutput>.</para>
+</listitem><listitem><para>4. When permanently green:<linebreak/>
+ Delete <computeroutput>#ifdef</computeroutput> / <computeroutput>#else</computeroutput> / <computeroutput>#endif</computeroutput> in <computeroutput>tests/test_module.c</computeroutput>.<linebreak/>
+ Delete <computeroutput>#ifdef</computeroutput> / <computeroutput>#endif</computeroutput> around MU_RUN() below.<linebreak/>
+ Remove <computeroutput>-DTEST_MODULE_ENABLED</computeroutput> from the root Makefile.<linebreak/>
+ The test then compiles and runs unconditionally forever. </para>
+</listitem></itemizedlist>
+</para>
+</sect2></sect1>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="normal"></highlight></codeline>
+<codeline lineno="20"><highlight class="normal"></highlight></codeline>
+<codeline lineno="21"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="minunit_8h" kindref="compound">minunit.h</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="22"><highlight class="normal"></highlight></codeline>
+<codeline lineno="23"><highlight class="normal"></highlight><highlight class="comment">/*<sp/>Shared<sp/>pass/fail<sp/>counters<sp/>—<sp/>extern<sp/>in<sp/>minunit.h,<sp/>defined<sp/>once<sp/>here.<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="24"><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="minunit_8h_1ac51733f344bcae0e1919ff3b50b48aab" kindref="member">g_mu_passed</ref><sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="25"><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><ref refid="minunit_8h_1a38b980a3609d2ef4b9f54d25c94a43b2" kindref="member">g_mu_failed</ref><sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="26"><highlight class="normal"></highlight></codeline>
+<codeline lineno="27"><highlight class="normal"></highlight><highlight class="comment">/*<sp/>Forward<sp/>declarations<sp/>—<sp/>one<sp/>per<sp/>test<sp/>file.<sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="28"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="test__runner_8c_1a56a44d58871d24693590a2a2a5929410" kindref="member">test_dlist_suite</ref>(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="29"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="test__runner_8c_1ad88047b8cb23d2d51d9b331a013b922f" kindref="member">test_list_suite</ref>(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="30"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="test__runner_8c_1a953c023e7d1c6765a76f380b8e116f83" kindref="member">test_history_suite</ref>(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="31"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><sp/><sp/><sp/>test_executor_suite(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="32"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="test__runner_8c_1a3f55654cb0ab6091503e15145037ad77" kindref="member">test_lexer_suite</ref>(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="33"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><sp/><sp/><sp/>test_btree_suite(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="34"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><sp/><sp/><sp/>test_parser_suite(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="35"><highlight class="normal"></highlight></codeline>
+<codeline lineno="36"><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>main(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal">)</highlight></codeline>
+<codeline lineno="37"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="38"><highlight class="normal"><sp/><sp/><sp/><sp/>printf(</highlight><highlight class="stringliteral">&quot;\033[1;35m===<sp/>42sh<sp/>Unit<sp/>Tests<sp/>===\033[0m\n&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="39"><highlight class="normal"></highlight></codeline>
+<codeline lineno="40"><highlight class="normal"><sp/><sp/><sp/><sp/>MU_RUN(<ref refid="test__dlist_8c_1a56a44d58871d24693590a2a2a5929410" kindref="member">test_dlist_suite</ref>);</highlight></codeline>
+<codeline lineno="41"><highlight class="normal"><sp/><sp/><sp/><sp/>MU_RUN(<ref refid="test__list_8c_1ad88047b8cb23d2d51d9b331a013b922f" kindref="member">test_list_suite</ref>);</highlight></codeline>
+<codeline lineno="42"><highlight class="normal"><sp/><sp/><sp/><sp/>MU_RUN(<ref refid="test__history_8c_1a953c023e7d1c6765a76f380b8e116f83" kindref="member">test_history_suite</ref>);</highlight></codeline>
+<codeline lineno="43"><highlight class="normal"><sp/><sp/><sp/><sp/>MU_RUN(test_executor_suite);</highlight></codeline>
+<codeline lineno="44"><highlight class="normal"><sp/><sp/><sp/><sp/>MU_RUN(<ref refid="test__lexer_8c_1a3f55654cb0ab6091503e15145037ad77" kindref="member">test_lexer_suite</ref>);</highlight></codeline>
+<codeline lineno="45"><highlight class="normal"><sp/><sp/><sp/><sp/>MU_RUN(test_btree_suite);</highlight></codeline>
+<codeline lineno="46"><highlight class="normal"><sp/><sp/><sp/><sp/>MU_RUN(test_parser_suite);</highlight></codeline>
+<codeline lineno="47"><highlight class="normal"></highlight></codeline>
+<codeline lineno="48"><highlight class="normal"><sp/><sp/><sp/><sp/>MU_SUMMARY();</highlight></codeline>
+<codeline lineno="49"><highlight class="normal">}</highlight></codeline>
+    </programlisting>
+    <location file="test_runner.c"/>
+  </compounddef>
+</doxygen>

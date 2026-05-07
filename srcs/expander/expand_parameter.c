@@ -8,7 +8,7 @@ char **expand_word_to_fields(struct s_shell *shell, const char *word) {
 	
 	free(expanded);
 	
-	char **fields = ft_split(tilde_expanded, ' ');
+	char **fields = ft_strsplit(tilde_expanded, ' ');
 	
 	free(tilde_expanded);
 	

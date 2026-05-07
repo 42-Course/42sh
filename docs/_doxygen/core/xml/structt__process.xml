@@ -1,0 +1,90 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.2" xml:lang="en-US">
+  <compounddef id="structt__process" kind="struct" language="C++" prot="public">
+    <compoundname>t_process</compoundname>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structt__process_1ab67eb8222fec450c75465d329638ea9e" prot="public" static="no" mutable="no">
+        <type>pid_t</type>
+        <definition>pid_t t_process::pid</definition>
+        <argsstring></argsstring>
+        <name>pid</name>
+        <qualifiedname>t_process::pid</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/job_control.h" line="37" column="6" bodyfile="includes/job_control.h" bodystart="37" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structt__process_1a1f6ba879ccf19d7c7c18b8d057b44c02" prot="public" static="no" mutable="no">
+        <type>char *</type>
+        <definition>char* t_process::cmd</definition>
+        <argsstring></argsstring>
+        <name>cmd</name>
+        <qualifiedname>t_process::cmd</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/job_control.h" line="38" column="5" bodyfile="includes/job_control.h" bodystart="38" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structt__process_1a18b767e0ea1af315b098fd427917c0b0" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int t_process::status</definition>
+        <argsstring></argsstring>
+        <name>status</name>
+        <qualifiedname>t_process::status</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/job_control.h" line="39" column="4" bodyfile="includes/job_control.h" bodystart="39" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structt__process_1a61d8a54b70599f79a76a646da42a9363" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int t_process::completed</definition>
+        <argsstring></argsstring>
+        <name>completed</name>
+        <qualifiedname>t_process::completed</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/job_control.h" line="40" column="4" bodyfile="includes/job_control.h" bodystart="40" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structt__process_1a8429ae9c8715a0af5736f7e8d5988302" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int t_process::stopped</definition>
+        <argsstring></argsstring>
+        <name>stopped</name>
+        <qualifiedname>t_process::stopped</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/job_control.h" line="41" column="4" bodyfile="includes/job_control.h" bodystart="41" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="includes/job_control.h" line="35" column="1" bodyfile="includes/job_control.h" bodystart="36" bodyend="42"/>
+    <listofallmembers>
+      <member refid="structt__process_1a1f6ba879ccf19d7c7c18b8d057b44c02" prot="public" virt="non-virtual"><scope>t_process</scope><name>cmd</name></member>
+      <member refid="structt__process_1a61d8a54b70599f79a76a646da42a9363" prot="public" virt="non-virtual"><scope>t_process</scope><name>completed</name></member>
+      <member refid="structt__process_1ab67eb8222fec450c75465d329638ea9e" prot="public" virt="non-virtual"><scope>t_process</scope><name>pid</name></member>
+      <member refid="structt__process_1a18b767e0ea1af315b098fd427917c0b0" prot="public" virt="non-virtual"><scope>t_process</scope><name>status</name></member>
+      <member refid="structt__process_1a8429ae9c8715a0af5736f7e8d5988302" prot="public" virt="non-virtual"><scope>t_process</scope><name>stopped</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

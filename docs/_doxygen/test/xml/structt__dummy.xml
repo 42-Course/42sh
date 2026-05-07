@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.2" xml:lang="en-US">
+  <compounddef id="structt__dummy" kind="struct" language="C++" prot="public">
+    <compoundname>t_dummy</compoundname>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structt__dummy_1a0a942d2e7167d4e5d7700d4c4db10bed" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int t_dummy::id</definition>
+        <argsstring></argsstring>
+        <name>id</name>
+        <qualifiedname>t_dummy::id</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="test_list.c" line="23" column="4" bodyfile="test_list.c" bodystart="23" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structt__dummy_1aae39e62dc89d4d6235435dfae57c72dc" prot="public" static="no" mutable="no">
+        <type>char *</type>
+        <definition>char* t_dummy::name</definition>
+        <argsstring></argsstring>
+        <name>name</name>
+        <qualifiedname>t_dummy::name</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="test_list.c" line="24" column="5" bodyfile="test_list.c" bodystart="24" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="test_list.c" line="21" column="1" bodyfile="test_list.c" bodystart="22" bodyend="25"/>
+    <listofallmembers>
+      <member refid="structt__dummy_1a0a942d2e7167d4e5d7700d4c4db10bed" prot="public" virt="non-virtual"><scope>t_dummy</scope><name>id</name></member>
+      <member refid="structt__dummy_1aae39e62dc89d4d6235435dfae57c72dc" prot="public" virt="non-virtual"><scope>t_dummy</scope><name>name</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,78 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.2" xml:lang="en-US">
+  <compounddef id="signal__child_8c" kind="file" language="C++">
+    <compoundname>signal_child.c</compoundname>
+    <includes refid="signals_8h" local="yes">signals.h</includes>
+    <includes local="no">stddef.h</includes>
+    <incdepgraph>
+      <node id="2">
+        <label>signals.h</label>
+        <link refid="signals_8h"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>srcs/signals/signal_child.c</label>
+        <link refid="signal__child_8c"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>signal.h</label>
+      </node>
+      <node id="4">
+        <label>stddef.h</label>
+      </node>
+    </incdepgraph>
+    <sectiondef kind="func">
+      <memberdef kind="function" id="signal__child_8c_1aae998bb6e93b7d3297a66ce4fe974998" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void signals_setup_child</definition>
+        <argsstring>(void)</argsstring>
+        <name>signals_setup_child</name>
+        <param>
+          <type>void</type>
+        </param>
+        <briefdescription>
+<para>Restore default signal handlers in a child process before execve. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>After fork the child inherits the parent&apos;s signal dispositions (SIG_IGN for interactive mode). We must reset them to SIG_DFL so the executed program responds to signals normally. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="srcs/signals/signal_child.c" line="17" column="5" bodyfile="srcs/signals/signal_child.c" bodystart="17" bodyend="28"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Signal handling setup for child processes in 42sh. </para>
+    </briefdescription>
+    <detaileddescription>
+<para><simplesect kind="author"><para>wengzhang, pulgamecanica </para>
+</simplesect>
+</para>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="normal"></highlight></codeline>
+<codeline lineno="6"><highlight class="normal"></highlight></codeline>
+<codeline lineno="7"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="signals_8h" kindref="compound">signals.h</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="8"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;stddef.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="9"><highlight class="normal"></highlight></codeline>
+<codeline lineno="17"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="signal__child_8c_1aae998bb6e93b7d3297a66ce4fe974998" kindref="member">signals_setup_child</ref>(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal">)</highlight></codeline>
+<codeline lineno="18"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="19"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">sigaction<sp/><sp/><sp/><sp/>sa;</highlight></codeline>
+<codeline lineno="20"><highlight class="normal"></highlight></codeline>
+<codeline lineno="21"><highlight class="normal"><sp/><sp/><sp/><sp/>sa.sa_flags<sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="22"><highlight class="normal"><sp/><sp/><sp/><sp/>sigemptyset(&amp;sa.sa_mask);</highlight></codeline>
+<codeline lineno="23"><highlight class="normal"><sp/><sp/><sp/><sp/>sa.sa_handler<sp/>=<sp/>SIG_DFL;</highlight></codeline>
+<codeline lineno="24"><highlight class="normal"><sp/><sp/><sp/><sp/>sigaction(SIGINT,<sp/>&amp;sa,<sp/>NULL);</highlight></codeline>
+<codeline lineno="25"><highlight class="normal"><sp/><sp/><sp/><sp/>sigaction(SIGQUIT,<sp/>&amp;sa,<sp/>NULL);</highlight></codeline>
+<codeline lineno="26"><highlight class="normal"><sp/><sp/><sp/><sp/>sigaction(SIGTSTP,<sp/>&amp;sa,<sp/>NULL);</highlight></codeline>
+<codeline lineno="27"><highlight class="normal"><sp/><sp/><sp/><sp/>sigaction(SIGPIPE,<sp/>&amp;sa,<sp/>NULL);</highlight></codeline>
+<codeline lineno="28"><highlight class="normal">}</highlight></codeline>
+    </programlisting>
+    <location file="srcs/signals/signal_child.c"/>
+  </compounddef>
+</doxygen>

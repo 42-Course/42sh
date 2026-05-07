@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.2" xml:lang="en-US">
+  <compounddef id="dir_09e761304027c904456130627fd4dcf5" kind="dir">
+    <compoundname>includes</compoundname>
+    <innerfile refid="42sh_8h">42sh.h</innerfile>
+    <innerfile refid="ast_8h">ast.h</innerfile>
+    <innerfile refid="builtins_8h">builtins.h</innerfile>
+    <innerfile refid="executor_8h">executor.h</innerfile>
+    <innerfile refid="expander_8h">expander.h</innerfile>
+    <innerfile refid="history_8h">history.h</innerfile>
+    <innerfile refid="job__control_8h">job_control.h</innerfile>
+    <innerfile refid="lexer_8h">lexer.h</innerfile>
+    <innerfile refid="parser_8h">parser.h</innerfile>
+    <innerfile refid="signals_8h">signals.h</innerfile>
+    <innerfile refid="variables_8h">variables.h</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="includes/"/>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,258 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.2" xml:lang="en-US">
+  <compounddef id="structt__shell" kind="struct" language="C++" prot="public">
+    <compoundname>t_shell</compoundname>
+    <includes refid="42sh_8h" local="no">42sh.h</includes>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structt__shell_1aa0c77e12b25c7604ab1e3c05425fd673" prot="public" static="no" mutable="no">
+        <type>t_list *</type>
+        <definition>t_list* t_shell::aliases</definition>
+        <argsstring></argsstring>
+        <name>aliases</name>
+        <qualifiedname>t_shell::aliases</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><computeroutput>t_alias*</computeroutput> list; alias table. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/42sh.h" line="37" column="7" bodyfile="includes/42sh.h" bodystart="37" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structt__shell_1a9b0a291745e1863d06bc534c8dda1ef5" prot="public" static="no" mutable="no">
+        <type>char *</type>
+        <definition>char* t_shell::cmd_entrypoint</definition>
+        <argsstring></argsstring>
+        <name>cmd_entrypoint</name>
+        <qualifiedname>t_shell::cmd_entrypoint</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>-c command string, or NULL. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/42sh.h" line="38" column="5" bodyfile="includes/42sh.h" bodystart="38" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structt__shell_1a1ed1aef657c38e659ce7fa2b599af383" prot="public" static="no" mutable="no">
+        <type>t_job *</type>
+        <definition>t_job* t_shell::current_job</definition>
+        <argsstring></argsstring>
+        <name>current_job</name>
+        <qualifiedname>t_shell::current_job</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Most recent job (<computeroutput>%+</computeroutput> / <computeroutput>%%</computeroutput>). </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/42sh.h" line="39" column="6" bodyfile="includes/42sh.h" bodystart="39" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structt__shell_1a030ad96f10ea7dee6384b25513833f9c" prot="public" static="no" mutable="no">
+        <type>char **</type>
+        <definition>char** t_shell::env</definition>
+        <argsstring></argsstring>
+        <name>env</name>
+        <qualifiedname>t_shell::env</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Cached NULL-terminated array for execve. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/42sh.h" line="40" column="5" bodyfile="includes/42sh.h" bodystart="40" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structt__shell_1a914c3232f73dd01c29ebd96c2580b374" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int t_shell::env_dirty</definition>
+        <argsstring></argsstring>
+        <name>env_dirty</name>
+        <qualifiedname>t_shell::env_dirty</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>1 when <computeroutput>env</computeroutput> needs rebuild before next execve. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/42sh.h" line="41" column="4" bodyfile="includes/42sh.h" bodystart="41" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structt__shell_1afa8abdeeefc6328c61d86cba9ca05bb7" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int t_shell::exit_confirmed</definition>
+        <argsstring></argsstring>
+        <name>exit_confirmed</name>
+        <qualifiedname>t_shell::exit_confirmed</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Double-exit guard when stopped jobs exist. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/42sh.h" line="42" column="4" bodyfile="includes/42sh.h" bodystart="42" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structt__shell_1a3acd1c728bb890d080d272fdb8287be4" prot="public" static="no" mutable="no">
+        <type>char *</type>
+        <definition>char* t_shell::history_file</definition>
+        <argsstring></argsstring>
+        <name>history_file</name>
+        <qualifiedname>t_shell::history_file</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Path from $HISTFILE or $HOME/.sh_history. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/42sh.h" line="43" column="5" bodyfile="includes/42sh.h" bodystart="43" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structt__shell_1a1dcf313cd3f8cd9c8b8db8ace0675e2f" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int t_shell::interactive</definition>
+        <argsstring></argsstring>
+        <name>interactive</name>
+        <qualifiedname>t_shell::interactive</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>1 if stdin is a TTY (prompt + readline active). </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/42sh.h" line="44" column="4" bodyfile="includes/42sh.h" bodystart="44" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structt__shell_1a1cf640ca1e0fb653cfdd3b3e95003fa3" prot="public" static="no" mutable="no">
+        <type>t_list *</type>
+        <definition>t_list* t_shell::jobs</definition>
+        <argsstring></argsstring>
+        <name>jobs</name>
+        <qualifiedname>t_shell::jobs</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><computeroutput>t_job*</computeroutput> list; all known jobs. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/42sh.h" line="45" column="7" bodyfile="includes/42sh.h" bodystart="45" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structt__shell_1ad5647e9c241d48f6322b2a03176a5c2a" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int t_shell::last_exit_status</definition>
+        <argsstring></argsstring>
+        <name>last_exit_status</name>
+        <qualifiedname>t_shell::last_exit_status</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Value of <computeroutput>$?</computeroutput>. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/42sh.h" line="46" column="4" bodyfile="includes/42sh.h" bodystart="46" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structt__shell_1aa7f57d61656a952052e868ff154de0ee" prot="public" static="no" mutable="no">
+        <type>struct termios</type>
+        <definition>struct termios t_shell::original_termios</definition>
+        <argsstring></argsstring>
+        <name>original_termios</name>
+        <qualifiedname>t_shell::original_termios</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Saved terminal attributes, restored on exit. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/42sh.h" line="47" column="14" bodyfile="includes/42sh.h" bodystart="47" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structt__shell_1a7bec3438ab1de1e65369c6b1651bfe8b" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int t_shell::running</definition>
+        <argsstring></argsstring>
+        <name>running</name>
+        <qualifiedname>t_shell::running</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Main loop flag; set to 0 to exit. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/42sh.h" line="48" column="4" bodyfile="includes/42sh.h" bodystart="48" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structt__shell_1a4dd8a704c5e08b81b219975d871543d4" prot="public" static="no" mutable="no">
+        <type>pid_t</type>
+        <definition>pid_t t_shell::shell_pgid</definition>
+        <argsstring></argsstring>
+        <name>shell_pgid</name>
+        <qualifiedname>t_shell::shell_pgid</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Shell&apos;s own process group id. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/42sh.h" line="49" column="6" bodyfile="includes/42sh.h" bodystart="49" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structt__shell_1ae6fc1795d6c44b72046cd7354aa4f078" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int t_shell::terminal_fd</definition>
+        <argsstring></argsstring>
+        <name>terminal_fd</name>
+        <qualifiedname>t_shell::terminal_fd</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>File descriptor of the controlling terminal. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/42sh.h" line="50" column="4" bodyfile="includes/42sh.h" bodystart="50" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structt__shell_1ad18cadf2cea0ab8372390a10dee5d2b2" prot="public" static="no" mutable="no">
+        <type>t_list *</type>
+        <definition>t_list* t_shell::variables</definition>
+        <argsstring></argsstring>
+        <name>variables</name>
+        <qualifiedname>t_shell::variables</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><computeroutput>t_var*</computeroutput> list; all shell/env variables. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/42sh.h" line="51" column="7" bodyfile="includes/42sh.h" bodystart="51" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Central runtime state of the shell — one instance lives in <computeroutput>main()</computeroutput>. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>This struct holds all global state, including variables, jobs, history file path, and terminal settings. </para>
+    </detaileddescription>
+    <location file="includes/42sh.h" line="35" column="1" bodyfile="includes/42sh.h" bodystart="36" bodyend="52"/>
+    <listofallmembers>
+      <member refid="structt__shell_1aa0c77e12b25c7604ab1e3c05425fd673" prot="public" virt="non-virtual"><scope>t_shell</scope><name>aliases</name></member>
+      <member refid="structt__shell_1a9b0a291745e1863d06bc534c8dda1ef5" prot="public" virt="non-virtual"><scope>t_shell</scope><name>cmd_entrypoint</name></member>
+      <member refid="structt__shell_1a1ed1aef657c38e659ce7fa2b599af383" prot="public" virt="non-virtual"><scope>t_shell</scope><name>current_job</name></member>
+      <member refid="structt__shell_1a030ad96f10ea7dee6384b25513833f9c" prot="public" virt="non-virtual"><scope>t_shell</scope><name>env</name></member>
+      <member refid="structt__shell_1a914c3232f73dd01c29ebd96c2580b374" prot="public" virt="non-virtual"><scope>t_shell</scope><name>env_dirty</name></member>
+      <member refid="structt__shell_1afa8abdeeefc6328c61d86cba9ca05bb7" prot="public" virt="non-virtual"><scope>t_shell</scope><name>exit_confirmed</name></member>
+      <member refid="structt__shell_1a3acd1c728bb890d080d272fdb8287be4" prot="public" virt="non-virtual"><scope>t_shell</scope><name>history_file</name></member>
+      <member refid="structt__shell_1a1dcf313cd3f8cd9c8b8db8ace0675e2f" prot="public" virt="non-virtual"><scope>t_shell</scope><name>interactive</name></member>
+      <member refid="structt__shell_1a1cf640ca1e0fb653cfdd3b3e95003fa3" prot="public" virt="non-virtual"><scope>t_shell</scope><name>jobs</name></member>
+      <member refid="structt__shell_1ad5647e9c241d48f6322b2a03176a5c2a" prot="public" virt="non-virtual"><scope>t_shell</scope><name>last_exit_status</name></member>
+      <member refid="structt__shell_1aa7f57d61656a952052e868ff154de0ee" prot="public" virt="non-virtual"><scope>t_shell</scope><name>original_termios</name></member>
+      <member refid="structt__shell_1a7bec3438ab1de1e65369c6b1651bfe8b" prot="public" virt="non-virtual"><scope>t_shell</scope><name>running</name></member>
+      <member refid="structt__shell_1a4dd8a704c5e08b81b219975d871543d4" prot="public" virt="non-virtual"><scope>t_shell</scope><name>shell_pgid</name></member>
+      <member refid="structt__shell_1ae6fc1795d6c44b72046cd7354aa4f078" prot="public" virt="non-virtual"><scope>t_shell</scope><name>terminal_fd</name></member>
+      <member refid="structt__shell_1ad18cadf2cea0ab8372390a10dee5d2b2" prot="public" virt="non-virtual"><scope>t_shell</scope><name>variables</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,159 @@
+.TH "srcs/executor/exec_pipeline.c" 9 "Version pulgamecanica" "42sh" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+srcs/executor/exec_pipeline.c \- Pipeline command execution functionality for 42sh\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+\fR#include '42sh\&.h'\fP
+.br
+\fR#include 'executor\&.h'\fP
+.br
+\fR#include <string\&.h>\fP
+.br
+
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "static int \fBcollect_pipeline\fP (\fBt_ast\fP *ast, \fBt_ast\fP **cmds, int max)"
+.br
+.RI "Flatten nested PIPE nodes left-to-right into a flat array\&. "
+.ti -1c
+.RI "static void \fBclose_pipes\fP (int pipes[][2], int count)"
+.br
+.RI "Close all pipe fds in the array\&. "
+.ti -1c
+.RI "static void \fBpipe_child\fP (\fBt_shell\fP *shell, \fBt_ast\fP *cmd_ast, int pipes[][2], int info[3])"
+.br
+.RI "Execute a single pipeline stage in the child process\&. "
+.ti -1c
+.RI "void \fBexec_pipeline_external\fP (\fBt_shell\fP *shell, \fBt_cmd\fP *cmd)"
+.br
+.RI "Execute external command in pipeline child (does not return)\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Pipeline command execution functionality for 42sh\&. 
+
+
+.PP
+\fBAuthor\fP
+.RS 4
+wengzhang, pulgamecanica 
+.RE
+.PP
+
+.SH "Function Documentation"
+.PP 
+.SS "static void close_pipes (int pipes[][2], int count)\fR [static]\fP"
+
+.PP
+Close all pipe fds in the array\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIpipes\fP The array of pipe file descriptors\&. 
+.br
+\fIcount\fP The number of pipes to close\&. 
+.RE
+.PP
+
+.SS "static int collect_pipeline (\fBt_ast\fP * ast, \fBt_ast\fP ** cmds, int max)\fR [static]\fP"
+
+.PP
+Flatten nested PIPE nodes left-to-right into a flat array\&. Example: (A | B) | C => [A, B, C] 
+.PP
+\fBParameters\fP
+.RS 4
+\fIast\fP The abstract syntax tree node\&. 
+.br
+\fIcmds\fP The array to store the pipeline commands\&. 
+.br
+\fImax\fP The maximum number of commands to store\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The number of commands collected\&. 
+.RE
+.PP
+
+.SS "void exec_pipeline_external (\fBt_shell\fP * shell, \fBt_cmd\fP * cmd)"
+
+.PP
+Execute external command in pipeline child (does not return)\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIshell\fP The shell instance\&. 
+.br
+\fIcmd\fP The command structure\&. 
+.RE
+.PP
+
+.SS "static void pipe_child (\fBt_shell\fP * shell, \fBt_ast\fP * cmd_ast, int pipes[][2], int info[3])\fR [static]\fP"
+
+.PP
+Execute a single pipeline stage in the child process\&. Wire stdin/stdout from pipes, then exec or run builtin\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIshell\fP The shell instance\&. 
+.br
+\fIcmd_ast\fP The abstract syntax tree node for the command\&. 
+.br
+\fIpipes\fP The array of pipe file descriptors\&. 
+.br
+\fIinfo\fP The information array for the pipeline stage\&. 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for 42sh from the source code\&.
+.SH SEE ALSO
+.BR 42sh.h (9),
+.BR ast_display.c (9),
+.BR ast.h (9),
+.BR builtin.c (9),
+.BR builtin_history.c (9),
+.BR builtins.h (9),
+.BR command_search.c (9),
+.BR exec_command.c (9),
+.BR exec_logical.c (9),
+.BR exec_utils.c (9),
+.BR executor.c (9),
+.BR executor.h (9),
+.BR expander.c (9),
+.BR heredoc.c (9),
+.BR history.c (9),
+.BR history.h (9),
+.BR lexer.c (9),
+.BR lexer_display.c (9),
+.BR lexer.h (9),
+.BR lexer_operator.c (9),
+.BR lexer_words.c (9),
+.BR memory.c (9),
+.BR parser_and_or.c (9),
+.BR parser.c (9),
+.BR parser_command.c (9),
+.BR parser_group.c (9),
+.BR parser.h (9),
+.BR parser_heredoc.c (9),
+.BR parser_list.c (9),
+.BR parser_pipeline.c (9),
+.BR signal_child.c (9),
+.BR signal_exec.c (9),
+.BR signals.h (9),
+.BR t_ast (9),
+.BR t_binary (9),
+.BR t_cmd (9),
+.BR t_group (9),
+.BR t_operator (9),
+.BR t_parser (9),
+.BR t_redir (9),
+.BR t_shell (9),
+.BR t_token (9)

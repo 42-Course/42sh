@@ -1,0 +1,151 @@
+.TH "includes/signals.h" 9 "Version pulgamecanica" "42sh" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+includes/signals.h \- Signal handling for the 42sh shell\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+\fR#include <signal\&.h>\fP
+.br
+
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBsignals_setup_interactive\fP (void)"
+.br
+.RI "Set up signal handlers for interactive mode (at the prompt)\&. "
+.ti -1c
+.RI "void \fBsignals_setup_executing\fP (void)"
+.br
+.RI "Set up signal handlers for executing context (parent waiting for fg child)\&. "
+.ti -1c
+.RI "void \fBsignals_setup_child\fP (void)"
+.br
+.RI "Restore default signal handlers in a child process before execve\&. "
+.ti -1c
+.RI "void \fBsignals_check\fP (\fBt_shell\fP *shell)"
+.br
+.RI "Process any pending signal that was caught during the last prompt\&. "
+.in -1c
+.SS "Variables"
+
+.in +1c
+.ti -1c
+.RI "volatile sig_atomic_t \fBg_signal_received\fP"
+.br
+.RI "Global signal flag (volatile for signal handler safety) "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Signal handling for the 42sh shell\&. 
+
+
+.PP
+\fBAuthor\fP
+.RS 4
+pulgamecanica 
+.RE
+.PP
+
+.SH "Function Documentation"
+.PP 
+.SS "void signals_check (\fBt_shell\fP * shell)"
+
+.PP
+Process any pending signal that was caught during the last prompt\&. Called in the main loop before each prompt iteration\&.
+
+.PP
+Sets $? to the appropriate value (130 for SIGINT = 128 + 2)\&. 
+.SS "void signals_setup_child (void )"
+
+.PP
+Restore default signal handlers in a child process before execve\&. After fork the child inherits the parent's signal dispositions (SIG_IGN for interactive mode)\&. We must reset them to SIG_DFL so the executed program responds to signals normally\&. 
+.SS "void signals_setup_executing (void )"
+
+.PP
+Set up signal handlers for executing context (parent waiting for fg child)\&. SIGINT — ignored (let signal reach the child process)
+
+.PP
+SIGQUIT — ignored (let signal reach the child process)
+
+.PP
+SIGTSTP — ignored (let signal reach the child process)
+
+.PP
+\fBNote\fP
+.RS 4
+The parent simply waits; the child handles or dies from the signal\&. 
+.RE
+.PP
+
+.SS "void signals_setup_interactive (void )"
+
+.PP
+Set up signal handlers for interactive mode (at the prompt)\&. SIGINT - custom handler: newline + redisplay prompt (like bash)
+
+.PP
+SIGQUIT - ignored (Ctrl-\\ does nothing at prompt) (for now\&.\&.\&. I think)
+
+.PP
+SIGTSTP - ignored for now (Ctrl-Z does nothing at prompt, will handle fg/bg job control later) 
+.SH "Variable Documentation"
+.PP 
+.SS "volatile sig_atomic_t g_signal_received\fR [extern]\fP"
+
+.PP
+Global signal flag (volatile for signal handler safety) 
+.PP
+.RS 4
+Forward declaration to avoid circular dependency with \fB42sh\&.h\fP 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for 42sh from the source code\&.
+.SH SEE ALSO
+.BR 42sh.h (9),
+.BR ast_display.c (9),
+.BR ast.h (9),
+.BR builtin.c (9),
+.BR builtin_history.c (9),
+.BR builtins.h (9),
+.BR command_search.c (9),
+.BR exec_command.c (9),
+.BR exec_logical.c (9),
+.BR exec_pipeline.c (9),
+.BR exec_utils.c (9),
+.BR executor.c (9),
+.BR executor.h (9),
+.BR expander.c (9),
+.BR heredoc.c (9),
+.BR history.c (9),
+.BR history.h (9),
+.BR lexer.c (9),
+.BR lexer_display.c (9),
+.BR lexer.h (9),
+.BR lexer_operator.c (9),
+.BR lexer_words.c (9),
+.BR memory.c (9),
+.BR parser_and_or.c (9),
+.BR parser.c (9),
+.BR parser_command.c (9),
+.BR parser_group.c (9),
+.BR parser.h (9),
+.BR parser_heredoc.c (9),
+.BR parser_list.c (9),
+.BR parser_pipeline.c (9),
+.BR signal_child.c (9),
+.BR signal_exec.c (9),
+.BR t_ast (9),
+.BR t_binary (9),
+.BR t_cmd (9),
+.BR t_group (9),
+.BR t_operator (9),
+.BR t_parser (9),
+.BR t_redir (9),
+.BR t_shell (9),
+.BR t_token (9)

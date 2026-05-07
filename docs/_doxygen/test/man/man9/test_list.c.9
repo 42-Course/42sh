@@ -1,0 +1,73 @@
+.TH "test_list.c" 9 "Version pulgamecanica" "42sh Tests" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+test_list.c \- Test suite for libft's singly-linked list (t_list)\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+\fR#include 'minunit\&.h'\fP
+.br
+\fR#include '\&.\&./Libft/includes/libft\&.h'\fP
+.br
+\fR#include <stdlib\&.h>\fP
+.br
+\fR#include <string\&.h>\fP
+.br
+
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "void \fBtest_list_suite\fP (void)"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Test suite for libft's singly-linked list (t_list)\&. 
+
+
+.PP
+\fBAuthor\fP
+.RS 4
+pulgamecanica (arosado-)
+.RE
+.PP
+Storage convention: ft_lstnew(ptr) stores the pointer directly in \fRcontent\fP\&. Access pattern: \fR(T *)node->content\fP — wrapped here by the \fRLST_DUMMY()\fP macro\&.
+
+.PP
+Covers ft_lstnew(), ft_lstsize(), forward traversal, ft_lstdel() (pointer-and-node free), and ft_lstadd() (prepend to front)\&.
+
+.PP
+This suite is always compiled and always runs — it is not guarded by a feature flag because \fRt_list\fP is a core Libft primitive\&. 
+.SH "Function Documentation"
+.PP 
+.SS "void test_list_suite (void )"
+Run all singly-linked list assertions\&.
+
+.PP
+Builds an append-order list \fR[alpha(1) -> beta(2) -> gamma(3)]\fP, verifies ft_lstsize() and forward traversal via \fR->next\fP, then exercises ft_lstdel() (freeing all nodes with del_dummy) and asserts the head pointer is NULL afterwards\&.
+
+.PP
+A second sub-test uses ft_lstadd() (prepend) to verify that two nodes inserted as \fR[first, second]\fP are stored as \fR[second -> first]\fP in the list\&.
+
+.PP
+.RS 4
+\fBPrecondition:\fP \fRLibft/srcs/ft_stdlib/\fP must be compiled and linked\&. 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for 42sh Tests from the source code\&.
+.SH SEE ALSO
+.BR minunit.h (9),
+.BR test_btree.c (9),
+.BR test_dlist.c (9),
+.BR test_executor.c (9),
+.BR test_history.c (9),
+.BR test_lexer.c (9),
+.BR test_parser.c (9),
+.BR test_runner.c (9),
+.BR test_stubs.c (9)

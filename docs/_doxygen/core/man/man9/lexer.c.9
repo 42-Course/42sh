@@ -1,0 +1,107 @@
+.TH "srcs/lexer/lexer.c" 9 "Version pulgamecanica" "42sh" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+srcs/lexer/lexer.c \- main file of lexer module  
+
+.SH SYNOPSIS
+.br
+.PP
+\fR#include <stdlib\&.h>\fP
+.br
+\fR#include <stdio\&.h>\fP
+.br
+\fR#include <ctype\&.h>\fP
+.br
+\fR#include <string\&.h>\fP
+.br
+\fR#include 'lexer\&.h'\fP
+.br
+
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "t_list * \fBlexer_tokenize\fP (const char *input)"
+.br
+.RI "main function of lexer module, construct a linked list of token from an input string\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+main file of lexer module 
+
+
+.PP
+\fBAuthor\fP
+.RS 4
+jguillem 
+.RE
+.PP
+
+.SH "Function Documentation"
+.PP 
+.SS "t_list * lexer_tokenize (const char * input)"
+
+.PP
+main function of lexer module, construct a linked list of token from an input string\&. Tokenize an input string into a list of tokens\&.
+
+.PP
+\fBParameters\fP
+.RS 4
+\fIinput\fP The string input from readline
+.RE
+.PP
+skip spaces and recognize the type of token before adding it in the list\&. The memory is allocated and the list must be freed\&. 
+.PP
+\fBReturns\fP
+.RS 4
+t_list* with t_token* as content 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for 42sh from the source code\&.
+.SH SEE ALSO
+.BR 42sh.h (9),
+.BR ast_display.c (9),
+.BR ast.h (9),
+.BR builtin.c (9),
+.BR builtin_history.c (9),
+.BR builtins.h (9),
+.BR command_search.c (9),
+.BR exec_command.c (9),
+.BR exec_logical.c (9),
+.BR exec_pipeline.c (9),
+.BR exec_utils.c (9),
+.BR executor.c (9),
+.BR executor.h (9),
+.BR expander.c (9),
+.BR heredoc.c (9),
+.BR history.c (9),
+.BR history.h (9),
+.BR lexer_display.c (9),
+.BR lexer.h (9),
+.BR lexer_operator.c (9),
+.BR lexer_words.c (9),
+.BR memory.c (9),
+.BR parser_and_or.c (9),
+.BR parser.c (9),
+.BR parser_command.c (9),
+.BR parser_group.c (9),
+.BR parser.h (9),
+.BR parser_heredoc.c (9),
+.BR parser_list.c (9),
+.BR parser_pipeline.c (9),
+.BR signal_child.c (9),
+.BR signal_exec.c (9),
+.BR signals.h (9),
+.BR t_ast (9),
+.BR t_binary (9),
+.BR t_cmd (9),
+.BR t_group (9),
+.BR t_operator (9),
+.BR t_parser (9),
+.BR t_redir (9),
+.BR t_shell (9),
+.BR t_token (9)

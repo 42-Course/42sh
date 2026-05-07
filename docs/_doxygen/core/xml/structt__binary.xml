@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.2" xml:lang="en-US">
+  <compounddef id="structt__binary" kind="struct" language="C++" prot="public">
+    <compoundname>t_binary</compoundname>
+    <includes refid="ast_8h" local="no">ast.h</includes>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structt__binary_1ae3846be8b43d7d9d4e0cfe9c2786d67b" prot="public" static="no" mutable="no">
+        <type>struct s_ast *</type>
+        <definition>struct s_ast* t_binary::left</definition>
+        <argsstring></argsstring>
+        <name>left</name>
+        <qualifiedname>t_binary::left</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/ast.h" line="73" column="12" bodyfile="includes/ast.h" bodystart="73" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structt__binary_1a84ecb9a74c814a34782a621a9dc9f446" prot="public" static="no" mutable="no">
+        <type>struct s_ast *</type>
+        <definition>struct s_ast* t_binary::right</definition>
+        <argsstring></argsstring>
+        <name>right</name>
+        <qualifiedname>t_binary::right</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/ast.h" line="74" column="12" bodyfile="includes/ast.h" bodystart="74" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Binary operation data (pipe, &amp;&amp;, ||, ;) </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="includes/ast.h" line="71" column="1" bodyfile="includes/ast.h" bodystart="72" bodyend="75"/>
+    <listofallmembers>
+      <member refid="structt__binary_1ae3846be8b43d7d9d4e0cfe9c2786d67b" prot="public" virt="non-virtual"><scope>t_binary</scope><name>left</name></member>
+      <member refid="structt__binary_1a84ecb9a74c814a34782a621a9dc9f446" prot="public" virt="non-virtual"><scope>t_binary</scope><name>right</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

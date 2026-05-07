@@ -1,0 +1,235 @@
+.TH "srcs/lexer/lexer_operator.c" 9 "Version pulgamecanica" "42sh" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+srcs/lexer/lexer_operator.c \- file to manage operators of the prompt command  
+
+.SH SYNOPSIS
+.br
+.PP
+\fR#include <stdlib\&.h>\fP
+.br
+\fR#include <string\&.h>\fP
+.br
+\fR#include <ctype\&.h>\fP
+.br
+\fR#include 'lexer\&.h'\fP
+.br
+
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "int \fBis_operator\fP (char c)"
+.br
+.RI "check if a char is the beginning of an operator "
+.ti -1c
+.RI "int \fBis_operator_start\fP (const char *line)"
+.br
+.RI "check if a string is an operator "
+.ti -1c
+.RI "static int \fBextract_io_number\fP (const char **line)"
+.br
+.RI "extract the file descriptor before the operator "
+.ti -1c
+.RI "static t_list * \fBcreate_operator_token\fP (const char **line, int io_number, const char *literal, \fBt_token_type\fP type)"
+.br
+.RI "Create a new t_list token node\&. "
+.ti -1c
+.RI "t_list * \fBread_operator\fP (const char **line)"
+.br
+.RI "read the operator and tokenize it "
+.in -1c
+.SS "Variables"
+
+.in +1c
+.ti -1c
+.RI "static const \fBt_operator\fP \fBoperators\fP []"
+.br
+.RI "array of struct s_operator struct "
+.in -1c
+.SH "Detailed Description"
+.PP 
+file to manage operators of the prompt command 
+
+
+.PP
+\fBAuthor\fP
+.RS 4
+jguillem 
+.RE
+.PP
+
+.SH "Function Documentation"
+.PP 
+.SS "static t_list * create_operator_token (const char ** line, int io_number, const char * literal, \fBt_token_type\fP type)\fR [static]\fP"
+
+.PP
+Create a new t_list token node\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIline\fP Address of the string to tokenize 
+.br
+\fIio_number\fP file descriptor for redirection 
+.br
+\fIliteral\fP representation of the operator 
+.br
+\fItype\fP A \fBt_token_type\fP 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+A t_list token node 
+.RE
+.PP
+
+.SS "static int extract_io_number (const char ** line)\fR [static]\fP"
+
+.PP
+extract the file descriptor before the operator 
+.PP
+\fBParameters\fP
+.RS 4
+\fIthe\fP string of the operator 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+an int 
+.RE
+.PP
+
+.SS "int is_operator (char c)"
+
+.PP
+check if a char is the beginning of an operator 
+.PP
+\fBParameters\fP
+.RS 4
+\fIc\fP character to check
+.RE
+.PP
+check if the character is in "&|><;{}\\n" 
+.PP
+\fBReturns\fP
+.RS 4
+0 | 1 
+.RE
+.PP
+
+.SS "int is_operator_start (const char * line)"
+
+.PP
+check if a string is an operator 
+.PP
+\fBParameters\fP
+.RS 4
+\fIline\fP string of operator to test
+.RE
+.PP
+manage the digits in case of redirection then call is_operator 
+.PP
+\fBReturns\fP
+.RS 4
+1 | 0 
+.RE
+.PP
+
+.SS "t_list * read_operator (const char ** line)"
+
+.PP
+read the operator and tokenize it 
+.PP
+\fBParameters\fP
+.RS 4
+\fIthe\fP string of the operator
+.RE
+.PP
+choose the good function to tokenize 
+.PP
+\fBReturns\fP
+.RS 4
+a t_list* node 
+.RE
+.PP
+
+.SH "Variable Documentation"
+.PP 
+.SS "const \fBt_operator\fP operators[]\fR [static]\fP"
+\fBInitial value:\fP
+.nf
+= {
+    {";",   TOK_SEMICOLON},
+    {"\\n",  TOK_NEWLINE},
+    {"(",   TOK_LPAREN},
+    {")",   TOK_RPAREN},
+    {"||",  TOK_OR},
+    {"|",   TOK_PIPE},
+    {"&&",  TOK_AND},
+    {"&",   TOK_AMPERSAND},
+    {"<<",  TOK_HEREDOC},
+    {"<&",  TOK_REDIR_DUP_IN},
+    {"<",   TOK_REDIR_IN},
+    {">>",  TOK_REDIR_APPEND},
+    {">&",  TOK_REDIR_DUP_OUT},
+    {">",   TOK_REDIR_OUT},
+    {NULL,  0}
+}
+.PP
+.fi
+
+.PP
+array of struct s_operator struct match literal representation and token type
+
+.PP
+important to keep long operators before short ones (e\&.g\&. && and &)
+
+.PP
+this allow strncmp to works properly 
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for 42sh from the source code\&.
+.SH SEE ALSO
+.BR 42sh.h (9),
+.BR ast_display.c (9),
+.BR ast.h (9),
+.BR builtin.c (9),
+.BR builtin_history.c (9),
+.BR builtins.h (9),
+.BR command_search.c (9),
+.BR exec_command.c (9),
+.BR exec_logical.c (9),
+.BR exec_pipeline.c (9),
+.BR exec_utils.c (9),
+.BR executor.c (9),
+.BR executor.h (9),
+.BR expander.c (9),
+.BR heredoc.c (9),
+.BR history.c (9),
+.BR history.h (9),
+.BR lexer.c (9),
+.BR lexer_display.c (9),
+.BR lexer.h (9),
+.BR lexer_words.c (9),
+.BR memory.c (9),
+.BR parser_and_or.c (9),
+.BR parser.c (9),
+.BR parser_command.c (9),
+.BR parser_group.c (9),
+.BR parser.h (9),
+.BR parser_heredoc.c (9),
+.BR parser_list.c (9),
+.BR parser_pipeline.c (9),
+.BR signal_child.c (9),
+.BR signal_exec.c (9),
+.BR signals.h (9),
+.BR t_ast (9),
+.BR t_binary (9),
+.BR t_cmd (9),
+.BR t_group (9),
+.BR t_operator (9),
+.BR t_parser (9),
+.BR t_redir (9),
+.BR t_shell (9),
+.BR t_token (9)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zweng <marvin@42.fr>                       +#+  +:+       +#+        */
+/*   By: jspitz <jspitz@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/09 11:44:47 by zweng             #+#    #+#             */
-/*   Updated: 2026/03/08 17:16:40 by jguillem         ###   ########.fr       */
+/*   Updated: 2026/05/07 10:14:58 by jspitz           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@
 # define FUN_EXT(a)	(a == 0 ? 1 : 0)
 # define ABS(a,b)	(a > b ? a : b)
 
-typedef unsigned char bool;
+# define bool unsigned char
 
 typedef struct s_list
 {

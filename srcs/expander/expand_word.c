@@ -1,7 +1,7 @@
 # include "42sh.h"
 # include "expander.h"
 
-static ft_strappend(char *dest, const char *src, size_t n) {
+static char * ft_strappend(char *dest, const char *src, size_t n) {
 	size_t dest_len = strlen(dest);
 	char *new_str = malloc(dest_len + n + 1);
 	if (!new_str) {
@@ -67,7 +67,7 @@ char *expand_word_internal(t_shell *shell, char *input) {
 		if (c == '\\' && in_double_quote) {
 			pos++;
 			if (input[pos] == '"' || input[pos] == '\\' ||
-				input[pos] == '$' || '\`' || input[pos] == '\n') {
+				input[pos] == '$' || '`' || input[pos] == '\n') {
 				
 				result = ft_strappend(result, &input[pos], 1);
 				pos += 2;

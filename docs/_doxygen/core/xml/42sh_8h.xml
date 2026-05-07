@@ -1,0 +1,594 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.2" xml:lang="en-US">
+  <compounddef id="42sh_8h" kind="file" language="C++">
+    <compoundname>42sh.h</compoundname>
+    <includes local="no">stdio.h</includes>
+    <includes local="no">unistd.h</includes>
+    <includes local="no">stdlib.h</includes>
+    <includes local="no">errno.h</includes>
+    <includes local="no">fcntl.h</includes>
+    <includes local="no">sys/types.h</includes>
+    <includes local="no">sys/wait.h</includes>
+    <includes local="no">sys/stat.h</includes>
+    <includes local="no">termios.h</includes>
+    <includes local="no">term.h</includes>
+    <includes local="no">readline/readline.h</includes>
+    <includes local="no">readline/history.h</includes>
+    <includes local="no">string.h</includes>
+    <includes refid="history_8h" local="yes">history.h</includes>
+    <includes local="yes">libft.h</includes>
+    <includes refid="variables_8h" local="yes">variables.h</includes>
+    <includes refid="job__control_8h" local="yes">job_control.h</includes>
+    <includes refid="signals_8h" local="yes">signals.h</includes>
+    <includedby refid="expander_8h" local="yes">includes/expander.h</includedby>
+    <includedby refid="parser_8h" local="yes">includes/parser.h</includedby>
+    <includedby refid="builtin_8c" local="yes">srcs/builtins/builtin.c</includedby>
+    <includedby refid="builtin__history_8c" local="yes">srcs/builtins/builtin_history.c</includedby>
+    <includedby refid="command__search_8c" local="yes">srcs/executor/command_search.c</includedby>
+    <includedby refid="exec__command_8c" local="yes">srcs/executor/exec_command.c</includedby>
+    <includedby refid="exec__logical_8c" local="yes">srcs/executor/exec_logical.c</includedby>
+    <includedby refid="exec__pipeline_8c" local="yes">srcs/executor/exec_pipeline.c</includedby>
+    <includedby refid="exec__subshell_8c" local="yes">srcs/executor/exec_subshell.c</includedby>
+    <includedby refid="exec__utils_8c" local="yes">srcs/executor/exec_utils.c</includedby>
+    <includedby refid="executor_8c" local="yes">srcs/executor/executor.c</includedby>
+    <includedby refid="heredoc_8c" local="yes">srcs/executor/heredoc.c</includedby>
+    <includedby refid="redirections_8c" local="yes">srcs/executor/redirections.c</includedby>
+    <includedby refid="expand__word_8c" local="yes">srcs/expander/expand_word.c</includedby>
+    <includedby refid="expander_8c" local="yes">srcs/expander/expander.c</includedby>
+    <includedby refid="history_8c" local="yes">srcs/history/history.c</includedby>
+    <includedby refid="main_8c" local="yes">srcs/main.c</includedby>
+    <includedby refid="signals__check_8c" local="yes">srcs/signals/signals_check.c</includedby>
+    <includedby refid="variables_8c" local="yes">srcs/variables/variables.c</includedby>
+    <incdepgraph>
+      <node id="1">
+        <label>includes/42sh.h</label>
+        <link refid="42sh_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="19" relation="include">
+        </childnode>
+      </node>
+      <node id="15">
+        <label>history.h</label>
+        <link refid="history_8h"/>
+      </node>
+      <node id="18">
+        <label>job_control.h</label>
+        <link refid="job__control_8h_source"/>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+      </node>
+      <node id="19">
+        <label>signals.h</label>
+        <link refid="signals_8h"/>
+        <childnode refid="20" relation="include">
+        </childnode>
+      </node>
+      <node id="17">
+        <label>variables.h</label>
+        <link refid="variables_8h_source"/>
+      </node>
+      <node id="5">
+        <label>errno.h</label>
+      </node>
+      <node id="6">
+        <label>fcntl.h</label>
+      </node>
+      <node id="16">
+        <label>libft.h</label>
+      </node>
+      <node id="13">
+        <label>readline/history.h</label>
+      </node>
+      <node id="12">
+        <label>readline/readline.h</label>
+      </node>
+      <node id="20">
+        <label>signal.h</label>
+      </node>
+      <node id="2">
+        <label>stdio.h</label>
+      </node>
+      <node id="4">
+        <label>stdlib.h</label>
+      </node>
+      <node id="14">
+        <label>string.h</label>
+      </node>
+      <node id="9">
+        <label>sys/stat.h</label>
+      </node>
+      <node id="7">
+        <label>sys/types.h</label>
+      </node>
+      <node id="8">
+        <label>sys/wait.h</label>
+      </node>
+      <node id="11">
+        <label>term.h</label>
+      </node>
+      <node id="10">
+        <label>termios.h</label>
+      </node>
+      <node id="3">
+        <label>unistd.h</label>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="1">
+        <label>includes/42sh.h</label>
+        <link refid="42sh_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>includes/executor.h</label>
+        <link refid="executor_8h"/>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>includes/expander.h</label>
+        <link refid="expander_8h_source"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+      </node>
+      <node id="12">
+        <label>includes/parser.h</label>
+        <link refid="parser_8h"/>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="19" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+      </node>
+      <node id="21">
+        <label>srcs/builtins/builtin.c</label>
+        <link refid="builtin_8c"/>
+      </node>
+      <node id="22">
+        <label>srcs/builtins/builtin_history.c</label>
+        <link refid="builtin__history_8c"/>
+      </node>
+      <node id="4">
+        <label>srcs/executor/command_search.c</label>
+        <link refid="command__search_8c"/>
+      </node>
+      <node id="5">
+        <label>srcs/executor/exec_command.c</label>
+        <link refid="exec__command_8c"/>
+      </node>
+      <node id="6">
+        <label>srcs/executor/exec_logical.c</label>
+        <link refid="exec__logical_8c"/>
+      </node>
+      <node id="7">
+        <label>srcs/executor/exec_pipeline.c</label>
+        <link refid="exec__pipeline_8c"/>
+      </node>
+      <node id="8">
+        <label>srcs/executor/exec_utils.c</label>
+        <link refid="exec__utils_8c"/>
+      </node>
+      <node id="9">
+        <label>srcs/executor/executor.c</label>
+        <link refid="executor_8c"/>
+      </node>
+      <node id="10">
+        <label>srcs/executor/heredoc.c</label>
+        <link refid="heredoc_8c"/>
+      </node>
+      <node id="11">
+        <label>srcs/expander/expander.c</label>
+        <link refid="expander_8c"/>
+      </node>
+      <node id="23">
+        <label>srcs/history/history.c</label>
+        <link refid="history_8c"/>
+      </node>
+      <node id="13">
+        <label>srcs/parser/memory.c</label>
+        <link refid="memory_8c"/>
+      </node>
+      <node id="14">
+        <label>srcs/parser/parser.c</label>
+        <link refid="parser_8c"/>
+      </node>
+      <node id="15">
+        <label>srcs/parser/parser_and_or.c</label>
+        <link refid="parser__and__or_8c"/>
+      </node>
+      <node id="16">
+        <label>srcs/parser/parser_command.c</label>
+        <link refid="parser__command_8c"/>
+      </node>
+      <node id="17">
+        <label>srcs/parser/parser_group.c</label>
+        <link refid="parser__group_8c"/>
+      </node>
+      <node id="18">
+        <label>srcs/parser/parser_heredoc.c</label>
+        <link refid="parser__heredoc_8c"/>
+      </node>
+      <node id="19">
+        <label>srcs/parser/parser_list.c</label>
+        <link refid="parser__list_8c"/>
+      </node>
+      <node id="20">
+        <label>srcs/parser/parser_pipeline.c</label>
+        <link refid="parser__pipeline_8c"/>
+      </node>
+    </invincdepgraph>
+    <innerclass refid="structt__shell" prot="public">t_shell</innerclass>
+    <sectiondef kind="define">
+      <memberdef kind="define" id="42sh_8h_1a5a49064e358c60160041915899a72675" prot="public" static="no">
+        <name>LST_VAR</name>
+        <param><defname>n</defname></param>
+        <initializer>((t_var *)(n)-&gt;content)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Cast a <computeroutput>t_list</computeroutput> node&apos;s content to <computeroutput>t_var *</computeroutput>. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/42sh.h" line="76" column="10" bodyfile="includes/42sh.h" bodystart="76" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="42sh_8h_1abd3287761f3e61cce925371885e87a71" prot="public" static="no">
+        <name>LST_JOB</name>
+        <param><defname>n</defname></param>
+        <initializer>((t_job *)(n)-&gt;content)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Cast a <computeroutput>t_list</computeroutput> node&apos;s content to <computeroutput>t_job *</computeroutput>. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/42sh.h" line="79" column="10" bodyfile="includes/42sh.h" bodystart="79" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="42sh_8h_1ad46750e5decb6e1c6712a5094dcb155b" prot="public" static="no">
+        <name>LST_ALIAS</name>
+        <param><defname>n</defname></param>
+        <initializer>((t_alias *)(n)-&gt;content)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Cast a <computeroutput>t_list</computeroutput> node&apos;s content to <computeroutput>t_alias *</computeroutput>. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/42sh.h" line="82" column="10" bodyfile="includes/42sh.h" bodystart="82" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="42sh_8h_1a4ac94c86d92d23c6c8e183d714c4858b" prot="public" static="no">
+        <name>LST_PROC</name>
+        <param><defname>n</defname></param>
+        <initializer>((t_process *)(n)-&gt;content)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Cast a <computeroutput>t_list</computeroutput> node&apos;s content to <computeroutput>t_process *</computeroutput>. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/42sh.h" line="85" column="10" bodyfile="includes/42sh.h" bodystart="85" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="func">
+      <memberdef kind="function" id="42sh_8h_1a34d64e2d617b8150135833725de494b5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>char *</type>
+        <definition>char * var_get_value</definition>
+        <argsstring>(t_shell *shell, const char *name)</argsstring>
+        <name>var_get_value</name>
+        <param>
+          <type><ref refid="structt__shell" kindref="compound">t_shell</ref> *</type>
+          <declname>shell</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>name</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get the value string of variable <computeroutput>name</computeroutput>, or NULL if unset. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/42sh.h" line="55" column="5" bodyfile="srcs/variables/variables.c" bodystart="36" bodyend="53" declfile="includes/42sh.h" declline="55" declcolumn="5"/>
+      </memberdef>
+      <memberdef kind="function" id="42sh_8h_1a396b5d9757ac37a9ec75d89751e4d151" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>t_var *</type>
+        <definition>t_var * var_get</definition>
+        <argsstring>(t_shell *shell, const char *name)</argsstring>
+        <name>var_get</name>
+        <param>
+          <type><ref refid="structt__shell" kindref="compound">t_shell</ref> *</type>
+          <declname>shell</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>name</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Get the <computeroutput>t_var</computeroutput> node for <computeroutput>name</computeroutput>, or NULL if unset. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/42sh.h" line="58" column="6" bodyfile="srcs/variables/variables.c" bodystart="18" bodyend="33" declfile="includes/42sh.h" declline="58" declcolumn="6"/>
+      </memberdef>
+      <memberdef kind="function" id="42sh_8h_1a7449c0accbffef4d5206e9ca409d1352" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int var_set</definition>
+        <argsstring>(t_shell *shell, const char *name, const char *value)</argsstring>
+        <name>var_set</name>
+        <param>
+          <type><ref refid="structt__shell" kindref="compound">t_shell</ref> *</type>
+          <declname>shell</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>name</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Set (or create) variable <computeroutput>name</computeroutput> to <computeroutput>value</computeroutput>. Returns 0 on success. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/42sh.h" line="61" column="4" bodyfile="srcs/variables/variables.c" bodystart="55" bodyend="93" declfile="includes/42sh.h" declline="61" declcolumn="4"/>
+      </memberdef>
+      <memberdef kind="function" id="42sh_8h_1a66ca6a16bd8984e1444cdcc49449e500" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int var_unset</definition>
+        <argsstring>(t_shell *shell, const char *name)</argsstring>
+        <name>var_unset</name>
+        <param>
+          <type><ref refid="structt__shell" kindref="compound">t_shell</ref> *</type>
+          <declname>shell</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>name</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Remove variable <computeroutput>name</computeroutput>. Returns 0 on success. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/42sh.h" line="64" column="4" bodyfile="srcs/variables/variables.c" bodystart="95" bodyend="150" declfile="includes/42sh.h" declline="64" declcolumn="4"/>
+      </memberdef>
+      <memberdef kind="function" id="42sh_8h_1a6b45d6b8582d4547fff4a50af896d820" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int var_export</definition>
+        <argsstring>(t_shell *shell, const char *name)</argsstring>
+        <name>var_export</name>
+        <param>
+          <type><ref refid="structt__shell" kindref="compound">t_shell</ref> *</type>
+          <declname>shell</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>name</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Mark variable <computeroutput>name</computeroutput> for export to child processes. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/42sh.h" line="67" column="4" bodyfile="srcs/variables/variables.c" bodystart="152" bodyend="182" declfile="includes/42sh.h" declline="67" declcolumn="4"/>
+      </memberdef>
+      <memberdef kind="function" id="42sh_8h_1a10f5ed3e1876c045b7edde6a89ebf7b7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>char **</type>
+        <definition>char ** var_get_environ</definition>
+        <argsstring>(t_shell *shell)</argsstring>
+        <name>var_get_environ</name>
+        <param>
+          <type><ref refid="structt__shell" kindref="compound">t_shell</ref> *</type>
+          <declname>shell</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Return (and cache) the <computeroutput>NULL</computeroutput>-terminated <computeroutput>envp</computeroutput> array for execve. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/42sh.h" line="70" column="5" bodyfile="srcs/variables/variables.c" bodystart="196" bodyend="242" declfile="includes/42sh.h" declline="70" declcolumn="5"/>
+      </memberdef>
+      <memberdef kind="function" id="42sh_8h_1ab4c47b6819e673136a6af03eb7df90a8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void var_init_from_environ</definition>
+        <argsstring>(t_shell *shell, char **envp)</argsstring>
+        <name>var_init_from_environ</name>
+        <param>
+          <type><ref refid="structt__shell" kindref="compound">t_shell</ref> *</type>
+          <declname>shell</declname>
+        </param>
+        <param>
+          <type>char **</type>
+          <declname>envp</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Populate <computeroutput>shell-&gt;variables</computeroutput> from the process&apos;s initial <computeroutput>envp</computeroutput>. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/42sh.h" line="73" column="5" bodyfile="srcs/variables/variables.c" bodystart="288" bodyend="332" declfile="includes/42sh.h" declline="73" declcolumn="5"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Top-level header for the 42sh shell, includes all sub-systems and defines the central <computeroutput><ref refid="structt__shell" kindref="compound">t_shell</ref></computeroutput> state struct. </para>
+    </briefdescription>
+    <detaileddescription>
+<para><simplesect kind="author"><para>wengzhang, jguillem, jspitz, pulgamecanica, zweng </para>
+</simplesect>
+</para>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="normal"></highlight></codeline>
+<codeline lineno="7"><highlight class="normal"></highlight></codeline>
+<codeline lineno="8"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>SHELL_42SH_H</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="9"><highlight class="normal"></highlight><highlight class="preprocessor">#<sp/>define<sp/>SHELL_42SH_H</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="10"><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"></highlight><highlight class="preprocessor">#<sp/>include<sp/>&lt;stdio.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="12"><highlight class="normal"></highlight><highlight class="preprocessor">#<sp/>include<sp/>&lt;unistd.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="13"><highlight class="normal"></highlight><highlight class="preprocessor">#<sp/>include<sp/>&lt;stdlib.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="14"><highlight class="normal"></highlight><highlight class="preprocessor">#<sp/>include<sp/>&lt;errno.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="15"><highlight class="normal"></highlight><highlight class="preprocessor">#<sp/>include<sp/>&lt;fcntl.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="16"><highlight class="normal"></highlight><highlight class="preprocessor">#<sp/>include<sp/>&lt;sys/types.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="17"><highlight class="normal"></highlight><highlight class="preprocessor">#<sp/>include<sp/>&lt;sys/wait.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="18"><highlight class="normal"></highlight><highlight class="preprocessor">#<sp/>include<sp/>&lt;sys/stat.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="19"><highlight class="normal"></highlight><highlight class="preprocessor">#<sp/>include<sp/>&lt;termios.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="20"><highlight class="normal"></highlight><highlight class="preprocessor">#<sp/>include<sp/>&lt;term.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="21"><highlight class="normal"></highlight><highlight class="preprocessor">#<sp/>include<sp/>&lt;readline/readline.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="22"><highlight class="normal"></highlight><highlight class="preprocessor">#<sp/>include<sp/>&lt;readline/history.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="23"><highlight class="normal"></highlight><highlight class="preprocessor">#<sp/>include<sp/>&lt;string.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="24"><highlight class="normal"></highlight><highlight class="preprocessor">#<sp/>include<sp/>&quot;<ref refid="history_8h" kindref="compound">history.h</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="25"><highlight class="normal"></highlight><highlight class="preprocessor">#<sp/>include<sp/>&quot;libft.h&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="26"><highlight class="normal"></highlight><highlight class="preprocessor">#<sp/>include<sp/>&quot;variables.h&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="27"><highlight class="normal"></highlight><highlight class="preprocessor">#<sp/>include<sp/>&quot;job_control.h&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="28"><highlight class="normal"></highlight><highlight class="preprocessor">#<sp/>include<sp/>&quot;<ref refid="signals_8h" kindref="compound">signals.h</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="29"><highlight class="normal"></highlight></codeline>
+<codeline lineno="35" refid="structt__shell" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">s_shell</highlight></codeline>
+<codeline lineno="36"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="37" refid="structt__shell_1aa0c77e12b25c7604ab1e3c05425fd673" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>t_list<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*<ref refid="structt__shell_1aa0c77e12b25c7604ab1e3c05425fd673" kindref="member">aliases</ref>;<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="38" refid="structt__shell_1a9b0a291745e1863d06bc534c8dda1ef5" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*<ref refid="structt__shell_1a9b0a291745e1863d06bc534c8dda1ef5" kindref="member">cmd_entrypoint</ref>;<sp/><sp/></highlight></codeline>
+<codeline lineno="39" refid="structt__shell_1a1ed1aef657c38e659ce7fa2b599af383" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>t_job<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*<ref refid="structt__shell_1a1ed1aef657c38e659ce7fa2b599af383" kindref="member">current_job</ref>;<sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="40" refid="structt__shell_1a030ad96f10ea7dee6384b25513833f9c" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>**<ref refid="structt__shell_1a030ad96f10ea7dee6384b25513833f9c" kindref="member">env</ref>;<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="41" refid="structt__shell_1a914c3232f73dd01c29ebd96c2580b374" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="structt__shell_1a914c3232f73dd01c29ebd96c2580b374" kindref="member">env_dirty</ref>;<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="42" refid="structt__shell_1afa8abdeeefc6328c61d86cba9ca05bb7" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="structt__shell_1afa8abdeeefc6328c61d86cba9ca05bb7" kindref="member">exit_confirmed</ref>;<sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="43" refid="structt__shell_1a3acd1c728bb890d080d272fdb8287be4" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*<ref refid="structt__shell_1a3acd1c728bb890d080d272fdb8287be4" kindref="member">history_file</ref>;<sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="44" refid="structt__shell_1a1dcf313cd3f8cd9c8b8db8ace0675e2f" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="structt__shell_1a1dcf313cd3f8cd9c8b8db8ace0675e2f" kindref="member">interactive</ref>;<sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="45" refid="structt__shell_1a1cf640ca1e0fb653cfdd3b3e95003fa3" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>t_list<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*<ref refid="structt__shell_1a1cf640ca1e0fb653cfdd3b3e95003fa3" kindref="member">jobs</ref>;<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="46" refid="structt__shell_1ad5647e9c241d48f6322b2a03176a5c2a" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="structt__shell_1ad5647e9c241d48f6322b2a03176a5c2a" kindref="member">last_exit_status</ref>;<sp/></highlight></codeline>
+<codeline lineno="47" refid="structt__shell_1aa7f57d61656a952052e868ff154de0ee" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">termios<sp/><sp/><ref refid="structt__shell_1aa7f57d61656a952052e868ff154de0ee" kindref="member">original_termios</ref>;<sp/></highlight></codeline>
+<codeline lineno="48" refid="structt__shell_1a7bec3438ab1de1e65369c6b1651bfe8b" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="structt__shell_1a7bec3438ab1de1e65369c6b1651bfe8b" kindref="member">running</ref>;<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="49" refid="structt__shell_1a4dd8a704c5e08b81b219975d871543d4" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>pid_t<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="structt__shell_1a4dd8a704c5e08b81b219975d871543d4" kindref="member">shell_pgid</ref>;<sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="50" refid="structt__shell_1ae6fc1795d6c44b72046cd7354aa4f078" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="structt__shell_1ae6fc1795d6c44b72046cd7354aa4f078" kindref="member">terminal_fd</ref>;<sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="51" refid="structt__shell_1ad18cadf2cea0ab8372390a10dee5d2b2" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>t_list<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*<ref refid="structt__shell_1ad18cadf2cea0ab8372390a10dee5d2b2" kindref="member">variables</ref>;<sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="52"><highlight class="normal">}<sp/><sp/><sp/><ref refid="structt__shell" kindref="compound">t_shell</ref>;</highlight></codeline>
+<codeline lineno="53"><highlight class="normal"></highlight></codeline>
+<codeline lineno="55"><highlight class="normal"></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/><sp/><sp/><sp/>*<ref refid="42sh_8h_1a34d64e2d617b8150135833725de494b5" kindref="member">var_get_value</ref>(<ref refid="structt__shell" kindref="compound">t_shell</ref><sp/>*shell,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*name);</highlight></codeline>
+<codeline lineno="56"><highlight class="normal"></highlight></codeline>
+<codeline lineno="58"><highlight class="normal">t_var<sp/><sp/><sp/>*<ref refid="42sh_8h_1a396b5d9757ac37a9ec75d89751e4d151" kindref="member">var_get</ref>(<ref refid="structt__shell" kindref="compound">t_shell</ref><sp/>*shell,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*name);</highlight></codeline>
+<codeline lineno="59"><highlight class="normal"></highlight></codeline>
+<codeline lineno="61"><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><ref refid="42sh_8h_1a7449c0accbffef4d5206e9ca409d1352" kindref="member">var_set</ref>(<ref refid="structt__shell" kindref="compound">t_shell</ref><sp/>*shell,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*name,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*value);</highlight></codeline>
+<codeline lineno="62"><highlight class="normal"></highlight></codeline>
+<codeline lineno="64"><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><ref refid="42sh_8h_1a66ca6a16bd8984e1444cdcc49449e500" kindref="member">var_unset</ref>(<ref refid="structt__shell" kindref="compound">t_shell</ref><sp/>*shell,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*name);</highlight></codeline>
+<codeline lineno="65"><highlight class="normal"></highlight></codeline>
+<codeline lineno="67"><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><ref refid="42sh_8h_1a6b45d6b8582d4547fff4a50af896d820" kindref="member">var_export</ref>(<ref refid="structt__shell" kindref="compound">t_shell</ref><sp/>*shell,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*name);</highlight></codeline>
+<codeline lineno="68"><highlight class="normal"></highlight></codeline>
+<codeline lineno="70"><highlight class="normal"></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/><sp/><sp/><sp/>**<ref refid="42sh_8h_1a10f5ed3e1876c045b7edde6a89ebf7b7" kindref="member">var_get_environ</ref>(<ref refid="structt__shell" kindref="compound">t_shell</ref><sp/>*shell);</highlight></codeline>
+<codeline lineno="71"><highlight class="normal"></highlight></codeline>
+<codeline lineno="73"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="42sh_8h_1ab4c47b6819e673136a6af03eb7df90a8" kindref="member">var_init_from_environ</ref>(<ref refid="structt__shell" kindref="compound">t_shell</ref><sp/>*shell,<sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>**envp);</highlight></codeline>
+<codeline lineno="74"><highlight class="normal"></highlight></codeline>
+<codeline lineno="76" refid="42sh_8h_1a5a49064e358c60160041915899a72675" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#<sp/>define<sp/>LST_VAR(n)<sp/><sp/><sp/><sp/><sp/>((t_var<sp/>*)(n)-&gt;content)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="77"><highlight class="normal"></highlight></codeline>
+<codeline lineno="79" refid="42sh_8h_1abd3287761f3e61cce925371885e87a71" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#<sp/>define<sp/>LST_JOB(n)<sp/><sp/><sp/><sp/><sp/>((t_job<sp/>*)(n)-&gt;content)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="80"><highlight class="normal"></highlight></codeline>
+<codeline lineno="82" refid="42sh_8h_1ad46750e5decb6e1c6712a5094dcb155b" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#<sp/>define<sp/>LST_ALIAS(n)<sp/><sp/><sp/>((t_alias<sp/>*)(n)-&gt;content)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="83"><highlight class="normal"></highlight></codeline>
+<codeline lineno="85" refid="42sh_8h_1a4ac94c86d92d23c6c8e183d714c4858b" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#<sp/>define<sp/>LST_PROC(n)<sp/><sp/><sp/><sp/>((t_process<sp/>*)(n)-&gt;content)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="86"><highlight class="normal"></highlight></codeline>
+<codeline lineno="87"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight></codeline>
+    </programlisting>
+    <location file="includes/42sh.h"/>
+  </compounddef>
+</doxygen>

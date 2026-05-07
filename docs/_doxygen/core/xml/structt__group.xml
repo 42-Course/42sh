@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.2" xml:lang="en-US">
+  <compounddef id="structt__group" kind="struct" language="C++" prot="public">
+    <compoundname>t_group</compoundname>
+    <includes refid="ast_8h" local="no">ast.h</includes>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structt__group_1a23f41a35a760f96cdaf0b95a10ca8d76" prot="public" static="no" mutable="no">
+        <type>struct s_ast *</type>
+        <definition>struct s_ast* t_group::child</definition>
+        <argsstring></argsstring>
+        <name>child</name>
+        <qualifiedname>t_group::child</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/ast.h" line="85" column="12" bodyfile="includes/ast.h" bodystart="85" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structt__group_1afa6f6f3413e80364bd824335331d3589" prot="public" static="no" mutable="no">
+        <type>t_list *</type>
+        <definition>t_list* t_group::redirs</definition>
+        <argsstring></argsstring>
+        <name>redirs</name>
+        <qualifiedname>t_group::redirs</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/ast.h" line="86" column="7" bodyfile="includes/ast.h" bodystart="86" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Group data (subshell, block, background). </para>
+    </briefdescription>
+    <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>redirs</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>t_list* of t_redir* for redirections applied to the whole group, e.g. (cmd) &gt; file or { cmd; } 2&gt;&amp;1. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+    </detaileddescription>
+    <location file="includes/ast.h" line="83" column="1" bodyfile="includes/ast.h" bodystart="84" bodyend="87"/>
+    <listofallmembers>
+      <member refid="structt__group_1a23f41a35a760f96cdaf0b95a10ca8d76" prot="public" virt="non-virtual"><scope>t_group</scope><name>child</name></member>
+      <member refid="structt__group_1afa6f6f3413e80364bd824335331d3589" prot="public" virt="non-virtual"><scope>t_group</scope><name>redirs</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

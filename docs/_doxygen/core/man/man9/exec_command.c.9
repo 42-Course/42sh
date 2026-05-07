@@ -1,0 +1,209 @@
+.TH "srcs/executor/exec_command.c" 9 "Version pulgamecanica" "42sh" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+srcs/executor/exec_command.c \- Command execution functionality for 42sh\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+\fR#include '42sh\&.h'\fP
+.br
+\fR#include 'executor\&.h'\fP
+.br
+\fR#include <string\&.h>\fP
+.br
+
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "static void \fBapply_assignments\fP (\fBt_shell\fP *shell, t_list *assigns, int do_export)"
+.br
+.RI "Apply assignments permanently to shell variables\&. "
+.ti -1c
+.RI "static int \fBexec_assignment_only\fP (\fBt_shell\fP *shell, \fBt_cmd\fP *cmd)"
+.br
+.RI "Handle empty command (just assignments and/or redirections)\&. "
+.ti -1c
+.RI "static int \fBsave_and_apply_assigns\fP (\fBt_shell\fP *shell, t_list *assigns, char **old_names, char **old_vals)"
+.br
+.RI "Save old values, apply temporary assignments for builtin scope\&. "
+.ti -1c
+.RI "static void \fBrestore_assigns\fP (\fBt_shell\fP *shell, char **old_names, char **old_vals, int count)"
+.br
+.RI "Restore old variable values after builtin execution\&. "
+.ti -1c
+.RI "static int \fBexec_builtin\fP (\fBt_shell\fP *shell, \fBt_cmd\fP *cmd, \fBt_builtin_fn\fP fn)"
+.br
+.RI "Execute a builtin with temporary assignments and redirections\&. "
+.ti -1c
+.RI "static void \fBexec_child\fP (\fBt_shell\fP *shell, \fBt_cmd\fP *cmd)"
+.br
+.RI "Child process: apply assignments, set up redirections, exec\&. "
+.in -1c
+.SH "Detailed Description"
+.PP 
+Command execution functionality for 42sh\&. 
+
+
+.PP
+\fBAuthor\fP
+.RS 4
+wengzhang, pulgamecanica 
+.RE
+.PP
+
+.SH "Function Documentation"
+.PP 
+.SS "static void apply_assignments (\fBt_shell\fP * shell, t_list * assigns, int do_export)\fR [static]\fP"
+
+.PP
+Apply assignments permanently to shell variables\&. Used when command is empty (bare assignment) or in child for execve\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIshell\fP The shell instance\&. 
+.br
+\fIassigns\fP The list of assignments\&. 
+.br
+\fIdo_export\fP Whether to export the variables\&. 
+.RE
+.PP
+
+.SS "static int exec_assignment_only (\fBt_shell\fP * shell, \fBt_cmd\fP * cmd)\fR [static]\fP"
+
+.PP
+Handle empty command (just assignments and/or redirections)\&. Example: FOO=bar or FOO=bar > file 
+.PP
+\fBParameters\fP
+.RS 4
+\fIshell\fP The shell instance\&. 
+.br
+\fIcmd\fP The command structure\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+0 on success, 1 on failure\&. 
+.RE
+.PP
+
+.SS "static int exec_builtin (\fBt_shell\fP * shell, \fBt_cmd\fP * cmd, \fBt_builtin_fn\fP fn)\fR [static]\fP"
+
+.PP
+Execute a builtin with temporary assignments and redirections\&. Assignments are scoped to this command only, then restored\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIshell\fP The shell instance\&. 
+.br
+\fIcmd\fP The command structure\&. 
+.br
+\fIfn\fP The builtin function to execute\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+The exit status of the builtin\&. 
+.RE
+.PP
+
+.SS "static void exec_child (\fBt_shell\fP * shell, \fBt_cmd\fP * cmd)\fR [static]\fP"
+
+.PP
+Child process: apply assignments, set up redirections, exec\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIshell\fP The shell instance\&. 
+.br
+\fIcmd\fP The command structure\&. 
+.RE
+.PP
+
+.SS "static void restore_assigns (\fBt_shell\fP * shell, char ** old_names, char ** old_vals, int count)\fR [static]\fP"
+
+.PP
+Restore old variable values after builtin execution\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIshell\fP The shell instance\&. 
+.br
+\fIold_names\fP Array of old variable names\&. 
+.br
+\fIold_vals\fP Array of old variable values\&. 
+.br
+\fIcount\fP Number of assignments to restore\&. 
+.RE
+.PP
+
+.SS "static int save_and_apply_assigns (\fBt_shell\fP * shell, t_list * assigns, char ** old_names, char ** old_vals)\fR [static]\fP"
+
+.PP
+Save old values, apply temporary assignments for builtin scope\&. old_names/old_vals arrays store what to restore afterward\&. 
+.PP
+\fBParameters\fP
+.RS 4
+\fIshell\fP The shell instance\&. 
+.br
+\fIassigns\fP The list of assignments\&. 
+.br
+\fIold_names\fP Array to store old variable names\&. 
+.br
+\fIold_vals\fP Array to store old variable values\&. 
+.RE
+.PP
+\fBReturns\fP
+.RS 4
+Count of saved assignments\&. 
+.RE
+.PP
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for 42sh from the source code\&.
+.SH SEE ALSO
+.BR 42sh.h (9),
+.BR ast_display.c (9),
+.BR ast.h (9),
+.BR builtin.c (9),
+.BR builtin_history.c (9),
+.BR builtins.h (9),
+.BR command_search.c (9),
+.BR exec_logical.c (9),
+.BR exec_pipeline.c (9),
+.BR exec_utils.c (9),
+.BR executor.c (9),
+.BR executor.h (9),
+.BR expander.c (9),
+.BR heredoc.c (9),
+.BR history.c (9),
+.BR history.h (9),
+.BR lexer.c (9),
+.BR lexer_display.c (9),
+.BR lexer.h (9),
+.BR lexer_operator.c (9),
+.BR lexer_words.c (9),
+.BR memory.c (9),
+.BR parser_and_or.c (9),
+.BR parser.c (9),
+.BR parser_command.c (9),
+.BR parser_group.c (9),
+.BR parser.h (9),
+.BR parser_heredoc.c (9),
+.BR parser_list.c (9),
+.BR parser_pipeline.c (9),
+.BR signal_child.c (9),
+.BR signal_exec.c (9),
+.BR signals.h (9),
+.BR t_ast (9),
+.BR t_binary (9),
+.BR t_cmd (9),
+.BR t_group (9),
+.BR t_operator (9),
+.BR t_parser (9),
+.BR t_redir (9),
+.BR t_shell (9),
+.BR t_token (9)

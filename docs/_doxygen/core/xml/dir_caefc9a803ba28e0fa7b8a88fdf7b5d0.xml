@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.2" xml:lang="en-US">
+  <compounddef id="dir_caefc9a803ba28e0fa7b8a88fdf7b5d0" kind="dir">
+    <compoundname>srcs/expander</compoundname>
+    <innerfile refid="expand__arithmetic_8c">expand_arithmetic.c</innerfile>
+    <innerfile refid="expand__command_8c">expand_command.c</innerfile>
+    <innerfile refid="expand__glob_8c">expand_glob.c</innerfile>
+    <innerfile refid="expand__parameter_8c">expand_parameter.c</innerfile>
+    <innerfile refid="expand__tilde_8c">expand_tilde.c</innerfile>
+    <innerfile refid="expand__utils_8c">expand_utils.c</innerfile>
+    <innerfile refid="expand__word_8c">expand_word.c</innerfile>
+    <innerfile refid="expander_8c">expander.c</innerfile>
+    <innerfile refid="field__split_8c">field_split.c</innerfile>
+    <innerfile refid="quote__removal_8c">quote_removal.c</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="srcs/expander/"/>
+  </compounddef>
+</doxygen>

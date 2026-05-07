@@ -1,0 +1,855 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.13.2" xml:lang="en-US">
+  <compounddef id="executor_8h" kind="file" language="C++">
+    <compoundname>executor.h</compoundname>
+    <includes refid="ast_8h" local="yes">ast.h</includes>
+    <includes refid="builtins_8h" local="yes">builtins.h</includes>
+    <includes refid="expander_8h" local="yes">expander.h</includes>
+    <includedby refid="command__search_8c" local="yes">srcs/executor/command_search.c</includedby>
+    <includedby refid="exec__command_8c" local="yes">srcs/executor/exec_command.c</includedby>
+    <includedby refid="exec__logical_8c" local="yes">srcs/executor/exec_logical.c</includedby>
+    <includedby refid="exec__pipeline_8c" local="yes">srcs/executor/exec_pipeline.c</includedby>
+    <includedby refid="exec__subshell_8c" local="yes">srcs/executor/exec_subshell.c</includedby>
+    <includedby refid="exec__utils_8c" local="yes">srcs/executor/exec_utils.c</includedby>
+    <includedby refid="executor_8c" local="yes">srcs/executor/executor.c</includedby>
+    <includedby refid="heredoc_8c" local="yes">srcs/executor/heredoc.c</includedby>
+    <includedby refid="redirections_8c" local="yes">srcs/executor/redirections.c</includedby>
+    <includedby refid="main_8c" local="yes">srcs/main.c</includedby>
+    <incdepgraph>
+      <node id="7">
+        <label>42sh.h</label>
+        <link refid="42sh_8h"/>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="19" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+        <childnode refid="24" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>ast.h</label>
+        <link refid="ast_8h"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>builtins.h</label>
+        <link refid="builtins_8h"/>
+      </node>
+      <node id="1">
+        <label>includes/executor.h</label>
+        <link refid="executor_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+      </node>
+      <node id="6">
+        <label>expander.h</label>
+        <link refid="expander_8h_source"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="26" relation="include">
+        </childnode>
+      </node>
+      <node id="21">
+        <label>history.h</label>
+        <link refid="history_8h"/>
+      </node>
+      <node id="23">
+        <label>job_control.h</label>
+        <link refid="job__control_8h_source"/>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>lexer.h</label>
+        <link refid="lexer_8h"/>
+        <childnode refid="4" relation="include">
+        </childnode>
+      </node>
+      <node id="24">
+        <label>signals.h</label>
+        <link refid="signals_8h"/>
+        <childnode refid="25" relation="include">
+        </childnode>
+      </node>
+      <node id="22">
+        <label>variables.h</label>
+        <link refid="variables_8h_source"/>
+      </node>
+      <node id="11">
+        <label>errno.h</label>
+      </node>
+      <node id="12">
+        <label>fcntl.h</label>
+      </node>
+      <node id="4">
+        <label>libft.h</label>
+      </node>
+      <node id="19">
+        <label>readline/history.h</label>
+      </node>
+      <node id="18">
+        <label>readline/readline.h</label>
+      </node>
+      <node id="25">
+        <label>signal.h</label>
+      </node>
+      <node id="26">
+        <label>stdbool.h</label>
+      </node>
+      <node id="8">
+        <label>stdio.h</label>
+      </node>
+      <node id="10">
+        <label>stdlib.h</label>
+      </node>
+      <node id="20">
+        <label>string.h</label>
+      </node>
+      <node id="15">
+        <label>sys/stat.h</label>
+      </node>
+      <node id="13">
+        <label>sys/types.h</label>
+      </node>
+      <node id="14">
+        <label>sys/wait.h</label>
+      </node>
+      <node id="17">
+        <label>term.h</label>
+      </node>
+      <node id="16">
+        <label>termios.h</label>
+      </node>
+      <node id="9">
+        <label>unistd.h</label>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="1">
+        <label>includes/executor.h</label>
+        <link refid="executor_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>srcs/executor/command_search.c</label>
+        <link refid="command__search_8c"/>
+      </node>
+      <node id="3">
+        <label>srcs/executor/exec_command.c</label>
+        <link refid="exec__command_8c"/>
+      </node>
+      <node id="4">
+        <label>srcs/executor/exec_logical.c</label>
+        <link refid="exec__logical_8c"/>
+      </node>
+      <node id="5">
+        <label>srcs/executor/exec_pipeline.c</label>
+        <link refid="exec__pipeline_8c"/>
+      </node>
+      <node id="6">
+        <label>srcs/executor/exec_utils.c</label>
+        <link refid="exec__utils_8c"/>
+      </node>
+      <node id="7">
+        <label>srcs/executor/executor.c</label>
+        <link refid="executor_8c"/>
+      </node>
+      <node id="8">
+        <label>srcs/executor/heredoc.c</label>
+        <link refid="heredoc_8c"/>
+      </node>
+    </invincdepgraph>
+    <sectiondef kind="define">
+      <memberdef kind="define" id="executor_8h_1a498417d62a77a67bbc7bedb36028b029" prot="public" static="no">
+        <name>MAX_PIPELINE</name>
+        <initializer>256</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/executor.h" line="14" column="10" bodyfile="includes/executor.h" bodystart="14" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="executor_8h_1a7c14f55f70137112158099bfda977b13" prot="public" static="no">
+        <name>MAX_SAVED_FDS</name>
+        <initializer>3</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/executor.h" line="15" column="10" bodyfile="includes/executor.h" bodystart="15" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="func">
+      <memberdef kind="function" id="executor_8h_1a13bdda5f80abca3b850f0c2f1b59afad" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int executor_execute</definition>
+        <argsstring>(struct s_shell *shell, t_ast *ast)</argsstring>
+        <name>executor_execute</name>
+        <param>
+          <type>struct s_shell *</type>
+          <declname>shell</declname>
+        </param>
+        <param>
+          <type><ref refid="structt__ast" kindref="compound">t_ast</ref> *</type>
+          <declname>ast</declname>
+        </param>
+        <briefdescription>
+<para>Main dispatch function for executing AST nodes. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>shell</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Pointer to the central shell state </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>ast</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Pointer to the AST node to execute </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Exit status code </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/executor.h" line="23" column="4" declfile="includes/executor.h" declline="23" declcolumn="4"/>
+      </memberdef>
+      <memberdef kind="function" id="executor_8h_1a7fb5f0020e176d996687d2ef8b923273" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int execute_simple_command</definition>
+        <argsstring>(struct s_shell *shell, t_cmd *cmd)</argsstring>
+        <name>execute_simple_command</name>
+        <param>
+          <type>struct s_shell *</type>
+          <declname>shell</declname>
+        </param>
+        <param>
+          <type><ref refid="structt__cmd" kindref="compound">t_cmd</ref> *</type>
+          <declname>cmd</declname>
+        </param>
+        <briefdescription>
+<para>Node-type executors. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>shell</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Pointer to the central shell state </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>ast</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Pointer to the AST node to execute </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Exit status code </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/executor.h" line="31" column="4" declfile="includes/executor.h" declline="31" declcolumn="4"/>
+      </memberdef>
+      <memberdef kind="function" id="executor_8h_1a911d93d3f592804b8d583782d8fbc577" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int execute_pipeline</definition>
+        <argsstring>(struct s_shell *shell, t_ast *ast)</argsstring>
+        <name>execute_pipeline</name>
+        <param>
+          <type>struct s_shell *</type>
+          <declname>shell</declname>
+        </param>
+        <param>
+          <type><ref refid="structt__ast" kindref="compound">t_ast</ref> *</type>
+          <declname>ast</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/executor.h" line="32" column="4" declfile="includes/executor.h" declline="32" declcolumn="4"/>
+      </memberdef>
+      <memberdef kind="function" id="executor_8h_1a93d24b6056370f86c919883614f06fc1" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int execute_and</definition>
+        <argsstring>(struct s_shell *shell, t_ast *ast)</argsstring>
+        <name>execute_and</name>
+        <param>
+          <type>struct s_shell *</type>
+          <declname>shell</declname>
+        </param>
+        <param>
+          <type><ref refid="structt__ast" kindref="compound">t_ast</ref> *</type>
+          <declname>ast</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/executor.h" line="33" column="4" declfile="includes/executor.h" declline="33" declcolumn="4"/>
+      </memberdef>
+      <memberdef kind="function" id="executor_8h_1ad3018390cc0c46546ed4dcfd02f7d37a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int execute_or</definition>
+        <argsstring>(struct s_shell *shell, t_ast *ast)</argsstring>
+        <name>execute_or</name>
+        <param>
+          <type>struct s_shell *</type>
+          <declname>shell</declname>
+        </param>
+        <param>
+          <type><ref refid="structt__ast" kindref="compound">t_ast</ref> *</type>
+          <declname>ast</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/executor.h" line="34" column="4" declfile="includes/executor.h" declline="34" declcolumn="4"/>
+      </memberdef>
+      <memberdef kind="function" id="executor_8h_1a3db4216b6397bf04d3d5204db9121b82" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int execute_sequence</definition>
+        <argsstring>(struct s_shell *shell, t_ast *ast)</argsstring>
+        <name>execute_sequence</name>
+        <param>
+          <type>struct s_shell *</type>
+          <declname>shell</declname>
+        </param>
+        <param>
+          <type><ref refid="structt__ast" kindref="compound">t_ast</ref> *</type>
+          <declname>ast</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/executor.h" line="35" column="4" declfile="includes/executor.h" declline="35" declcolumn="4"/>
+      </memberdef>
+      <memberdef kind="function" id="executor_8h_1a97aa6ca9cf39810fd7c277463e80892e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int execute_subshell</definition>
+        <argsstring>(struct s_shell *shell, t_ast *ast)</argsstring>
+        <name>execute_subshell</name>
+        <param>
+          <type>struct s_shell *</type>
+          <declname>shell</declname>
+        </param>
+        <param>
+          <type><ref refid="structt__ast" kindref="compound">t_ast</ref> *</type>
+          <declname>ast</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/executor.h" line="36" column="4" declfile="includes/executor.h" declline="36" declcolumn="4"/>
+      </memberdef>
+      <memberdef kind="function" id="executor_8h_1a47767d0e775a42e7e38303e3c35f53cc" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int execute_block</definition>
+        <argsstring>(struct s_shell *shell, t_ast *ast)</argsstring>
+        <name>execute_block</name>
+        <param>
+          <type>struct s_shell *</type>
+          <declname>shell</declname>
+        </param>
+        <param>
+          <type><ref refid="structt__ast" kindref="compound">t_ast</ref> *</type>
+          <declname>ast</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/executor.h" line="37" column="4" declfile="includes/executor.h" declline="37" declcolumn="4"/>
+      </memberdef>
+      <memberdef kind="function" id="executor_8h_1a082c2d122e58ca7a13b035dc8347a639" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int execute_background</definition>
+        <argsstring>(struct s_shell *shell, t_ast *ast)</argsstring>
+        <name>execute_background</name>
+        <param>
+          <type>struct s_shell *</type>
+          <declname>shell</declname>
+        </param>
+        <param>
+          <type><ref refid="structt__ast" kindref="compound">t_ast</ref> *</type>
+          <declname>ast</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/executor.h" line="38" column="4" declfile="includes/executor.h" declline="38" declcolumn="4"/>
+      </memberdef>
+      <memberdef kind="function" id="executor_8h_1a9b33cb188925fd4bdbfe0a0b67e063ab" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int setup_redirections</definition>
+        <argsstring>(t_list *redirs, int saved_fds[3])</argsstring>
+        <name>setup_redirections</name>
+        <param>
+          <type>t_list *</type>
+          <declname>redirs</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>saved_fds</declname>
+          <array>[3]</array>
+        </param>
+        <briefdescription>
+<para>redirection setup </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>redirs</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>List of redirection nodes </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>saved_fds</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Array to save original file descriptors </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Exit status code</para>
+</simplesect>
+redirection setup</para>
+<para>If saved_fds is not NULL, save stdin/stdout/stderr first (for restore). <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>redirs</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The list of redirections. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>saved_fds</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The array to store the saved file descriptors. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>0 on success, -1 on error. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/executor.h" line="46" column="4" bodyfile="srcs/executor/redirections.c" bodystart="102" bodyend="124" declfile="includes/executor.h" declline="46" declcolumn="4"/>
+      </memberdef>
+      <memberdef kind="function" id="executor_8h_1a745761ea2f87e3968790c84e434b349e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void restore_redirections</definition>
+        <argsstring>(int saved_fds[3])</argsstring>
+        <name>restore_redirections</name>
+        <param>
+          <type>int</type>
+          <declname>saved_fds</declname>
+          <array>[3]</array>
+        </param>
+        <briefdescription>
+<para>Restore redirections. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>saved_fds</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Array of saved file descriptors</para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+Restore redirections.</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>saved_fds</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The array of saved file descriptors. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/executor.h" line="52" column="5" bodyfile="srcs/executor/redirections.c" bodystart="130" bodyend="138" declfile="includes/executor.h" declline="52" declcolumn="5"/>
+      </memberdef>
+      <memberdef kind="function" id="executor_8h_1aaaadd90558030e88082326af2d997428" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int setup_heredoc</definition>
+        <argsstring>(t_redir *redir)</argsstring>
+        <name>setup_heredoc</name>
+        <param>
+          <type><ref refid="structt__redir" kindref="compound">t_redir</ref> *</type>
+          <declname>redir</declname>
+        </param>
+        <briefdescription>
+<para>Heredoc setup. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>redir</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Pointer to the redirection node </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Exit status code</para>
+</simplesect>
+Heredoc setup.</para>
+<para>the write end, close the write end, and return the read end fd. <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>redir</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The redirection structure. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The read-end fd on success, -1 on error. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/executor.h" line="59" column="4" bodyfile="srcs/executor/heredoc.c" bodystart="16" bodyend="34" declfile="includes/executor.h" declline="59" declcolumn="4"/>
+      </memberdef>
+      <memberdef kind="function" id="executor_8h_1ae2070267d1e53aa5bc6ac0dc0c85b1b8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>char *</type>
+        <definition>char * find_command</definition>
+        <argsstring>(struct s_shell *shell, const char *name)</argsstring>
+        <name>find_command</name>
+        <param>
+          <type>struct s_shell *</type>
+          <declname>shell</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>name</declname>
+        </param>
+        <briefdescription>
+<para>Command search (PATH) </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>shell</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Pointer to the central shell state </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>name</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Name of the command to search for </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Pointer to the found command, or NULL if not found </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/executor.h" line="67" column="5" declfile="includes/executor.h" declline="67" declcolumn="5"/>
+      </memberdef>
+      <memberdef kind="function" id="executor_8h_1a6c614c345c8dc1b86aed2d8e4a10f1e1" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void exec_pipeline_external</definition>
+        <argsstring>(struct s_shell *shell, t_cmd *cmd)</argsstring>
+        <name>exec_pipeline_external</name>
+        <param>
+          <type>struct s_shell *</type>
+          <declname>shell</declname>
+        </param>
+        <param>
+          <type><ref refid="structt__cmd" kindref="compound">t_cmd</ref> *</type>
+          <declname>cmd</declname>
+        </param>
+        <briefdescription>
+<para>Pipeline helper (called from pipe_child, does not return) </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>shell</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Pointer to the central shell state </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>cmd</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Pointer to the command node </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/executor.h" line="74" column="5" declfile="includes/executor.h" declline="74" declcolumn="5"/>
+      </memberdef>
+      <memberdef kind="function" id="executor_8h_1a1c76237e804221f0b304bb911f2d9871" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int get_exit_status</definition>
+        <argsstring>(int wstatus)</argsstring>
+        <name>get_exit_status</name>
+        <param>
+          <type>int</type>
+          <declname>wstatus</declname>
+        </param>
+        <briefdescription>
+<para>get exit status from wait status </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>wstatus</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Wait status code </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Exit status code</para>
+</simplesect>
+get exit status from wait status</para>
+<para><itemizedlist>
+<listitem><para>Normal exit: WEXITSTATUS (0-255)</para>
+</listitem></itemizedlist>
+</para>
+<para><itemizedlist>
+<listitem><para>Killed by signal: 128 + signal number <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>wstatus</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The waitpid status. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>The shell exit code. </para>
+</simplesect>
+</para>
+</listitem></itemizedlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/executor.h" line="81" column="4" bodyfile="srcs/executor/exec_utils.c" bodystart="17" bodyend="24" declfile="includes/executor.h" declline="81" declcolumn="4"/>
+      </memberdef>
+      <memberdef kind="function" id="executor_8h_1adfc974609bf3404693e579212d74e1f8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void split_assignment</definition>
+        <argsstring>(const char *assign, char **name, char **value)</argsstring>
+        <name>split_assignment</name>
+        <param>
+          <type>const char *</type>
+          <declname>assign</declname>
+        </param>
+        <param>
+          <type>char **</type>
+          <declname>name</declname>
+        </param>
+        <param>
+          <type>char **</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+<para>Split &quot;NAME=value&quot; at first &apos;=&apos; into separate name and value strings. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Caller must free both *name and *value.</para>
+<para>If no &apos;=&apos; found, *name = dup of assign, *value = dup of &quot;&quot;. <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>assign</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The assignment string. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>name</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The pointer to store the name. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>value</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The pointer to store the value. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="includes/executor.h" line="83" column="5" bodyfile="srcs/executor/exec_utils.c" bodystart="34" bodyend="49" declfile="includes/executor.h" declline="83" declcolumn="5"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>defines the executor functions for handling AST nodes. </para>
+    </briefdescription>
+    <detaileddescription>
+<para><simplesect kind="author"><para>zweng, pulgamecanica </para>
+</simplesect>
+</para>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="normal"></highlight></codeline>
+<codeline lineno="6"><highlight class="normal"></highlight></codeline>
+<codeline lineno="7"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>EXECUTOR_H</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="8"><highlight class="normal"></highlight><highlight class="preprocessor">#<sp/>define<sp/>EXECUTOR_H</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="9"><highlight class="normal"></highlight></codeline>
+<codeline lineno="10"><highlight class="normal"></highlight><highlight class="preprocessor">#<sp/>include<sp/>&quot;<ref refid="ast_8h" kindref="compound">ast.h</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"></highlight><highlight class="preprocessor">#<sp/>include<sp/>&quot;<ref refid="builtins_8h" kindref="compound">builtins.h</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="12"><highlight class="normal"></highlight><highlight class="preprocessor">#<sp/>include<sp/>&quot;expander.h&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="13"><highlight class="normal"></highlight></codeline>
+<codeline lineno="14"><highlight class="normal"></highlight><highlight class="preprocessor">#<sp/>define<sp/>MAX_PIPELINE<sp/>256</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="15"><highlight class="normal"></highlight><highlight class="preprocessor">#<sp/>define<sp/>MAX_SAVED_FDS<sp/>3</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="16"><highlight class="normal"></highlight></codeline>
+<codeline lineno="23" refid="executor_8h_1a13bdda5f80abca3b850f0c2f1b59afad" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><ref refid="executor_8h_1a13bdda5f80abca3b850f0c2f1b59afad" kindref="member">executor_execute</ref>(</highlight><highlight class="keyword">struct</highlight><highlight class="normal"><sp/>s_shell<sp/>*shell,<sp/><ref refid="structt__ast" kindref="compound">t_ast</ref><sp/>*ast);</highlight></codeline>
+<codeline lineno="24"><highlight class="normal"></highlight></codeline>
+<codeline lineno="31" refid="executor_8h_1a7fb5f0020e176d996687d2ef8b923273" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><ref refid="executor_8h_1a7fb5f0020e176d996687d2ef8b923273" kindref="member">execute_simple_command</ref>(</highlight><highlight class="keyword">struct</highlight><highlight class="normal"><sp/>s_shell<sp/>*shell,<sp/><ref refid="structt__cmd" kindref="compound">t_cmd</ref><sp/>*cmd);</highlight></codeline>
+<codeline lineno="32"><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>execute_pipeline(</highlight><highlight class="keyword">struct</highlight><highlight class="normal"><sp/>s_shell<sp/>*shell,<sp/><ref refid="structt__ast" kindref="compound">t_ast</ref><sp/>*ast);</highlight></codeline>
+<codeline lineno="33"><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>execute_and(</highlight><highlight class="keyword">struct</highlight><highlight class="normal"><sp/>s_shell<sp/>*shell,<sp/><ref refid="structt__ast" kindref="compound">t_ast</ref><sp/>*ast);</highlight></codeline>
+<codeline lineno="34"><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>execute_or(</highlight><highlight class="keyword">struct</highlight><highlight class="normal"><sp/>s_shell<sp/>*shell,<sp/><ref refid="structt__ast" kindref="compound">t_ast</ref><sp/>*ast);</highlight></codeline>
+<codeline lineno="35"><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>execute_sequence(</highlight><highlight class="keyword">struct</highlight><highlight class="normal"><sp/>s_shell<sp/>*shell,<sp/><ref refid="structt__ast" kindref="compound">t_ast</ref><sp/>*ast);</highlight></codeline>
+<codeline lineno="36"><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>execute_subshell(</highlight><highlight class="keyword">struct</highlight><highlight class="normal"><sp/>s_shell<sp/>*shell,<sp/><ref refid="structt__ast" kindref="compound">t_ast</ref><sp/>*ast);</highlight></codeline>
+<codeline lineno="37"><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>execute_block(</highlight><highlight class="keyword">struct</highlight><highlight class="normal"><sp/>s_shell<sp/>*shell,<sp/><ref refid="structt__ast" kindref="compound">t_ast</ref><sp/>*ast);</highlight></codeline>
+<codeline lineno="38"><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>execute_background(</highlight><highlight class="keyword">struct</highlight><highlight class="normal"><sp/>s_shell<sp/>*shell,<sp/><ref refid="structt__ast" kindref="compound">t_ast</ref><sp/>*ast);</highlight></codeline>
+<codeline lineno="39"><highlight class="normal"></highlight></codeline>
+<codeline lineno="46"><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><ref refid="executor_8h_1a9b33cb188925fd4bdbfe0a0b67e063ab" kindref="member">setup_redirections</ref>(t_list<sp/>*redirs,<sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>saved_fds[3]);</highlight></codeline>
+<codeline lineno="47"><highlight class="normal"></highlight></codeline>
+<codeline lineno="52"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="executor_8h_1a745761ea2f87e3968790c84e434b349e" kindref="member">restore_redirections</ref>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>saved_fds[3]);</highlight></codeline>
+<codeline lineno="53"><highlight class="normal"></highlight></codeline>
+<codeline lineno="59"><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><ref refid="executor_8h_1aaaadd90558030e88082326af2d997428" kindref="member">setup_heredoc</ref>(<ref refid="structt__redir" kindref="compound">t_redir</ref><sp/>*redir);</highlight></codeline>
+<codeline lineno="60"><highlight class="normal"></highlight></codeline>
+<codeline lineno="67" refid="executor_8h_1ae2070267d1e53aa5bc6ac0dc0c85b1b8" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/><sp/><sp/><sp/>*<ref refid="executor_8h_1ae2070267d1e53aa5bc6ac0dc0c85b1b8" kindref="member">find_command</ref>(</highlight><highlight class="keyword">struct</highlight><highlight class="normal"><sp/>s_shell<sp/>*shell,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*name);</highlight></codeline>
+<codeline lineno="68"><highlight class="normal"></highlight></codeline>
+<codeline lineno="74" refid="executor_8h_1a6c614c345c8dc1b86aed2d8e4a10f1e1" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="executor_8h_1a6c614c345c8dc1b86aed2d8e4a10f1e1" kindref="member">exec_pipeline_external</ref>(</highlight><highlight class="keyword">struct</highlight><highlight class="normal"><sp/>s_shell<sp/>*shell,<sp/><ref refid="structt__cmd" kindref="compound">t_cmd</ref><sp/>*cmd);</highlight></codeline>
+<codeline lineno="75"><highlight class="normal"></highlight></codeline>
+<codeline lineno="81"><highlight class="normal"></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><ref refid="executor_8h_1a1c76237e804221f0b304bb911f2d9871" kindref="member">get_exit_status</ref>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>wstatus);</highlight></codeline>
+<codeline lineno="82"><highlight class="normal"></highlight></codeline>
+<codeline lineno="83"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="executor_8h_1adfc974609bf3404693e579212d74e1f8" kindref="member">split_assignment</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*assign,<sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>**name,<sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>**value);</highlight></codeline>
+<codeline lineno="84"><highlight class="normal"></highlight></codeline>
+<codeline lineno="85"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight></codeline>
+    </programlisting>
+    <location file="includes/executor.h"/>
+  </compounddef>
+</doxygen>
