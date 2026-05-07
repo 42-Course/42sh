@@ -43,6 +43,7 @@ TEST_FLAGS += -DTEST_JOB_CONTROL_ENABLED
 TEST_FLAGS += -DTEST_BUILTIN_EXIT_ENABLED
 TEST_FLAGS += -DTEST_BUILTIN_TYPE_ENABLED
 TEST_FLAGS += -DTEST_HEREDOC_BUGS_ENABLED
+TEST_FLAGS += -DTEST_VARIABLES_ENABLED
 
 # ----- Source discovery (recursive) -----
 SRCS		= $(shell find $(SRC_PATH) -name '*.c')
@@ -171,6 +172,7 @@ help:
 	@printf "  "$(CYAN)"re"$(EOC)"            — rebuild from scratch\n"
 	@printf "  "$(CYAN)"install-hooks"$(EOC)" — set up Git hooks from .githooks/\n"
 	@printf "  "$(CYAN)"help"$(EOC)"          — show this message\n"
+	@printf "  "$(CYAN)"tests"$(EOC)"          $(TEST_SRCS)"
 	@printf "\n"
 	@printf "Usage:\n"
 	@printf "  make           # build 42sh\n"
