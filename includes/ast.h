@@ -31,11 +31,12 @@ typedef enum e_node_type
  * @details Stored in t_cmd.redirs and t_group.redirs as t_list*
  *          (each node->content is a t_redir*).  No *next field.
  *
- * @param fd               source fd (-1 = default for the operator type).
- * @param target           raw filename or fd number string (unexpanded).
- * @param heredoc_delim    the delimiter word for << (raw, may be quoted).
- * @param heredoc_content  collected heredoc content (filled after parse, before exec).
- * @param heredoc_quoted   1 if delimiter was quoted (no expansion inside heredoc).
+ * @param fd				source fd (-1 = default for the operator type).
+ * @param target			raw filename or fd number string (unexpanded).
+ * @param heredoc_delim		the delimiter word for << (raw, may be quoted).
+ * @param heredoc_stripped	1 if leadling tab are stripped
+ * @param heredoc_content	collected heredoc content (filled after parse, before exec).
+ * @param heredoc_quoted	1 if delimiter was quoted (no expansion inside heredoc).
  */
 typedef struct s_redir
 {
@@ -43,7 +44,7 @@ typedef struct s_redir
 	int				fd;
 	char			*target;
 	char			*heredoc_delim;
-	char			*heredoc_content;
+	int				heredoc_fd;
 	int				heredoc_quoted;
 }	t_redir;
 
@@ -103,6 +104,8 @@ typedef struct s_ast
 /**
  * @brief AST construction helpers
  */
+char		*ast_to_string(t_ast *ast);
+char		*cmd_to_string(t_cmd *cmd);
 t_ast		*ast_new_command(t_cmd *cmd);
 t_ast		*ast_new_binary(t_node_type type, t_ast *left, t_ast *right);
 t_ast		*ast_new_group(t_node_type type, t_ast *child, t_list *redirs);

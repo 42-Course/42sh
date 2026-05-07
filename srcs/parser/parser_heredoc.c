@@ -7,48 +7,54 @@
 
 volatile sig_atomic_t	g_sigint_heredoc = 0;
 
-/*
- * @param begin char pointer : the begin of the dest
- * @param len size_t : the len of the dest
- * @param read size_t : the len of the src
- * @param src char pointer : the src to append
- * @brief helper function for read heredoc
- * @details allocate memory and contatenate dest and src
- * @return a char pointer on the heredoc content
+/**
+ * @param origin : raw string
+ * @brief strip the leading tabulations of origin
+ * @return an allocated cleaned string
  */
-static char	*result_concat(char *begin, size_t *len, size_t read, char *src)
+static char *strip_tab(char *origin)
 {
-	char	*tmp;
-	char	*result;
+	while (*origin && *origin == '\t')
+		origin++;
+	return (strdup(origin));
+}
 
-	tmp = realloc(begin, *len + read + 1);
-	if (!tmp)
+/*
+ * @param fd : the fd to write
+ * @param line : the line source to read
+ * @param len : the len of the line
+ * @brief write until all the line will be copied
+ * @return the number of bytes writed or -1 if failure
+ */
+static int	write_line(int fd, char *line, size_t len)
+{
+	size_t	total = 0;
+	ssize_t	bytes = 0;
+
+	while (total < len)
 	{
-		free(begin);
-		return (NULL);
+		bytes = write(fd, line + total, len - total);
+		if (bytes < 0)
+			return (-1);
+		if (!bytes)
+			break;
+		total += bytes;
 	}
-	result = tmp;
-	memcpy(result + *len, src, read);
-	result[*len + read] = '\0';
-	*len += read;
-	return (result);
+	return (0);
 }
 
 /**
- * @param delimiter : const char pointer of the string representing EOF
+ * @param redir : a pointer on struct s_redir 
  * @param prompt : the prompt symbol of the heredoc
- * @brief read the user input and store each line
- * @return a char pointer on the content of the heredoc
+ * @param fd : the pipe write end
+ * @brief read the user input and write directly each line
+ * @return 0 (success) | -1 (failure)
  */
-static char	*read_heredoc(const char *delimiter, const char *prompt)
+static int	read_heredoc(t_redir *redir, const char *prompt, int fd)
 {
 	char		*line;
-	char		*result;
-	size_t		result_len;
+	char		*convert_line;
 
-	result = NULL;
-	line = NULL;
-	result_len = 0;
 	while (!g_sigint_heredoc)
 	{
 		line = readline(prompt);
@@ -56,44 +62,33 @@ static char	*read_heredoc(const char *delimiter, const char *prompt)
 		{
 			fprintf(stderr,
 				"\nwarning: here-document delimited by end-of-file (wanted`%s')\n",
-				delimiter);
+				redir->heredoc_delim);
 			break;
 		}
-		if (strcmp(line, delimiter) == 0)
-		{
-			free(line);
-			break;
-		}
-		result = result_concat(result, &result_len, strlen(line), line);
-		result = result_concat(result, &result_len, 1, "\n");
+		if (redir->type == TOK_HEREDOC_STRIP)
+			convert_line = strip_tab(line);
+		else
+			convert_line = strdup(line);
 		free(line);
-		if (!result)
-			break ;
+		if (strcmp(convert_line, redir->heredoc_delim) == 0)
+		{
+			free(convert_line);
+			break;
+		}
+		if (write_line(fd, convert_line, strlen(convert_line)) == -1
+			|| write(fd, "\n", 1) == -1)
+		{
+			free(convert_line);
+			return (-1);
+		}
+		free(convert_line);
 	}
 	if (g_sigint_heredoc)
 	{
-		free(result);
-		return (NULL);
+			free(convert_line);
+			return (-1);
 	}
-	return (result);
-}
-
-/**
- * @param redir pointer on a struct s_redir
- * @param pipefd the 2 ends of the pipe
- * @brief read from the pipe out
- */
-static void	read_heredoc_from_pipe(t_redir *redir, int pipefd[2])
-{
-	char	buffer[1024];
-	ssize_t	n;
-	char	*result = NULL;
-	size_t	len = 0;
-
-	while ((n = read(pipefd[0], buffer, sizeof(buffer))) > 0)
-		result = result_concat(result, &len, n, buffer);
-	close(pipefd[0]);
-	redir->heredoc_content = result;
+	return (0);
 }
 
 /**
@@ -107,25 +102,26 @@ static int	fork_heredoc(t_redir *redir)
 	int		pipefd[2];
 	pid_t	pid;
 	int		status;
-	char	*res;
 
 	if (pipe(pipefd) == -1)
 		return (-1);
+	fcntl(pipefd[0], F_SETFD, FD_CLOEXEC);
 	pid = fork();
 	if (pid == -1)
+	{
+		close(pipefd[0]);
+		close(pipefd[1]);
 		return (-1);
+	}
 	if (pid == 0) //CHILD PROCESS
 	{
 		signal(SIGINT, SIG_DFL);
 		close(pipefd[0]);
-		res = read_heredoc(redir->heredoc_delim, "> ");
-		if (!res)
+		if (read_heredoc(redir, "> ", pipefd[1]) == -1)
 		{
 			close(pipefd[1]);
 			exit(130);
 		}
-		write(pipefd[1], res, strlen(res));
-		free(res);
 		close(pipefd[1]);
 		exit(0);
 	}
@@ -133,13 +129,13 @@ static int	fork_heredoc(t_redir *redir)
 	{
 		close(pipefd[1]);
 		waitpid(pid, &status, 0);
-		if (WIFSIGNALED(status) || WEXITSTATUS(status == 130))
+		if (WIFSIGNALED(status) || WEXITSTATUS(status) == 130)
 		{
 			close(pipefd[0]);
 			g_sigint_heredoc = 1;
 			return (-1);
 		}
-		read_heredoc_from_pipe(redir, pipefd);
+		redir->heredoc_fd = pipefd[0];
 		return (0);
 	}
 }
@@ -156,9 +152,12 @@ static int	collect_heredocs_from_list(t_list *lst)
 	while (lst)
 	{
 		redir = lst->content;
-		if (redir && redir->type == TOK_HEREDOC)
+		if (redir &&
+			(redir->type == TOK_HEREDOC || redir->type == TOK_HEREDOC_STRIP))
+		{
 			if (fork_heredoc(redir) == -1)
 				return (-1);
+		}
 		lst = lst->next;
 	}
 	return (0);
@@ -195,7 +194,7 @@ void	heredoc_expand_config(t_redir *redir)
 	char	quote;
 	char	*end;
 
-	if (redir->type == TOK_HEREDOC)
+	if (redir->type == TOK_HEREDOC || redir->type == TOK_HEREDOC_STRIP)
 	{
 		if (redir->target[0] == '\'' || redir->target[0] == '"')
 		{
