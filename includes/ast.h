@@ -19,7 +19,7 @@
  * # Example
  * $> (which ls) | echo "dude" && which top
  * ```
- * ![AST visualizer](/assets/ast_1.png)
+ * ![AST visualizer](https://github.com/leowz/42sh/blob/main/docs/assets/ast_1.png)
  * 
  * @warning Important to don't change the order
  */

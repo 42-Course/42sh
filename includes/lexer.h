@@ -23,11 +23,11 @@
  * $> ( cat /etc/passwd | egrep 'pulgamecanica' | awk '{print("$1", "pwd")}' ) || echo "didn't work"
  * ```
  * 
- * ![Tokenizer visualizer](/assets/tok_1.png)
+ * ![Tokenizer visualizer](https://github.com/leowz/42sh/blob/main/docs/assets/tok_1.png)
  * 
  * That tokenization bocomes the following AST tree:
  * 
- * ![AST visualizer](/assets/ast_2.png)
+ * ![AST visualizer](https://github.com/leowz/42sh/blob/main/docs/assets/ast_2.png)
  * 
  * @details These types represent the different kinds of tokens that can be
  *          identified in the shell's input. They include words, operators,
