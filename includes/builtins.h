@@ -98,6 +98,23 @@ int builtin_echo(struct s_shell *shell, int argc, char **argv);
 int builtin_cd(struct s_shell *shell, int argc, char **argv);
 
 /**
+ * @brief Print the current working directory.
+ * @return 0 on success, 1 on getcwd failure or usage error.
+ *
+ * **Usage**: `pwd [-L|-P]`
+ *
+ * | Option | Effect                                                  |
+ * |--------|---------------------------------------------------------|
+ * | `-L`   | Logical: print `$PWD` (default).                        |
+ * | `-P`   | Physical: print `getcwd(3)` output (symlinks resolved). |
+ *
+ * The default `-L` form is what makes `cd /bin; pwd` report `/bin` even
+ * when `/bin` is a symlink to `/usr/bin` — the shell tracks the logical
+ * path the user typed, not what the kernel resolved.
+ */
+int builtin_pwd(struct s_shell *shell, int argc, char **argv);
+
+/**
  * @brief Exit the shell.
  * @return On success the shell terminates and never returns to the
  *         caller. On usage error: 2 (non-numeric argument) or 1 (more

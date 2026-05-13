@@ -211,6 +211,26 @@ void job_notify(struct s_shell *shell);
 const char *job_status_str(t_job_status s);
 
 /**
+ * @brief Print one job listing line, bash-compatible.
+ * @details Format: "[N]M  Status[(SIG)]<pad>  cmd-line\n", where M is the
+ *          current-job marker ('+', '-', or ' ') and (SIG) is appended
+ *          only for non-SIGTSTP stops or signal-terminated jobs.
+ * @param fd File descriptor to write to (STDOUT for `jobs`, STDERR for
+ *           auto-notifications).
+ */
+void job_print_line(int fd, struct s_shell *shell, t_job *job);
+
+/**
+ * @brief Print "Segmentation fault (core dumped)"-style message for a
+ *        foreground job whose last process died by signal.
+ * @details Mirrors bash's foreground signal-death output. Silent for
+ *          SIGINT and SIGPIPE (bash suppresses those to avoid noise from
+ *          Ctrl-C and broken-pipe situations). Adds " (core dumped)"
+ *          when WCOREDUMP indicates a core file was produced.
+ */
+void job_print_termination(t_job *job);
+
+/**
  * @brief Release every job and process still tracked by `shell`.
  * @details Called from `shell_cleanup` on exit.  Leaves `shell->jobs` NULL
  *          and `shell->current_job` NULL.

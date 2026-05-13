@@ -66,5 +66,7 @@ int	job_launch_foreground(t_shell *shell, t_job *job)
 		tcsetpgrp(shell->terminal_fd, shell->shell_pgid);
 		tcsetattr(shell->terminal_fd, TCSADRAIN, &shell->original_termios);
 	}
+	if (job->status == JOB_TERMINATED)
+		job_print_termination(job);
 	return (status);
 }
