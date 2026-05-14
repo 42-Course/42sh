@@ -1,332 +1,303 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   variables.c                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: wengzhang <marvin@42.fr>                   +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/04/06 00:00:00 by wengzhang         #+#    #+#             */
-/*   Updated: 2026/04/29 21:40:49 by jguillem         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+/**
+ * @file variables.c
+ * @brief Shell variable storage and lookup.
+ * @author wengzhang, pulgamecanica
+ *
+ * Variables live in @c shell->variables as a singly-linked t_list of
+ * t_var pointers (one node per name).  The cached @c shell->env array
+ * is rebuilt lazily by @c var_get_environ when @c shell->env_dirty
+ * flips on after a write.
+ *
+ * This module owns both: every t_var name/value pair is freshly
+ * allocated, and every entry of @c shell->env is heap-owned too.
+ * @c var_init_from_environ copies from the inherited envp so the
+ * caller can keep the original char** untouched.
+ */
 
 #include "42sh.h"
-#include "variables.h"
+#include <stdlib.h>
 
-/* TODO P3: implement variable storage (linked list of t_var) */
+static int	is_valid_identifier(const char *name)
+{
+	size_t	i;
 
-t_var	*var_get(t_shell *shell, const char *name) {
-	t_list *temp = shell->variables;
-
-	while (temp) {
-
-		t_var * var_temp = (t_var *)temp->content;
-
-		if (!strcmp((const char*)var_temp->name, name)) {
-			return var_temp;
-		}
-
-		temp = temp->next;
+	if (!name || !*name)
+		return (0);
+	if (!ft_isalpha((unsigned char)name[0]) && name[0] != '_')
+		return (0);
+	i = 1;
+	while (name[i])
+	{
+		if (!ft_isalnum((unsigned char)name[i]) && name[i] != '_')
+			return (0);
+		i++;
 	}
+	return (1);
+}
 
+static void	var_destroy(t_var *var)
+{
+	if (!var)
+		return ;
+	free(var->name);
+	free(var->value);
+	free(var);
+}
+
+t_var	*var_get(t_shell *shell, const char *name)
+{
+	t_list	*node;
+	t_var	*var;
+
+	if (!shell || !name)
+		return (NULL);
+	node = shell->variables;
+	while (node)
+	{
+		var = LST_VAR(node);
+		if (var && var->name && ft_strequ(var->name, name))
+			return (var);
+		node = node->next;
+	}
 	return (NULL);
 }
 
+char	*var_get_value(t_shell *shell, const char *name)
+{
+	t_var	*var;
 
-char	*var_get_value(t_shell *shell, const char *name) {
-	t_list *temp = shell->variables;
-
-	t_var * var_temp = NULL;
-	while (temp) {
-
-		var_temp = (t_var *)temp->content;
-
-		if (!strcmp((const char*)var_temp->name, name)) {
-			return var_temp->value;
-		}
-
-		var_temp = NULL;
-		temp = temp->next;
-	}
-
-	return (NULL);
+	var = var_get(shell, name);
+	if (!var)
+		return (NULL);
+	return (var->value);
 }
 
-int	var_set(t_shell *shell, const char *name, const char *value) {
-	t_var * temp = var_get(shell, name);
+/**
+ * @brief Allocate a fresh t_var with copies of name and (optional) value.
+ * @return New t_var or NULL on allocation failure.
+ */
+static t_var	*var_new(const char *name, const char *value)
+{
+	t_var	*var;
 
-	if (temp) {
-		if (temp->readonly) {
+	var = malloc(sizeof(t_var));
+	if (!var)
+		return (NULL);
+	var->name = ft_strdup(name);
+	if (!var->name)
+		return (free(var), NULL);
+	var->value = NULL;
+	if (value)
+	{
+		var->value = ft_strdup(value);
+		if (!var->value)
+			return (free(var->name), free(var), NULL);
+	}
+	var->exported = 0;
+	var->readonly = 0;
+	return (var);
+}
+
+int	var_set(t_shell *shell, const char *name, const char *value)
+{
+	t_var	*existing;
+	t_var	*created;
+	t_list	*node;
+	char	*new_value;
+
+	if (!shell || !is_valid_identifier(name))
+		return (1);
+	existing = var_get(shell, name);
+	if (existing)
+	{
+		if (existing->readonly)
 			return (1);
-		}
-		if (temp->value) {
-			free(temp->value);
-		}
+		new_value = NULL;
 		if (value)
-			temp->value = ft_strdup(value);
-		else
-			temp->value = NULL;
-
-	} else {
-		temp = malloc(sizeof(t_var ));
-		
-		if (!temp) {
+			new_value = ft_strdup(value);
+		if (value && !new_value)
 			return (1);
-		}
-
-		temp->name = ft_strdup(name);
-		temp->value = value ? ft_strdup(value) : NULL;
-
-		temp->exported = 0;
-		temp->readonly = 0;
-
-		t_list *new_node = ft_lstnew((void*)temp);
-		if (!new_node) {
-			free(temp);
-			return (1);
-		}
-		ft_lstadd(&shell->variables, new_node);
-	}
-
-	shell->env_dirty = 1;
-	return (0);
-}
-
-int	var_unset(t_shell *shell, const char *name) {
-	if (!shell->variables) {
+		free(existing->value);
+		existing->value = new_value;
+		shell->env_dirty = 1;
 		return (0);
 	}
+	created = var_new(name, value);
+	if (!created)
+		return (1);
+	node = ft_lstnew(created);
+	if (!node)
+		return (var_destroy(created), 1);
+	ft_lstadd(&shell->variables, node);
+	shell->env_dirty = 1;
+	return (0);
+}
 
-	if (strcmp(((t_var *)shell->variables->content)->name,name)  == 0) {
-			
-			if (((t_var*)shell->variables->content)->readonly) {
-				return  (1);
-			}
+int	var_unset(t_shell *shell, const char *name)
+{
+	t_list	*node;
+	t_list	*prev;
+	t_var	*var;
 
-			t_list *tmp = shell->variables;
-			shell->variables = tmp->next;
-
-			t_var *temp_var = (t_var *)tmp->content;
-			if (temp_var->name) free(temp_var->name);
-			if(temp_var->value)	free(temp_var->value);
-
-			free(temp_var);
-			free(tmp);
-			
-			shell->env_dirty = 1;
-			return (0);
-	}
-	
-	t_list *temp = shell->variables ? shell->variables : NULL;
-	t_list *temp_next = temp->next ? temp->next : NULL;
-
-	while (temp_next) {
-
-		t_var * var_temp = (t_var *)temp_next->content;
-
-		if (!strcmp((const char*)var_temp->name, name)) {
-			if (var_temp->readonly) {
+	if (!shell || !name)
+		return (1);
+	node = shell->variables;
+	prev = NULL;
+	while (node)
+	{
+		var = LST_VAR(node);
+		if (var && var->name && ft_strequ(var->name, name))
+		{
+			if (var->readonly)
 				return (1);
-			}
-
-			temp->next = temp_next->next;
-			temp_next->next = NULL;
-
-			free(var_temp->name);
-			free(var_temp->value);
-			free(var_temp);
-			free(temp_next);
-			
+			if (prev)
+				prev->next = node->next;
+			else
+				shell->variables = node->next;
+			var_destroy(var);
+			free(node);
 			shell->env_dirty = 1;
 			return (0);
 		}
-
-		temp = temp_next;
-		temp_next = temp_next->next;
+		prev = node;
+		node = node->next;
 	}
+	return (0);
+}
 
+int	var_export(t_shell *shell, const char *name)
+{
+	t_var	*var;
+
+	if (!shell || !is_valid_identifier(name))
+		return (1);
+	var = var_get(shell, name);
+	if (!var)
+	{
+		if (var_set(shell, name, NULL) != 0)
+			return (1);
+		var = var_get(shell, name);
+		if (!var)
+			return (1);
+	}
+	var->exported = 1;
 	shell->env_dirty = 1;
 	return (0);
 }
 
-int	var_export(t_shell *shell, const char *name) {
-	t_var * temp = NULL;
+/**
+ * @brief Free a NULL-terminated env array (each string + the array).
+ */
+static void	free_env_array(char **env)
+{
+	int	i;
 
-	temp = var_get(shell, name);
-
-	if (!temp) {
-		
-		temp = malloc(sizeof(t_var));
-		if (!temp) {
-			return (1);
-		}
-
-		temp->name = ft_strdup(name);
-		temp->value = NULL;
-		temp->readonly = 0;
-		temp->exported = 1;
-
-		t_list *new_node = ft_lstnew(temp);
-		if (!new_node) {
-			free(temp);
-			return (1);
-		}
-		ft_lstadd(&shell->variables, new_node);
-
-	} else {
-		temp->exported = 1;
-	}
-
-	shell->env_dirty = 1;
-	return (0);
-}
-
-static void free_env(char **env) {
-	if (!env) {
+	if (!env)
 		return ;
-	}
-
-	for (size_t i = 0; env[i] != NULL ; i++) {
-		free(env[i]);
-	} free(env);
-
-	return ;
+	i = 0;
+	while (env[i])
+		free(env[i++]);
+	free(env);
 }
 
-char **var_get_environ(t_shell *shell) {
-    if (!shell->env_dirty)
-        return shell->env;
+/**
+ * @brief Build a single "NAME=VALUE" string for execve.
+ */
+static char	*env_entry(const t_var *var)
+{
+	char	*name_eq;
+	char	*entry;
 
-    if (shell->env)
-        free_env(shell->env);
-
-    size_t count = 0;
-    t_list *tmp = shell->variables;
-
-    while (tmp)
-    {
-        if (((t_var*)tmp->content)->exported)
-            count++;
-        tmp = tmp->next;
-    }
-
-    char **env = malloc(sizeof(char*) * (count + 1));
-    if (!env)
-        return NULL;
-
-    tmp = shell->variables;
-    size_t i = 0;
-
-    while (tmp)
-    {
-        t_var *v = (t_var*)tmp->content;
-
-        if (v->exported)
-        {
-            size_t len = strlen(v->name) + (v->value ? strlen(v->value) : 0) + 2;
-            env[i] = malloc(len);
-            if (!env[i])
-                return free_env(env), NULL;
-
-            snprintf(env[i], len, "%s=%s", v->name, v->value ? v->value : "");
-            i++;
-        }
-        tmp = tmp->next;
-    }
-
-    env[i] = NULL;
-
-    shell->env = env;
-    shell->env_dirty = 0;
-    return env;
+	name_eq = ft_strjoin(var->name, "=");
+	if (!name_eq)
+		return (NULL);
+	entry = ft_strjoin(name_eq, var->value ? var->value : "");
+	free(name_eq);
+	return (entry);
 }
 
-static int set_name(char **dst, char *src, int *position) {
+/**
+ * @brief Count exported variables that are eligible for the env array.
+ * @details A NULL value still counts (POSIX exports remember unset state),
+ *          but we render those as "NAME=" so execve sees a real string.
+ */
+static size_t	count_exported(t_shell *shell)
+{
+	t_list	*node;
+	t_var	*var;
+	size_t	count;
 
-	size_t start_pos = *position;
-	size_t curr_pos = start_pos;
-
-	while (src[curr_pos] && src[curr_pos] != '=') {
-		curr_pos++;
+	count = 0;
+	node = shell->variables;
+	while (node)
+	{
+		var = LST_VAR(node);
+		if (var && var->exported)
+			count++;
+		node = node->next;
 	}
-
-	*dst = malloc(curr_pos - start_pos + 1);
-	if (!*dst) {
-		return (-1);
-	}
-	memcpy(*dst, &src[start_pos], curr_pos - start_pos);
-	(*dst)[curr_pos - start_pos] = '\0';
-
-	if (src[curr_pos] == '=')
-		curr_pos++;
-	
-	*position = curr_pos;
-	return (0);
+	return (count);
 }
 
-static int set_value(char **dst, char *src, int *position) {
+char	**var_get_environ(t_shell *shell)
+{
+	char	**env;
+	size_t	count;
+	size_t	i;
+	t_list	*node;
+	t_var	*var;
 
-	size_t start_pos = *position;
-	size_t curr_pos = start_pos;
-
-	while (src[curr_pos]) {
-		curr_pos++;
+	if (!shell)
+		return (NULL);
+	if (!shell->env_dirty && shell->env)
+		return (shell->env);
+	free_env_array(shell->env);
+	count = count_exported(shell);
+	env = malloc(sizeof(char *) * (count + 1));
+	if (!env)
+		return (shell->env = NULL);
+	i = 0;
+	node = shell->variables;
+	while (node && i < count)
+	{
+		var = LST_VAR(node);
+		if (var && var->exported)
+		{
+			env[i] = env_entry(var);
+			if (!env[i])
+				return (free_env_array(env), shell->env = NULL);
+			i++;
+		}
+		node = node->next;
 	}
-
-	*dst = malloc(curr_pos - start_pos + 1);
-	if (!*dst) {
-		return (-1);
-	}
-
-	memcpy(*dst, &src[start_pos], curr_pos - start_pos);
-
-	(*dst)[curr_pos - start_pos] = '\0';
-	*position = curr_pos;
-	return (0);
+	env[i] = NULL;
+	shell->env = env;
+	shell->env_dirty = 0;
+	return (env);
 }
 
-void	var_init_from_environ(t_shell *shell, char **envp) {
-	
-	int position = 0;
-	char *name = NULL;
-	char *value = NULL;
-	
-	for (size_t i = 0; envp[i] != NULL; i++) {
-		position = 0;
-		name = NULL;
-		value = NULL;
+void	var_init_from_environ(t_shell *shell, char **envp)
+{
+	char	*eq;
+	char	*name;
+	int		i;
 
-		
-		if (set_name(&name,envp[i], &position)) {
-			if (shell->env)	free_env(shell->env);
-			break ;
+	if (!shell || !envp)
+		return ;
+	i = 0;
+	while (envp[i])
+	{
+		eq = ft_strchr(envp[i], '=');
+		if (eq && eq != envp[i])
+		{
+			name = ft_strsub(envp[i], 0, eq - envp[i]);
+			if (name)
+			{
+				if (var_set(shell, name, eq + 1) == 0)
+					var_export(shell, name);
+				free(name);
+			}
 		}
-
-
-		if (set_value(&value,envp[i], &position)) {
-			if (name)		free(name);
-			if (shell->env) free_env(shell->env);
-			break;
-		}
-
-		if (var_set(shell, name, value)) {
-			if(name)		free(name);
-			if(value)		free(value);
-			if (shell->env) free_env(shell->env);
-			break ;
-		}
-
-		if (var_export(shell, name)) {
-			if(name) 		free(name);
-			if(value)		free(value);
-			if(shell->env)	free(shell->env);
-			break ;
-		}
-
-		if (name) free(name);
-		if (value) free(value);
-
+		i++;
 	}
-	
-	return ;
 }

@@ -31,8 +31,14 @@ int	job_continue_foreground(t_shell *shell, t_job *job)
 		return (1);
 	mark_running(job);
 	shell->current_job = job;
+	if (shell->interactive)
+		tcsetpgrp(shell->terminal_fd, job->pgid);
 	if (kill(-job->pgid, SIGCONT) < 0)
+	{
+		if (shell->interactive)
+			tcsetpgrp(shell->terminal_fd, shell->shell_pgid);
 		return (1);
+	}
 	status = job_launch_foreground(shell, job);
 	if (job->status == JOB_STOPPED)
 		job->notified = 0;

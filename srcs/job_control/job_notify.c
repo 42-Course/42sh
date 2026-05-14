@@ -6,8 +6,11 @@
 
 #include "42sh.h"
 #include "job_control.h"
+#include <signal.h>
 #include <stdlib.h>
 #include <sys/wait.h>
+
+#define JOB_STATUS_COL	22
 
 const char	*job_status_str(t_job_status s)
 {
@@ -105,15 +108,185 @@ void	job_update_statuses(t_shell *shell)
 	}
 }
 
-static void	print_notification(t_job *job)
+/**
+ * @brief Map a signal number to its short POSIX name (no "SIG" prefix
+ *        stripped — we want "SIGTTOU" to match bash's listing format).
+ * @return Pointer to static string, or NULL if unknown.
+ */
+static const char	*sig_short_name(int sig)
 {
-	ft_putstr_fd("[", STDERR_FILENO);
-	ft_putnbr_fd(job->id, STDERR_FILENO);
-	ft_putstr_fd("]  ", STDERR_FILENO);
-	ft_putstr_fd((char *)job_status_str(job->status), STDERR_FILENO);
-	ft_putstr_fd("\t\t", STDERR_FILENO);
-	ft_putstr_fd(job->cmd_line ? job->cmd_line : "", STDERR_FILENO);
-	ft_putstr_fd("\n", STDERR_FILENO);
+	if (sig == SIGHUP)	return ("SIGHUP");
+	if (sig == SIGINT)	return ("SIGINT");
+	if (sig == SIGQUIT)	return ("SIGQUIT");
+	if (sig == SIGILL)	return ("SIGILL");
+	if (sig == SIGABRT)	return ("SIGABRT");
+	if (sig == SIGFPE)	return ("SIGFPE");
+	if (sig == SIGKILL)	return ("SIGKILL");
+	if (sig == SIGSEGV)	return ("SIGSEGV");
+	if (sig == SIGPIPE)	return ("SIGPIPE");
+	if (sig == SIGALRM)	return ("SIGALRM");
+	if (sig == SIGTERM)	return ("SIGTERM");
+	if (sig == SIGUSR1)	return ("SIGUSR1");
+	if (sig == SIGUSR2)	return ("SIGUSR2");
+	if (sig == SIGSTOP)	return ("SIGSTOP");
+	if (sig == SIGTSTP)	return ("SIGTSTP");
+	if (sig == SIGTTIN)	return ("SIGTTIN");
+	if (sig == SIGTTOU)	return ("SIGTTOU");
+	if (sig == SIGBUS)	return ("SIGBUS");
+	return (NULL);
+}
+
+/**
+ * @brief Find the stop signal of the first stopped process in the job.
+ * @return Signal number, or 0 if no process is stopped.
+ */
+static int	job_stop_signal(t_job *job)
+{
+	t_list		*node;
+	t_process	*p;
+
+	node = job->processes;
+	while (node)
+	{
+		p = LST_PROC(node);
+		if (p->stopped && WIFSTOPPED(p->status))
+			return (WSTOPSIG(p->status));
+		node = node->next;
+	}
+	return (0);
+}
+
+/**
+ * @brief Append "(SIGFOO)" or "(N)" to a status string when relevant.
+ * @details Bash only shows the signal suffix for stops that are NOT
+ *          SIGTSTP (Ctrl-Z is implicit). Falls back to the integer if
+ *          the signal isn't in our name table.
+ * @return Total bytes written to @p buf (excluding NUL).
+ */
+static size_t	put_status(t_job *job, char *buf, size_t size)
+{
+	const char	*base;
+	const char	*name;
+	int			sig;
+
+	base = job_status_str(job->status);
+	sig = 0;
+	if (job->status == JOB_STOPPED)
+		sig = job_stop_signal(job);
+	if (sig > 0 && sig != SIGTSTP)
+	{
+		name = sig_short_name(sig);
+		if (name)
+			return ((size_t)snprintf(buf, size, "%s(%s)", base, name));
+		return ((size_t)snprintf(buf, size, "%s(%d)", base, sig));
+	}
+	return ((size_t)snprintf(buf, size, "%s", base));
+}
+
+/**
+ * @brief Pick the current-job marker: '+' for current, ' ' otherwise.
+ * @details Bash also has '-' for the previous current job; we don't
+ *          track previous yet, so it stays a space.
+ */
+static char	job_marker(t_shell *shell, t_job *job)
+{
+	if (shell && shell->current_job == job)
+		return ('+');
+	return (' ');
+}
+
+/**
+ * @brief Map a fatal signal to bash's foreground death message.
+ * @return Description string, or NULL when the signal should be silent
+ *         (SIGINT, SIGPIPE) or isn't in our table.
+ */
+static const char	*sig_termination_desc(int sig)
+{
+	if (sig == SIGHUP)	return ("Hangup");
+	if (sig == SIGINT)	return (NULL);
+	if (sig == SIGQUIT)	return ("Quit");
+	if (sig == SIGILL)	return ("Illegal instruction");
+	if (sig == SIGTRAP)	return ("Trace/breakpoint trap");
+	if (sig == SIGABRT)	return ("Aborted");
+	if (sig == SIGBUS)	return ("Bus error");
+	if (sig == SIGFPE)	return ("Floating point exception");
+	if (sig == SIGKILL)	return ("Killed");
+	if (sig == SIGUSR1)	return ("User defined signal 1");
+	if (sig == SIGSEGV)	return ("Segmentation fault");
+	if (sig == SIGUSR2)	return ("User defined signal 2");
+	if (sig == SIGPIPE)	return (NULL);
+	if (sig == SIGALRM)	return ("Alarm clock");
+	if (sig == SIGTERM)	return ("Terminated");
+	if (sig == SIGXCPU)	return ("CPU time limit exceeded");
+	if (sig == SIGXFSZ)	return ("File size limit exceeded");
+	if (sig == SIGSYS)	return ("Bad system call");
+	return (NULL);
+}
+
+/**
+ * @brief Return the wstatus of the last process in a job's pipeline.
+ * @details Mirrors last_process_exit() in job_wait.c — that's the
+ *          process whose exit status the user observes as $?.
+ */
+static int	last_process_status(t_job *job)
+{
+	t_list		*node;
+	t_process	*last;
+
+	last = NULL;
+	node = job->processes;
+	while (node)
+	{
+		last = LST_PROC(node);
+		node = node->next;
+	}
+	if (!last)
+		return (0);
+	return (last->status);
+}
+
+void	job_print_termination(t_job *job)
+{
+	int			status;
+	int			sig;
+	const char	*desc;
+
+	if (!job || job->status != JOB_TERMINATED)
+		return ;
+	status = last_process_status(job);
+	if (!WIFSIGNALED(status))
+		return ;
+	sig = WTERMSIG(status);
+	desc = sig_termination_desc(sig);
+	if (!desc)
+		return ;
+	ft_putstr_fd((char *)desc, STDERR_FILENO);
+#ifdef WCOREDUMP
+	if (WCOREDUMP(status))
+		ft_putstr_fd(" (core dumped)", STDERR_FILENO);
+#endif
+	ft_putendl_fd("", STDERR_FILENO);
+}
+
+void	job_print_line(int fd, t_shell *shell, t_job *job)
+{
+	char	status[64];
+	size_t	len;
+	size_t	pad;
+
+	ft_putstr_fd("[", fd);
+	ft_putnbr_fd(job->id, fd);
+	ft_putstr_fd("]", fd);
+	ft_putchar_fd(job_marker(shell, job), fd);
+	ft_putstr_fd("  ", fd);
+	len = put_status(job, status, sizeof(status));
+	ft_putstr_fd(status, fd);
+	pad = (len < JOB_STATUS_COL) ? JOB_STATUS_COL - len : 0;
+	while (pad-- > 0)
+		ft_putchar_fd(' ', fd);
+	ft_putstr_fd("  ", fd);
+	ft_putstr_fd(job->cmd_line ? job->cmd_line : "", fd);
+	ft_putstr_fd("\n", fd);
 }
 
 static void	lst_remove_node(t_list **head, t_list *target,
@@ -156,9 +329,9 @@ void	job_notify(t_shell *shell)
 	{
 		next = node->next;
 		job = LST_JOB(node);
-		if (!job->notified)
+		if (!job->notified && job->status != JOB_RUNNING)
 		{
-			print_notification(job);
+			job_print_line(STDERR_FILENO, shell, job);
 			job->notified = 1;
 		}
 		if (job->status == JOB_DONE || job->status == JOB_TERMINATED)

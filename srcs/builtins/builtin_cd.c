@@ -192,22 +192,39 @@ static int	is_invalid_path(char *directory, char *path, char *oldpwd)
 }
 
 /**
+ * @brief Update PWD/OLDPWD in the shell variable table and mark exported.
+ * @details Using var_set (instead of setenv) is what makes `$PWD` visible
+ *          to subsequent expansions and to the rebuilt child environ.
+ *          var_set preserves the existing 'exported' flag, but PWD/OLDPWD
+ *          may not have been inherited from the parent environment, so we
+ *          call var_export to be safe.
+ */
+static void	publish_pwd(t_shell *shell, const char *new_pwd, const char *oldpwd)
+{
+	var_set(shell, "OLDPWD", oldpwd);
+	var_export(shell, "OLDPWD");
+	var_set(shell, "PWD", new_pwd);
+	var_export(shell, "PWD");
+}
+
+/**
  * @param target : the target directory argument
  * @param argc : number of remaining arguments
  * @param physical : flag indicating physical (-P) or logical (-L) resolution
  * @brief Resolve and change the current working directory, updating PWD/OLDPWD
  * @return 0 on success, 1 on failure
  */
-static int	change_directory(char *target, int argc, int physical)
+static int	change_directory(t_shell *shell, char *target, int argc, int physical)
 {
-	char	*path = NULL;
-	char	*directory;
-	char	*oldpwd = NULL;
-	char	*cwd;
+	char		*path = NULL;
+	char		*directory;
+	char		*oldpwd = NULL;
+	char		*cwd;
+	const char	*tmp;
 
 	if (!target || argc == 0)
 	{
-		directory = getenv("HOME");
+		directory = var_get_value(shell, "HOME");
 		if (!directory)
 		{
 			fprintf(stderr, "42sh: cd: HOME not set\n");
@@ -216,18 +233,18 @@ static int	change_directory(char *target, int argc, int physical)
 	}
 	else if (!strcmp(target, "-"))
 	{
-		oldpwd = getenv("OLDPWD");
-		if (!oldpwd)
+		directory = var_get_value(shell, "OLDPWD");
+		if (!directory)
 		{
 			fprintf(stderr, "42sh: cd: OLDPWD not set\n");
 			return (1);
 		}
-		directory = oldpwd;
 		printf("%s\n", directory);
 	}
 	else
 		directory = target;
-	oldpwd = strdup(getenv("PWD") ? getenv("PWD") : "");
+	tmp = var_get_value(shell, "PWD");
+	oldpwd = strdup(tmp ? tmp : "");
 	if (physical)
 	{
 		path = realpath(directory, NULL);
@@ -247,21 +264,17 @@ static int	change_directory(char *target, int argc, int physical)
 		return (1);
 	if (chdir(path) < 0)
 		return (no_such_file_or_directory(directory, path, oldpwd));
-	else
+	if (physical)
 	{
-		setenv("OLDPWD", oldpwd, 1);
-		if (physical)
-		{
-			cwd = getcwd(NULL, 0);
-			setenv("PWD", cwd, 1);
-			free(cwd);
-		}
-		else
-			setenv("PWD", path, 1);
-		free(path);
-		free(oldpwd);
-		return (0);
+		cwd = getcwd(NULL, 0);
+		publish_pwd(shell, cwd ? cwd : path, oldpwd);
+		free(cwd);
 	}
+	else
+		publish_pwd(shell, path, oldpwd);
+	free(path);
+	free(oldpwd);
+	return (0);
 }
 
 /**
@@ -290,13 +303,6 @@ static int	detect_option(char *option)
 	return (physical);
 }
 
-/**
- * @param shell : a pointer on the s_shell struct
- * @param argc : the number of tokens of the command
- * @param argv : the tokens of the command
- * @brief This is the POSIX cd command
- * @return 0
- */
 int	builtin_cd(struct s_shell *shell, int argc, char **argv)
 {
 	int	physical = 0;
@@ -325,6 +331,6 @@ int	builtin_cd(struct s_shell *shell, int argc, char **argv)
 		shell->last_exit_status = 2;
 		return (shell->last_exit_status);
 	}
-	shell->last_exit_status = change_directory(*argv, argc, physical);
+	shell->last_exit_status = change_directory(shell, *argv, argc, physical);
 	return (shell->last_exit_status);
 }

@@ -8,10 +8,43 @@
 
 # include "minunit.h"
 # include "builtins.h"
+# include "variables.h"
 # include "stdlib.h"
 # include "sys/types.h"
 # include "sys/stat.h"
 # include "limits.h"
+# include "string.h"
+
+/**
+ * @brief Seed a fresh shell with HOME/PWD/OLDPWD from the calling
+ *        process's environ.
+ * @details The cd builtin reads/writes shell->variables (not getenv);
+ *          tests need the same seed values a real shell would inherit
+ *          at startup.
+ */
+static void	cd_test_init(t_shell *shell)
+{
+	const char	*names[3];
+	const char	*v;
+	int			i;
+
+	memset(shell, 0, sizeof(*shell));
+	shell->env_dirty = 1;
+	names[0] = "HOME";
+	names[1] = "PWD";
+	names[2] = "OLDPWD";
+	i = 0;
+	while (i < 3)
+	{
+		v = getenv(names[i]);
+		if (v)
+		{
+			var_set(shell, names[i], v);
+			var_export(shell, names[i]);
+		}
+		i++;
+	}
+}
 
 /**
  * @param shell : the shell structure
@@ -25,9 +58,11 @@ static void	check_test(t_shell *shell, char *indication, char *str_std, int ret_
 {
 	char	buf1[PATH_MAX];
 	char	buf2[PATH_MAX];
+	char	*pwd;
 
-	MU_ASSERT_STR(indication, str_std, getenv("PWD"));
-	MU_ASSERT_STR("PWD vs gecwd", realpath(getenv("PWD"), buf1), getcwd(buf2, PATH_MAX));
+	pwd = var_get_value(shell, "PWD");
+	MU_ASSERT_STR(indication, str_std, pwd);
+	MU_ASSERT_STR("PWD vs gecwd", realpath(pwd ? pwd : "", buf1), getcwd(buf2, PATH_MAX));
 	MU_ASSERT_INT(shell->last_exit_status, ret_std);
 	MU_ASSERT_INT(ret_std, ret);
 }
@@ -37,7 +72,9 @@ static void	check_test(t_shell *shell, char *indication, char *str_std, int ret_
  */
 static void	test_cd_root(void)
 {
-	t_shell	shell = {0};
+	t_shell	shell;
+
+	cd_test_init(&shell);
 	int		ret;
 	char	*argv[] = {"cd", "/", NULL};
 
@@ -51,7 +88,9 @@ static void	test_cd_root(void)
  */
 static void	test_cd_absolute(void)
 {
-	t_shell	shell = {0};
+	t_shell	shell;
+
+	cd_test_init(&shell);
 	int		ret;
 
 	{
@@ -126,8 +165,10 @@ static void	test_cd_absolute(void)
 static void	test_cd_relative(void)
 {
 	{
-		t_shell	shell = {0};
+		t_shell	shell;
 		int		ret;
+
+		cd_test_init(&shell);
 
 		{
 			char	*argv[] = {"cd", NULL};
@@ -147,21 +188,24 @@ static void	test_cd_relative(void)
 		}
 
 		{
-			char	*home = getenv("HOME");
+			char	*home = ft_strdup(var_get_value(&shell, "HOME"));
 			char	*argv[] = {"cd", NULL};
 			char	expected_pwd[4096];
+
 			bzero(expected_pwd, 1024);
+			strncpy(expected_pwd, var_get_value(&shell, "PWD"), PATH_MAX - 1);
 
-			strncpy(expected_pwd, getenv("PWD"), PATH_MAX - 1);
-
-			unsetenv("HOME");
+			var_unset(&shell, "HOME");
 			ret = builtin_cd(&shell, 1, argv);
 
-			MU_ASSERT_STR("no home: PWD unchanged", expected_pwd, getenv("PWD"));
+			MU_ASSERT_STR("no home: PWD unchanged", expected_pwd,
+				var_get_value(&shell, "PWD"));
 			MU_ASSERT_INT(shell.last_exit_status, 1);
 			MU_ASSERT_INT(1, ret);
 
-			setenv("HOME", home, 1);
+			var_set(&shell, "HOME", home);
+			var_export(&shell, "HOME");
+			free(home);
 		}
 
 		{
@@ -169,7 +213,7 @@ static void	test_cd_relative(void)
 			char	buff[1024];
 			bzero(buff, 1024);
 
-			sprintf(buff, "%s/SYMBOLIC", getenv("PWD"));
+			sprintf(buff, "%s/SYMBOLIC", var_get_value(&shell, "PWD"));
 			ret = builtin_cd(&shell, 3, argv);
 			check_test(&shell, "-L option", buff, 0, ret);
 		}
@@ -199,7 +243,7 @@ static void	test_cd_relative(void)
 			char	buff[1024];
 			bzero(buff, 1024);
 
-			sprintf(buff, "%s/PHYSICAL", getenv("PWD"));
+			sprintf(buff, "%s/PHYSICAL", var_get_value(&shell, "PWD"));
 			ret = builtin_cd(&shell, 3, argv);
 			check_test(&shell, "-P option", buff, 0, ret);
 		}
@@ -211,7 +255,9 @@ static void	test_cd_relative(void)
  */
 static void	test_cd_wrong_path(void)
 {
-	t_shell	shell = {0};
+	t_shell	shell;
+
+	cd_test_init(&shell);
 	int		ret;
 
 	{
@@ -230,7 +276,7 @@ static void	test_cd_wrong_path(void)
 		sprintf(buff, "%s/CDTEST", getenv("HOME"));
 		ret = builtin_cd(&shell, 2, argv);
 		check_test(&shell, "wrong path", buff, 1, ret);
-		MU_ASSERT_STR("oldpwd", getenv("OLDPWD"), getenv("HOME"));
+		MU_ASSERT_STR("oldpwd", var_get_value(&shell, "OLDPWD"), getenv("HOME"));
 	}
 
 	{
@@ -241,7 +287,7 @@ static void	test_cd_wrong_path(void)
 		sprintf(buff, "%s/CDTEST", getenv("HOME"));
 		ret = builtin_cd(&shell, 4, argv);
 		check_test(&shell, "wrong path after --", buff, 1, ret);
-		MU_ASSERT_STR("oldpwd", getenv("OLDPWD"), getenv("HOME"));
+		MU_ASSERT_STR("oldpwd", var_get_value(&shell, "OLDPWD"), getenv("HOME"));
 	}
 }
 
@@ -250,7 +296,9 @@ static void	test_cd_wrong_path(void)
  */
 static void	test_cd_wrong_option(void)
 {
-	t_shell	shell = {0};
+	t_shell	shell;
+
+	cd_test_init(&shell);
 	int		ret;
 
 	{
@@ -285,7 +333,9 @@ static void	test_cd_wrong_option(void)
  */
 static void	test_cd_too_many_args(void)
 {
-	t_shell	shell = {0};
+	t_shell	shell;
+
+	cd_test_init(&shell);
 	int		ret;
 
 	{
@@ -306,7 +356,9 @@ static void	test_cd_too_many_args(void)
  */
 static void	test_cd_forbidden(void)
 {
-	t_shell	shell = {0};
+	t_shell	shell;
+
+	cd_test_init(&shell);
 	int	ret;
 
 	{
@@ -327,7 +379,9 @@ static void	test_cd_forbidden(void)
  */
 static void	test_cd_oldpasswd(void)
 {
-	t_shell	shell = {0};
+	t_shell	shell;
+
+	cd_test_init(&shell);
 	int		ret;
 
 	{
@@ -338,7 +392,7 @@ static void	test_cd_oldpasswd(void)
 	{
 		char	*argv[] = {"cd", "-", NULL};
 
-		unsetenv("OLDPWD");
+		var_unset(&shell, "OLDPWD");
 		ret = builtin_cd(&shell, 2, argv);
 		check_test(&shell, "no oldpwd", getenv("HOME"), 1, ret);
 	}
@@ -373,7 +427,9 @@ static void	test_cd_oldpasswd(void)
  */
 static void	test_cd_beyond_the_root(void)
 {
-	t_shell	shell = {0};
+	t_shell	shell;
+
+	cd_test_init(&shell);
 	int		ret;
 
 	{
@@ -396,7 +452,9 @@ static void	test_cd_beyond_the_root(void)
  */
 static void	test_cd_many_slash(void)
 {
-	t_shell	shell = {0};
+	t_shell	shell;
+
+	cd_test_init(&shell);
 	int		ret;
 
 	{
@@ -426,7 +484,9 @@ static void	test_cd_many_slash(void)
  */
 static void	test_cd_too_long(void)
 {
-	t_shell	shell = {0};
+	t_shell	shell;
+
+	cd_test_init(&shell);
 	int		ret;
 
 	{

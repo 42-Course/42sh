@@ -20,11 +20,11 @@
 
 #include "minunit.h"
 
-/* Shared pass/fail counters — extern in minunit.h, defined once here. */
+/* Shared pass/fail counters - extern in minunit.h, defined once here. */
 int	g_mu_passed = 0;
 int	g_mu_failed = 0;
 
-/* Forward declarations — one per test file. */
+/* Forward declarations - one per test file. */
 void	test_dlist_suite(void);
 void	test_list_suite(void);
 void	test_history_suite(void);
@@ -34,6 +34,8 @@ void	test_btree_suite(void);
 void	test_parser_suite(void);
 void	test_builtin_echo_suite(void);
 void	test_builtin_cd_suite(void);
+void	test_expander_suite(void);
+void	test_variables_suite(void);
 void	test_job_control_suite(void);
 void	test_builtin_exit_suite(void);
 void	test_builtin_type_suite(void);
@@ -66,6 +68,8 @@ int	main(void)
 	MU_RUN(test_parser_suite);
 	MU_RUN(test_builtin_echo_suite);
 	MU_RUN(test_builtin_cd_suite);
+	MU_RUN(test_expander_suite);
+	MU_RUN(test_variables_suite);
 	MU_RUN(test_job_control_suite);
 	MU_RUN(test_builtin_exit_suite);
 	MU_RUN(test_builtin_type_suite);

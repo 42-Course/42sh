@@ -6,6 +6,7 @@
 
 #include "42sh.h"
 #include "builtins.h"
+#include <string.h>
 
 /**
  * @param token : the token to analyze
@@ -123,9 +124,9 @@ static int	display_token(char *token, int last, int escape)
 	char	*scout;
 	char	*word;
 
-	if (!escape)
+	if (!escape && token)
 		printf("%s", token);
-	else
+	else if (token)
 	{
 		scout = token;
 		while (*scout)
@@ -198,13 +199,28 @@ static int	display_token(char *token, int last, int escape)
 	return (1);
 }
 
-/*
- * @param shell : a pointer on the s_shell struct
- * @param argc : the number of tokens of the command
- * @param argv : the tokens of the command
- * @brief This is the POSIX echo command
- * @return 0
+/**
+ * @brief Force buffered output to fd 1 and report any write failure.
+ * @details Bash-posix-compatible behaviour: fd 1 may have been closed by
+ *          a `>&-` redirection, in which case the buffered stdio writes
+ *          only surface as errors once we flush. clearerr() resets the
+ *          stream so a later builtin (after the redirection is restored)
+ *          can write again.
+ * @return 0 on success, 1 if a write error was detected.
  */
+static int	report_write_error(void)
+{
+	int	saved_errno;
+
+	if (fflush(stdout) == 0 && !ferror(stdout))
+		return (0);
+	saved_errno = errno;
+	clearerr(stdout);
+	ft_putstr_fd("42sh: echo: write error: ", 2);
+	ft_putendl_fd(strerror(saved_errno), 2);
+	return (1);
+}
+
 int	builtin_echo(struct s_shell *shell, int argc, char **argv)
 {
 	int	i = 1;
@@ -222,6 +238,6 @@ int	builtin_echo(struct s_shell *shell, int argc, char **argv)
 		if (run && nl == 0)
 			printf("\n");
 	}
-	shell->last_exit_status = 0;
-	return (0);
+	shell->last_exit_status = report_write_error();
+	return (shell->last_exit_status);
 }
