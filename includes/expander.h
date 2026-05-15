@@ -22,6 +22,7 @@
 #define EXPANDER_H
 
 #include "ast.h"
+#include "42sh.h"
 #include <stddef.h>
 
 struct s_shell;
@@ -148,19 +149,6 @@ int expand_tilde_at(struct s_shell *shell, const char *input, size_t *pos,
  */
 char **field_split(struct s_shell *shell, const t_xbuf *expanded);
 
-/**
- * TODO : the whole function
- * @brief receive a dollar variable input and search in env the said variable
- * 			NOTE : there is two paramater that seems irrelevant to me, I am just
- * 					following the plan for now.
- * @param shell the whole shell structure
- * @param input the variable to expand
- * @param pos the position of the input in the command string (might be irrelevant)
- * @param in_double_quote check if input is in double quote (might be irrelevant)
- * 
- * @return expanded Dollard variable if !NULL else an empty string 
- */
-char *expand_dollar(t_shell * shell, char *input, size_t pos, bool in_double_quote);
 
 /**
  * TODO the whole function
