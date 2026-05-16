@@ -14,6 +14,10 @@
 # include <stdlib.h>
 # include <string.h>
 # include <unistd.h>
+# include <signal.h>
+# include <poll.h>
+# include <pty.h>
+# include <sys/wait.h>
 
 /**
  * @brief Capture stderr output from a builtin call.
@@ -321,6 +325,108 @@ static void	test_exit_non_interactive_silent(void)
 	MU_ASSERT_STR("non-interactive mode is silent", "", buf);
 }
 
+/* ================================================================
+ * Regression (P2-B3): `exit` inside a pipeline must not print the
+ * interactive "exit" notice.
+ *
+ * The notice is only printed by an interactive shell, so this needs a
+ * real terminal: forkpty(3) gives the child a controlling PTY, while
+ * fd 2 is re-pointed at a pipe for clean capture.
+ * ================================================================ */
+
+/**
+ * @brief Count non-overlapping occurrences of `needle` in `hay`.
+ * @param hay    The string to scan.
+ * @param needle The substring to look for.
+ * @return The number of occurrences.
+ */
+static int	count_occurrences(const char *hay, const char *needle)
+{
+	int			count;
+	size_t		len;
+	const char	*p;
+
+	count = 0;
+	len = strlen(needle);
+	p = hay;
+	while ((p = strstr(p, needle)) != NULL)
+	{
+		count++;
+		p += len;
+	}
+	return (count);
+}
+
+/**
+ * @brief Run ./42sh under a pseudo-terminal and capture its stderr.
+ * @details forkpty(3) gives the child a controlling terminal so the shell
+ *          is interactive; fd 2 is redirected to a pipe so the "exit"
+ *          notice can be read without terminal echo. The read is bounded
+ *          by poll(2) and the child is killed afterwards, so a misbehaving
+ *          shell cannot hang the test suite.
+ * @param input Command text typed into the terminal.
+ * @param out   Buffer receiving the shell's stderr (NUL-terminated).
+ * @param outsz Size of `out`.
+ */
+static void	run_interactive_pty(const char *input, char *out, size_t outsz)
+{
+	int				master;
+	int				err_pipe[2];
+	pid_t			pid;
+	struct pollfd	pfd;
+	ssize_t			n;
+	size_t			total;
+	int				wstatus;
+
+	out[0] = '\0';
+	if (pipe(err_pipe) == -1)
+		return ;
+	fflush(stdout);
+	fflush(stderr);
+	pid = forkpty(&master, NULL, NULL, NULL);
+	if (pid == -1)
+		return ;
+	if (pid == 0)
+	{
+		dup2(err_pipe[1], STDERR_FILENO);
+		close(err_pipe[0]);
+		close(err_pipe[1]);
+		execl("./42sh", "42sh", (char *)NULL);
+		_exit(127);
+	}
+	close(err_pipe[1]);
+	write(master, input, strlen(input));
+	pfd.fd = err_pipe[0];
+	pfd.events = POLLIN;
+	total = 0;
+	while (total + 1 < outsz && poll(&pfd, 1, 5000) > 0)
+	{
+		n = read(err_pipe[0], out + total, outsz - 1 - total);
+		if (n <= 0)
+			break ;
+		total += (size_t)n;
+	}
+	out[total] = '\0';
+	close(err_pipe[0]);
+	close(master);
+	kill(pid, SIGKILL);
+	waitpid(pid, &wstatus, 0);
+}
+
+/**
+ * @brief Only the top-level `exit` prints "exit"; the piped one is silent.
+ * @details Two lines are typed: `exit | cat` (must stay silent) and a
+ *          final `exit` (the top-level shell, which legitimately prints
+ *          once). A correct shell emits "exit" on stderr exactly once.
+ */
+static void	test_exit_silent_in_pipeline(void)
+{
+	char	out[1024];
+
+	run_interactive_pty("exit | cat\nexit\n", out, sizeof(out));
+	MU_ASSERT_INT(1, count_occurrences(out, "exit"));
+}
+
 void	test_builtin_exit_suite(void)
 {
 	test_exit_no_args_status_zero();
@@ -340,4 +446,5 @@ void	test_builtin_exit_suite(void)
 	test_exit_non_numeric_takes_priority();
 	test_exit_interactive_prints_exit();
 	test_exit_non_interactive_silent();
+	test_exit_silent_in_pipeline();
 }

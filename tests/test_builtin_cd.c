@@ -589,6 +589,10 @@ static void	delete_test_directories(void)
  */
 void	test_builtin_cd_suite(void)
 {
+	char	saved_cwd[PATH_MAX];
+
+	if (!getcwd(saved_cwd, sizeof(saved_cwd)))
+		saved_cwd[0] = '\0';
 	create_test_directories();
 
 	test_cd_root();
@@ -604,4 +608,6 @@ void	test_builtin_cd_suite(void)
 	test_cd_too_long();
 
 	delete_test_directories();
+	if (saved_cwd[0] && chdir(saved_cwd) != 0)
+		perror("chdir");
 }
