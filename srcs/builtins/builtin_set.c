@@ -34,31 +34,73 @@ static int	is_assignment(const char *str, size_t *eq_pos)
 }
 
 /**
- * @brief Display all variables in the format "NAME=VALUE"
+ * @brief Display all variables in the format "NAME=VALUE" in alphabetical order.
  * @param shell Pointer to the shell state
  * @return 0 on success
  */
+static int	cmp_vars(const void *a, const void *b)
+{
+	t_var *va = *(t_var **)a;
+	t_var *vb = *(t_var **)b;
+
+	if (!va && !vb)
+		return (0);
+	if (!va)
+		return (-1);
+	if (!vb)
+		return (1);
+	if (!va->name && !vb->name)
+		return (0);
+	if (!va->name)
+		return (1);
+	if (!vb->name)
+		return (-1);
+	return (ft_strcmp(va->name, vb->name));
+}
+
 static int	print_all_variables(t_shell *shell)
 {
 	t_list	*node;
-	t_var	*var;
+	t_var	**arr;
+	size_t	count;
+	size_t	i;
 
 	if (!shell)
 		return (0);
+	count = 0;
 	node = shell->variables;
 	while (node)
 	{
-		var = LST_VAR(node);
-		if (var && var->name)
-		{
-			ft_putstr_fd(var->name, 1);
-			ft_putstr_fd("=", 1);
-			if (var->value)
-				ft_putstr_fd(var->value, 1);
-			ft_putendl_fd("", 1);
-		}
+		if (LST_VAR(node) && LST_VAR(node)->name)
+			count++;
 		node = node->next;
 	}
+	if (count == 0)
+		return (0);
+	arr = malloc(sizeof(*arr) * count);
+	if (!arr)
+		return (0);
+	node = shell->variables;
+	i = 0;
+	while (node)
+	{
+		if (LST_VAR(node) && LST_VAR(node)->name)
+			arr[i++] = LST_VAR(node);
+		node = node->next;
+	}
+	qsort(arr, count, sizeof(*arr), cmp_vars);
+	i = 0;
+	while (i < count)
+	{
+		if (arr[i]->name)
+			ft_putstr_fd(arr[i]->name, 1);
+		ft_putstr_fd("=", 1);
+		if (arr[i]->value)
+			ft_putstr_fd(arr[i]->value, 1);
+		ft_putendl_fd("", 1);
+		i++;
+	}
+	free(arr);
 	return (0);
 }
 
