@@ -86,7 +86,9 @@ debug: fclean
 
 # Test build: compile test binary (TEST_FLAGS enables individual suites)
 # -lutil: forkpty(3), used by test_builtin_exit to drive an interactive shell.
-test: $(LIB) $(TEST_OBJS)
+# $(NAME) is a prerequisite: several suites exec ./42sh end-to-end, so the
+# shell binary must exist before the tests run (CI invokes `make test` alone).
+test: $(NAME) $(LIB) $(TEST_OBJS)
 	@$(CC) $(TEST_OBJS) $(LDFLAGS) -lutil -o $(TEST_NAME)
 	@printf "\n"$(GREEN)"running tests...\n"$(EOC)
 	@./$(TEST_NAME)
