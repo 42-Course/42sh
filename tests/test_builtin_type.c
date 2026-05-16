@@ -11,9 +11,12 @@
 
 # include "minunit.h"
 # include "builtins.h"
+# include "variables.h"
 # include <stdlib.h>
 # include <string.h>
 # include <unistd.h>
+# include <fcntl.h>
+# include <sys/stat.h>
 
 /**
  * @brief Capture stdout output from a builtin call.
@@ -242,6 +245,188 @@ static void	test_type_no_args(void)
 	MU_ASSERT_STR("no args produces no output", "", buf);
 }
 
+/**
+ * @brief Free the variable table seeded by var_set() in a test.
+ */
+static void	free_shell_vars(t_shell *shell)
+{
+	t_list	*cur;
+	t_list	*next;
+	t_var	*v;
+
+	cur = shell->variables;
+	while (cur)
+	{
+		next = cur->next;
+		v = LST_VAR(cur);
+		free(v->name);
+		free(v->value);
+		free(v);
+		free(cur);
+		cur = next;
+	}
+	shell->variables = NULL;
+}
+
+/* --- type -t : prints the one-word category --- */
+
+static void	test_type_t_builtin(void)
+{
+	t_shell	shell;
+	char	buf[BUFSIZE];
+	int		ret;
+
+	memset(&shell, 0, sizeof(shell));
+	char *argv[] = {"type", "-t", "echo"};
+	ret = capture_type_stdout(&shell, 3, argv, buf, BUFSIZE);
+	MU_ASSERT_INT(0, ret);
+	MU_ASSERT_STR("type -t of a builtin", "builtin\n", buf);
+}
+
+static void	test_type_t_file(void)
+{
+	t_shell	shell;
+	char	buf[BUFSIZE];
+	int		ret;
+
+	memset(&shell, 0, sizeof(shell));
+	char *argv[] = {"type", "-t", "/bin/sh"};
+	ret = capture_type_stdout(&shell, 3, argv, buf, BUFSIZE);
+	MU_ASSERT_INT(0, ret);
+	MU_ASSERT_STR("type -t of a disk command", "file\n", buf);
+}
+
+static void	test_type_t_not_found(void)
+{
+	t_shell	shell;
+	char	buf[BUFSIZE];
+	int		ret;
+
+	memset(&shell, 0, sizeof(shell));
+	char *argv[] = {"type", "-t", "nonexistent_cmd_xyz"};
+	ret = capture_type_stdout(&shell, 3, argv, buf, BUFSIZE);
+	MU_ASSERT_INT(1, ret);
+	MU_ASSERT_STR("type -t of a missing name is silent", "", buf);
+}
+
+/* --- type -p : prints the path of disk commands only --- */
+
+static void	test_type_p_builtin(void)
+{
+	t_shell	shell;
+	char	buf[BUFSIZE];
+	int		ret;
+
+	memset(&shell, 0, sizeof(shell));
+	char *argv[] = {"type", "-p", "echo"};
+	ret = capture_type_stdout(&shell, 3, argv, buf, BUFSIZE);
+	MU_ASSERT_INT(0, ret);
+	MU_ASSERT_STR("type -p of a builtin prints nothing", "", buf);
+}
+
+static void	test_type_p_file(void)
+{
+	t_shell	shell;
+	char	buf[BUFSIZE];
+	int		ret;
+
+	memset(&shell, 0, sizeof(shell));
+	char *argv[] = {"type", "-p", "/bin/sh"};
+	ret = capture_type_stdout(&shell, 3, argv, buf, BUFSIZE);
+	MU_ASSERT_INT(0, ret);
+	MU_ASSERT_STR("type -p of a disk command", "/bin/sh\n", buf);
+}
+
+static void	test_type_p_not_found(void)
+{
+	t_shell	shell;
+	char	buf[BUFSIZE];
+	int		ret;
+
+	memset(&shell, 0, sizeof(shell));
+	char *argv[] = {"type", "-p", "nonexistent_cmd_xyz"};
+	ret = capture_type_stdout(&shell, 3, argv, buf, BUFSIZE);
+	MU_ASSERT_INT(1, ret);
+	MU_ASSERT_STR("type -p of a missing name is silent", "", buf);
+}
+
+/* --- type -a : every location, builtin and disk --- */
+
+static void	test_type_a_builtin(void)
+{
+	t_shell	shell;
+	char	buf[BUFSIZE];
+	int		ret;
+
+	memset(&shell, 0, sizeof(shell));
+	char *argv[] = {"type", "-a", "echo"};
+	ret = capture_type_stdout(&shell, 3, argv, buf, BUFSIZE);
+	MU_ASSERT_INT(0, ret);
+	MU_ASSERT_STR("type -a reports the builtin",
+		"echo is a shell builtin\n", buf);
+}
+
+static void	test_type_a_path_matches(void)
+{
+	t_shell	shell;
+	char	buf[BUFSIZE];
+	int		ret;
+	int		fd;
+
+	memset(&shell, 0, sizeof(shell));
+	mkdir("/tmp/p2td1", 0755);
+	mkdir("/tmp/p2td2", 0755);
+	fd = open("/tmp/p2td1/p2dup", O_CREAT | O_WRONLY | O_TRUNC, 0755);
+	if (fd >= 0)
+		close(fd);
+	fd = open("/tmp/p2td2/p2dup", O_CREAT | O_WRONLY | O_TRUNC, 0755);
+	if (fd >= 0)
+		close(fd);
+	chmod("/tmp/p2td1/p2dup", 0755);
+	chmod("/tmp/p2td2/p2dup", 0755);
+	var_set(&shell, "PATH", "/tmp/p2td1:/tmp/p2td2");
+	char *argv[] = {"type", "-a", "p2dup"};
+	ret = capture_type_stdout(&shell, 3, argv, buf, BUFSIZE);
+	MU_ASSERT_INT(0, ret);
+	MU_ASSERT_STR("type -a lists every PATH match",
+		"p2dup is /tmp/p2td1/p2dup\np2dup is /tmp/p2td2/p2dup\n", buf);
+	unlink("/tmp/p2td1/p2dup");
+	unlink("/tmp/p2td2/p2dup");
+	rmdir("/tmp/p2td1");
+	rmdir("/tmp/p2td2");
+	free_shell_vars(&shell);
+}
+
+static void	test_type_a_not_found(void)
+{
+	t_shell	shell;
+	char	buf[BUFSIZE];
+	int		ret;
+
+	memset(&shell, 0, sizeof(shell));
+	char *argv[] = {"type", "-a", "nonexistent_cmd_xyz"};
+	ret = capture_type_stderr(&shell, 3, argv, buf, BUFSIZE);
+	MU_ASSERT_INT(1, ret);
+	MU_ASSERT_STR("type -a of a missing name",
+		"nonexistent_cmd_xyz not found\n", buf);
+}
+
+/* --- invalid option --- */
+
+static void	test_type_invalid_option(void)
+{
+	t_shell	shell;
+	char	buf[BUFSIZE];
+	int		ret;
+
+	memset(&shell, 0, sizeof(shell));
+	char *argv[] = {"type", "-x", "echo"};
+	ret = capture_type_stderr(&shell, 3, argv, buf, BUFSIZE);
+	MU_ASSERT_INT(2, ret);
+	MU_ASSERT("type -x reports an invalid option",
+		strstr(buf, "invalid option") != NULL);
+}
+
 void	test_builtin_type_suite(void)
 {
 	test_type_builtin_echo();
@@ -252,4 +437,14 @@ void	test_builtin_type_suite(void)
 	test_type_multiple_builtins();
 	test_type_mixed_returns_failure();
 	test_type_no_args();
+	test_type_t_builtin();
+	test_type_t_file();
+	test_type_t_not_found();
+	test_type_p_builtin();
+	test_type_p_file();
+	test_type_p_not_found();
+	test_type_a_builtin();
+	test_type_a_path_matches();
+	test_type_a_not_found();
+	test_type_invalid_option();
 }

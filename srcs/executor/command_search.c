@@ -94,3 +94,26 @@ char	*find_command(t_shell *shell, const char *name)
 		return (NULL);
 	return (search_path(path_var, name));
 }
+
+/**
+ * @brief Print the diagnostic for an unrunnable command and return its
+ *        exit status.
+ * @details Distinguishes "exists but not executable" (126, permission
+ *          denied) from "not found" (127). Only a name containing '/'
+ *          can be probed for existence on disk; a bare name that PATH
+ *          search failed to resolve is reported as not found.
+ * @param name The command name as typed.
+ * @return 126 if the path exists but is not executable, 127 otherwise.
+ */
+int	report_command_error(const char *name)
+{
+	ft_putstr_fd("42sh: ", 2);
+	ft_putstr_fd(name, 2);
+	if (ft_strchr(name, '/') && access(name, F_OK) == 0)
+	{
+		ft_putendl_fd(": Permission denied", 2);
+		return (126);
+	}
+	ft_putendl_fd(": command not found", 2);
+	return (127);
+}

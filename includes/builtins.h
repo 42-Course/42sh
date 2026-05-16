@@ -140,15 +140,20 @@ int builtin_exit(struct s_shell *shell, int argc, char **argv);
 
 /**
  * @brief Describe how each name would be interpreted as a command.
- * @return 0 if every name was identified as a builtin or external
- *         command, 1 if any name was not found.
+ * @return 0 if every name was identified, 1 if any name was not found,
+ *         2 on an invalid option.
  *
- * **Usage**: `type name [name ...]`
+ * **Usage**: `type [-tpa] name [name ...]`
  *
- * For each name, prints one of:
- *   - `name is a shell builtin` — name is registered with `builtin_get`.
- *   - `name is /path/to/name`   — first match found by walking `$PATH`.
- *   - `42sh: type: name: not found` (on stderr) — neither.
+ * | Option | Effect                                                       |
+ * |--------|--------------------------------------------------------------|
+ * | (none) | `name is a shell builtin` / `name is /path` / `name not found` |
+ * | `-t`   | Print one word: `builtin` or `file` (nothing if not found).  |
+ * | `-p`   | Print the `$PATH` resolution of a disk command only.         |
+ * | `-a`   | Print the builtin entry and every `$PATH` match.             |
+ *
+ * Options may be combined (`-ta`); `--` ends option parsing. An unknown
+ * option is reported on stderr and yields exit status 2.
  *
  * **Examples**:
  * @code{.sh}
@@ -156,6 +161,8 @@ int builtin_exit(struct s_shell *shell, int argc, char **argv);
  * # cd is a shell builtin
  * # ls is /usr/bin/ls
  * # bogus not found
+ * type -t ls        # file
+ * type -p ls        # /usr/bin/ls
  * @endcode
  */
 int builtin_type(struct s_shell *shell, int argc, char **argv);

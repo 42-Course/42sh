@@ -75,4 +75,22 @@ int get_exit_status(int wstatus);
 
 void split_assignment(const char *assign, char **name, char **value);
 
+/**
+ * @brief Apply variable assignments to the shell (shared by the simple
+ *        command and pipeline child paths).
+ * @param shell The shell instance.
+ * @param assigns List of "NAME=value" assignment strings.
+ * @param do_export Whether to also export each variable.
+ */
+void apply_assignments(struct s_shell *shell, t_list *assigns, int do_export);
+
+/**
+ * @brief Print the diagnostic for an unrunnable command and return its
+ *        exit status: 126 if the path exists but is not executable,
+ *        127 if it could not be found.
+ * @param name The command name as typed.
+ * @return 126 or 127.
+ */
+int report_command_error(const char *name);
+
 #endif

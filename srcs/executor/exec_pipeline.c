@@ -51,6 +51,9 @@ static void	close_pipes(int pipes[][2], int count)
  *          Expansion of NODE_COMMAND stages is done in the parent before
  *          forking (see expand_pipeline_stages) so the child inherits the
  *          already-expanded argv and debug output stays in one process.
+ *          The child also clears `interactive` (a forked stage is not the
+ *          interactive shell) and applies one-shot assignments before
+ *          redirections, mirroring exec_child.
  */
 static void	pipe_child(t_shell *shell, t_ast *cmd_ast,
 		int pipes[][2], int info[3])
@@ -66,6 +69,7 @@ static void	pipe_child(t_shell *shell, t_ast *cmd_ast,
 	setpgid(0, pgid);
 	if (shell->interactive && pgid == 0)
 		tcsetpgrp(shell->terminal_fd, getpid());
+	shell->interactive = 0;
 	signals_setup_child();
 	if (i > 0)
 		dup2(pipes[i - 1][0], STDIN_FILENO);
@@ -74,6 +78,7 @@ static void	pipe_child(t_shell *shell, t_ast *cmd_ast,
 	close_pipes(pipes, n - 1);
 	if (cmd_ast->type == NODE_COMMAND)
 	{
+		apply_assignments(shell, cmd_ast->data.cmd->assignments, 1);
 		if (setup_redirections(cmd_ast->data.cmd->redirs, NULL) == -1)
 			_exit(1);
 		if (!cmd_ast->data.cmd->argv || !cmd_ast->data.cmd->argv[0])
@@ -98,12 +103,7 @@ void	exec_pipeline_external(t_shell *shell, t_cmd *cmd)
 
 	path = find_command(shell, cmd->argv[0]);
 	if (!path)
-	{
-		ft_putstr_fd("42sh: ", 2);
-		ft_putstr_fd(cmd->argv[0], 2);
-		ft_putendl_fd(": command not found", 2);
-		_exit(127);
-	}
+		_exit(report_command_error(cmd->argv[0]));
 	execve(path, cmd->argv, var_get_environ(shell));
 	ft_putstr_fd("42sh: ", 2);
 	ft_putstr_fd(cmd->argv[0], 2);
