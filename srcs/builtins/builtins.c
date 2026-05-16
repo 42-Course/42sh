@@ -27,6 +27,9 @@ static const t_builtin_entry	g_builtins[] = {
 	{"bg", builtin_bg},
 	{"exit", builtin_exit},
 	{"type", builtin_type},
+	{"set", builtin_set},
+	{"unset", builtin_unset},
+	{"export", builtin_export},
 	{NULL, NULL}
 };
 

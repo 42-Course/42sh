@@ -168,24 +168,6 @@ int builtin_exit(struct s_shell *shell, int argc, char **argv);
 int builtin_type(struct s_shell *shell, int argc, char **argv);
 
 /**
- * @brief Set or export shell variables. (Stub - not implemented.)
- * @return 0 on success, non-zero on usage error.
- */
-int builtin_export(struct s_shell *shell, int argc, char **argv);
-
-/**
- * @brief Remove shell variables. (Stub - not implemented.)
- * @return 0 on success, non-zero on usage error.
- */
-int builtin_unset(struct s_shell *shell, int argc, char **argv);
-
-/**
- * @brief Set shell options or positional parameters. (Stub - not implemented.)
- * @return 0 on success, non-zero on usage error.
- */
-int builtin_set(struct s_shell *shell, int argc, char **argv);
-
-/**
  * @brief List active jobs known to the shell.
  * @return Always 0.
  *
@@ -279,5 +261,75 @@ int builtin_bg(struct s_shell *shell, int argc, char **argv);
  * @endcode
  */
 int builtin_history(struct s_shell *shell, int argc, char **argv);
+
+/**
+ * @brief The set builtin command.
+ *
+ * **Usage**: `set [NAME=VALUE ...]`
+ *
+ * - With no arguments, displays all variables in `NAME=VALUE` format.
+ * - Each `NAME=VALUE` argument sets a variable.
+ *
+ * **Examples**:
+ * @code{.sh}
+ * set                  # display all variables
+ * set var1=value1      # set a variable
+ * set x=10 y=hello     # set multiple variables
+ * @endcode
+ *
+ * @param shell Pointer to the shell state
+ * @param argc Argument count
+ * @param argv Argument vector
+ * @return 0 on success, 1 on error
+ */
+int	builtin_set(struct s_shell *shell, int argc, char **argv);
+
+
+/**
+ * @brief The unset builtin command.
+ *
+ * **Usage**: `unset name [name ...]`
+ *
+ * Removes one or more variables by name. Each argument should be a valid
+ * variable name (identifier). If a name is not found, unset succeeds silently
+ * (POSIX behavior).
+ *
+ * **Examples**:
+ * @code{.sh}
+ * unset var1           # remove a variable
+ * unset x y z          # remove multiple variables
+ * unset nonexistent    # succeeds silently
+ * @endcode
+ *
+ * @param shell Pointer to the shell state
+ * @param argc Argument count
+ * @param argv Argument vector
+ * @return 0 on success, 1 on error (invalid identifier)
+ */
+int	builtin_unset(struct s_shell *shell, int argc, char **argv);
+
+/**
+ * @brief The export builtin command.
+ *
+ * **Usage**: `export [name] [name=value ...]`
+ *
+ * - With no arguments, displays all exported variables in exportable format.
+ * - With `name` (identifier), marks the variable for export to child processes.
+ * - With `NAME=VALUE` argument, sets the variable and marks it for export.
+ *
+ * **Examples**:
+ * @code{.sh}
+ * export                       # display all exported variables
+ * export PATH                  # export existing PATH variable
+ * export var1=value1           # set and export a variable
+ * export x=10 MYVAR=hello      # set and export multiple variables
+ * @endcode
+ *
+ * @param shell Pointer to the shell state
+ * @param argc Argument count
+ * @param argv Argument vector
+ * @return 0 on success, 1 on error
+ */
+int	builtin_export(struct s_shell *shell, int argc, char **argv);
 
 #endif

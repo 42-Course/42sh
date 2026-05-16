@@ -17,7 +17,12 @@
 #include "42sh.h"
 #include <stdlib.h>
 
-static int	is_valid_identifier(const char *name)
+/**
+ * @brief Check whether `name` is a valid shell identifier.
+ * @return 1 if `name` starts with a letter or '_' and the rest are
+ *         alphanumerics or '_'; 0 otherwise.
+ */
+int	var_is_valid_identifier(const char *name)
 {
 	size_t	i;
 
@@ -32,6 +37,27 @@ static int	is_valid_identifier(const char *name)
 			return (0);
 		i++;
 	}
+	return (1);
+}
+
+/**
+ * @brief Check whether `str` has the form "NAME=VALUE".
+ * @param str The candidate assignment string.
+ * @param eq_pos Out: index of the '=' on success.
+ * @return 1 if `str` is an assignment, 0 otherwise.
+ */
+int	var_is_assignment(const char *str, size_t *eq_pos)
+{
+	size_t	i;
+
+	if (!str || !eq_pos)
+		return (0);
+	i = 0;
+	while (str[i] && str[i] != '=')
+		i++;
+	if (i == 0 || str[i] != '=')
+		return (0);
+	*eq_pos = i;
 	return (1);
 }
 
@@ -105,7 +131,7 @@ int	var_set(t_shell *shell, const char *name, const char *value)
 	t_list	*node;
 	char	*new_value;
 
-	if (!shell || !is_valid_identifier(name))
+	if (!shell || !var_is_valid_identifier(name))
 		return (1);
 	existing = var_get(shell, name);
 	if (existing)
@@ -169,7 +195,7 @@ int	var_export(t_shell *shell, const char *name)
 {
 	t_var	*var;
 
-	if (!shell || !is_valid_identifier(name))
+	if (!shell || !var_is_valid_identifier(name))
 		return (1);
 	var = var_get(shell, name);
 	if (!var)
