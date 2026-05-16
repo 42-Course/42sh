@@ -17,6 +17,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <fcntl.h>
+#include <unistd.h>
+#include <sys/stat.h>
 #include <sys/wait.h>
 
 /* Stub helpers declared in test_stubs.c */
@@ -1524,6 +1526,156 @@ static void	test_sequence_mixed(void)
 }
 
 /* ================================================================
+ * 11. Regression tests: P2 executor bug fixes
+ *
+ * These drive the built ./42sh end-to-end and lock externally
+ * observable contracts (the matching pipeline-`exit` regression
+ * lives in test_builtin_exit.c):
+ *   B1 - `exit` aborts the rest of a `;` / `&&` / `||` list.
+ *   B2 - a one-shot assignment (VAR=val cmd) reaches a piped command.
+ *   B4 - a path that exists but is not executable yields 126, not 127.
+ * ================================================================ */
+
+#define P2_NOEXEC_PATH "/tmp/p2b4_noexec_test"
+#define P2_MISSING_PATH "/tmp/p2b4_missing_test_zz"
+
+/**
+ * @brief Run ./42sh, feed `input` on stdin, capture one fd, return exit code.
+ * @details `which_fd` selects the captured stream (1 = stdout, 2 = stderr);
+ *          the other stream is sent to /dev/null.
+ * @param input    Command text written to the shell's stdin.
+ * @param which_fd 1 to capture stdout, 2 to capture stderr.
+ * @param out      Buffer receiving the captured output (NUL-terminated).
+ * @param outsz    Size of `out`.
+ * @return The shell's exit code, or -1 on failure.
+ */
+static int	run_shell(const char *input, int which_fd,
+		char *out, size_t outsz)
+{
+	int		in_pipe[2];
+	int		cap_pipe[2];
+	pid_t	pid;
+	int		wstatus;
+	ssize_t	n;
+	size_t	total;
+	int		devnull;
+
+	out[0] = '\0';
+	if (pipe(in_pipe) == -1 || pipe(cap_pipe) == -1)
+		return (-1);
+	fflush(stdout);
+	fflush(stderr);
+	pid = fork();
+	if (pid == -1)
+		return (-1);
+	if (pid == 0)
+	{
+		dup2(in_pipe[0], STDIN_FILENO);
+		dup2(cap_pipe[1], which_fd);
+		devnull = open("/dev/null", O_WRONLY);
+		dup2(devnull, (which_fd == 1) ? 2 : 1);
+		close(devnull);
+		close(in_pipe[0]);
+		close(in_pipe[1]);
+		close(cap_pipe[0]);
+		close(cap_pipe[1]);
+		execl("./42sh", "42sh", (char *)NULL);
+		_exit(127);
+	}
+	close(in_pipe[0]);
+	close(cap_pipe[1]);
+	write(in_pipe[1], input, strlen(input));
+	close(in_pipe[1]);
+	total = 0;
+	while (total + 1 < outsz
+		&& (n = read(cap_pipe[0], out + total, outsz - 1 - total)) > 0)
+		total += (size_t)n;
+	out[total] = '\0';
+	close(cap_pipe[0]);
+	waitpid(pid, &wstatus, 0);
+	if (WIFEXITED(wstatus))
+		return (WEXITSTATUS(wstatus));
+	return (-1);
+}
+
+/**
+ * @brief B1: a `;` list must stop at `exit`; nothing after it runs.
+ */
+static void	test_b1_exit_stops_sequence(void)
+{
+	char	out[256];
+	int		code;
+
+	code = run_shell("echo p2b1_a; exit 7; echo p2b1_b\n", 1,
+			out, sizeof(out));
+	MU_ASSERT_STR("B1: command after `; exit` is not run", "p2b1_a\n", out);
+	MU_ASSERT_INT(7, code);
+}
+
+/**
+ * @brief B1: an `||` branch must not run once `exit` has stopped the shell.
+ */
+static void	test_b1_exit_stops_or_chain(void)
+{
+	char	out[256];
+	int		code;
+
+	code = run_shell("exit 5 || echo p2b1_or\n", 1, out, sizeof(out));
+	MU_ASSERT_STR("B1: `||` branch after exit is not run", "", out);
+	MU_ASSERT_INT(5, code);
+}
+
+/**
+ * @brief B2: `FOO=val env | cat` must show FOO in the piped command's env.
+ */
+static void	test_b2_assignment_reaches_pipeline(void)
+{
+	char	out[8192];
+
+	run_shell("FOO=p2b2zqx env | cat\n", 1, out, sizeof(out));
+	MU_ASSERT("B2: VAR=val one-shot assignment reaches a piped command",
+		strstr(out, "FOO=p2b2zqx") != NULL);
+}
+
+/**
+ * @brief B4: a non-executable file invoked by path exits 126 (permission).
+ */
+static void	test_b4_not_executable_is_126(void)
+{
+	char	out[512];
+	int		fd;
+	int		code;
+
+	fd = open(P2_NOEXEC_PATH, O_CREAT | O_WRONLY | O_TRUNC, 0644);
+	if (fd >= 0)
+	{
+		write(fd, "#!/bin/sh\necho hi\n", 18);
+		close(fd);
+	}
+	chmod(P2_NOEXEC_PATH, 0644);
+	code = run_shell(P2_NOEXEC_PATH "\n", 2, out, sizeof(out));
+	MU_ASSERT_INT(126, code);
+	MU_ASSERT("B4: non-executable file reports a permission error",
+		strstr(out, "Permission denied") != NULL);
+	unlink(P2_NOEXEC_PATH);
+}
+
+/**
+ * @brief B4: a genuinely missing path still exits 127 (not found).
+ */
+static void	test_b4_missing_path_is_127(void)
+{
+	char	out[512];
+	int		code;
+
+	unlink(P2_MISSING_PATH);
+	code = run_shell(P2_MISSING_PATH "\n", 2, out, sizeof(out));
+	MU_ASSERT_INT(127, code);
+	MU_ASSERT("B4: missing path reports command not found",
+		strstr(out, "command not found") != NULL);
+}
+
+/* ================================================================
  * Master test suite entry point
  * ================================================================ */
 
@@ -1579,6 +1731,13 @@ void	test_executor_suite(void)
 	/* test_builtin_temp_assignments(); */
 	test_pipeline_with_heredoc();
 	test_sequence_mixed();
+
+	/* 11. Regression: P2 executor bug fixes */
+	test_b1_exit_stops_sequence();
+	test_b1_exit_stops_or_chain();
+	test_b2_assignment_reaches_pipeline();
+	test_b4_not_executable_is_126();
+	test_b4_missing_path_is_127();
 }
 
 #else

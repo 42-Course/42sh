@@ -85,8 +85,9 @@ debug: fclean
 	@printf $(GREEN)"$(NAME): debug build OK\n"$(EOC)
 
 # Test build: compile test binary (TEST_FLAGS enables individual suites)
+# -lutil: forkpty(3), used by test_builtin_exit to drive an interactive shell.
 test: $(LIB) $(TEST_OBJS)
-	@$(CC) $(TEST_OBJS) $(LDFLAGS) -o $(TEST_NAME)
+	@$(CC) $(TEST_OBJS) $(LDFLAGS) -lutil -o $(TEST_NAME)
 	@printf "\n"$(GREEN)"running tests...\n"$(EOC)
 	@./$(TEST_NAME)
 

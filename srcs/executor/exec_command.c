@@ -11,12 +11,13 @@
 
 /**
  * @brief Apply assignments permanently to shell variables.
- * @details Used when command is empty (bare assignment) or in child for execve.
+ * @details Used for a bare assignment, and in a forked child (a simple
+ *          command or a pipeline stage) before execve.
  * @param shell The shell instance.
  * @param assigns The list of assignments.
  * @param do_export Whether to export the variables.
  */
-static void	apply_assignments(t_shell *shell, t_list *assigns, int do_export)
+void	apply_assignments(t_shell *shell, t_list *assigns, int do_export)
 {
 	t_list	*node;
 	char	*name;
@@ -164,12 +165,7 @@ static void	exec_child(t_shell *shell, t_cmd *cmd)
 		_exit(1);
 	path = find_command(shell, cmd->argv[0]);
 	if (!path)
-	{
-		ft_putstr_fd("42sh: ", 2);
-		ft_putstr_fd(cmd->argv[0], 2);
-		ft_putendl_fd(": command not found", 2);
-		_exit(127);
-	}
+		_exit(report_command_error(cmd->argv[0]));
 	execve(path, cmd->argv, var_get_environ(shell));
 	ft_putstr_fd("42sh: ", 2);
 	ft_putstr_fd(cmd->argv[0], 2);

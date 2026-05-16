@@ -77,6 +77,8 @@ int	executor_execute(t_shell *shell, t_ast *ast)
 
 	if (!ast)
 		return (0);
+	if (!shell->running)
+		return (shell->last_exit_status);
 	status = dispatch_node(shell, ast);
 	shell->last_exit_status = status;
 	return (status);
