@@ -17,6 +17,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <fcntl.h>
+#include <limits.h>
 #include <unistd.h>
 #include <sys/stat.h>
 #include <sys/wait.h>
@@ -24,7 +25,6 @@
 /* Stub helpers declared in test_stubs.c */
 extern void	stub_shell_init(t_shell *shell);
 extern void	stub_shell_cleanup(t_shell *shell);
-// extern void	stub_set_builtin(const char *name, t_builtin_fn fn);
 
 /* ================================================================
  * 1. exec_utils: get_exit_status, split_assignment
@@ -116,10 +116,7 @@ static void	test_split_assignment(void)
 
 /* ================================================================
  * 2. command_search: find_command
- * TODO: uncomment when var_set/var_get_value are implemented
  * ================================================================ */
-#if 0
-
 static void	test_find_command(void)
 {
 	t_shell	shell;
@@ -175,7 +172,6 @@ static void	test_find_command(void)
 
 	stub_shell_cleanup(&shell);
 }
-#endif
 
 /* ================================================================
  * 3. Heredoc
@@ -186,50 +182,6 @@ static void	test_find_command(void)
  *
  * The corresponding tests are present in the test_parser.c file
  */
-//static void	test_heredoc(void)
-//{
-//	t_redir	redir;
-//	int		fd;
-//	char	buf[256];
-//	ssize_t	n;
-//
-//	/* Normal heredoc */
-//	memset(&redir, 0, sizeof(redir));
-//	redir.type = TOK_HEREDOC;
-//	redir.fd = -1;
-//	redir.heredoc_content = strdup("hello world\nline 2\n");
-//	fd = setup_heredoc(&redir);
-//	MU_ASSERT("heredoc fd >= 0", fd >= 0);
-//	n = read(fd, buf, sizeof(buf) - 1);
-//	buf[n] = '\0';
-//	MU_ASSERT_STR("heredoc content", "hello world\nline 2\n", buf);
-//	close(fd);
-//	free(redir.heredoc_content);
-//
-//	/* Empty heredoc */
-//	memset(&redir, 0, sizeof(redir));
-//	redir.type = TOK_HEREDOC;
-//	redir.fd = -1;
-//	redir.heredoc_content = strdup("");
-//	fd = setup_heredoc(&redir);
-//	MU_ASSERT("empty heredoc fd >= 0", fd >= 0);
-//	n = read(fd, buf, sizeof(buf) - 1);
-//	MU_ASSERT_INT(0, (int)n);
-//	close(fd);
-//	free(redir.heredoc_content);
-//
-//	/* NULL content heredoc */
-//	memset(&redir, 0, sizeof(redir));
-//	redir.type = TOK_HEREDOC;
-//	redir.fd = -1;
-//	redir.heredoc_content = NULL;
-//	fd = setup_heredoc(&redir);
-//	MU_ASSERT("null heredoc fd >= 0", fd >= 0);
-//	n = read(fd, buf, sizeof(buf) - 1);
-//	MU_ASSERT_INT(0, (int)n);
-//	close(fd);
-//}
-
 /* ================================================================
  * 4. Redirections
  * ================================================================ */
@@ -788,10 +740,7 @@ static void	test_execute_builtin_command(void)
 
 /* ================================================================
  * 7. Simple command: empty (assignment only)
- * TODO: uncomment when var_set/var_get_value are implemented
  * ================================================================ */
-#if 0
-
 static void	test_execute_assignment_only(void)
 {
 	t_shell	shell;
@@ -815,14 +764,16 @@ static void	test_execute_assignment_only(void)
 	MU_ASSERT_INT(0, status);
 	MU_ASSERT_STR("FOO set", "bar", var_get_value(&shell, "FOO"));
 
-	free(assign_str);
+	/* expand_assignments() freed the original assign_str and replaced
+	 * the node content; expand_argv() replaced argv. Free what the
+	 * command structure points to now, not the original buffers. */
+	free(ast.data.cmd->assignments->content);
 	free(ast.data.cmd->assignments);
 	free(ast.data.cmd->argv);
 	free(ast.data.cmd);
 
 	stub_shell_cleanup(&shell);
 }
-#endif
 
 /* ================================================================
  * 8. Pipeline
@@ -1122,7 +1073,6 @@ static void	test_execute_subshell_isolation(void)
 	stub_shell_cleanup(&shell);
 }
 
-/* FIXME: flaky in CI (stdio-after-fork). Re-enable once stable.
 static void	test_execute_block(void)
 {
 	t_shell	shell;
@@ -1155,6 +1105,10 @@ static void	test_execute_block(void)
 		block.data.group->redirs = ft_lstnew(redir);
 	}
 
+	/* A block runs in-process: setup_redirections points the test
+	 * process's fd 1 at the file. Flush our own buffered stdout first,
+	 * or pending test output would be flushed into the file. */
+	fflush(stdout);
 	status = executor_execute(&shell, &block);
 	MU_ASSERT_INT(0, status);
 
@@ -1176,7 +1130,6 @@ static void	test_execute_block(void)
 	free(block.data.group);
 	stub_shell_cleanup(&shell);
 }
-*/
 
 /* ================================================================
  * 10. Background execution
@@ -1337,59 +1290,62 @@ static void	test_complex_logical_chains(void)
 
 /* ================================================================
  * 13. Builtin with temporary assignments
- * TODO: uncomment when var_set/var_get_value are implemented
  * ================================================================ */
-#if 0
 
-static int	mock_builtin_getvar(t_shell *shell, int argc, char **argv)
-{
-	const char	*val;
-
-	(void)argc;
-	(void)argv;
-	val = var_get_value(shell, "TESTVAR");
-	if (val && strcmp(val, "temporary") == 0)
-		return (0);
-	return (1);
-}
-
+/**
+ * @brief A `VAR=val builtin` assignment is visible to the builtin and
+ *        restored afterwards.
+ * @details Drives `HOME=/tmp cd`: cd with no arguments changes to $HOME,
+ *          so a successful chdir to /tmp proves the builtin saw the
+ *          temporary HOME, and HOME reverting to its prior value proves
+ *          exec_builtin restored it. The process cwd is saved and
+ *          restored since `cd` runs in-process.
+ */
 static void	test_builtin_temp_assignments(void)
 {
 	t_shell	shell;
 	t_ast	ast;
 	int		status;
 	char	*assign_str;
+	char	saved_cwd[PATH_MAX];
+	char	new_cwd[PATH_MAX];
 
+	if (!getcwd(saved_cwd, sizeof(saved_cwd)))
+		saved_cwd[0] = '\0';
 	stub_shell_init(&shell);
-	var_set(&shell, "TESTVAR", "original");
-	stub_set_builtin("getvar", mock_builtin_getvar);
+	var_set(&shell, "HOME", "/");
 
-	/* TESTVAR=temporary getvar => builtin sees "temporary" */
+	/* HOME=/tmp cd  =>  cd (no args) must change to the temporary HOME */
 	memset(&ast, 0, sizeof(ast));
 	ast.type = NODE_COMMAND;
 	ast.data.cmd = calloc(1, sizeof(t_cmd));
 	ast.data.cmd->argv = calloc(2, sizeof(char *));
-	ast.data.cmd->argv[0] = strdup("getvar");
+	ast.data.cmd->argv[0] = strdup("cd");
 	ast.data.cmd->argc = 1;
-	assign_str = strdup("TESTVAR=temporary");
+	assign_str = strdup("HOME=/tmp");
 	ast.data.cmd->assignments = ft_lstnew(assign_str);
 
 	status = executor_execute(&shell, &ast);
 	MU_ASSERT_INT(0, status);
 
-	/* After builtin, TESTVAR should be restored to "original" */
-	MU_ASSERT_STR("TESTVAR restored", "original",
-		var_get_value(&shell, "TESTVAR"));
+	/* builtin saw the temporary HOME: cwd is now /tmp, not "/" */
+	MU_ASSERT_STR("builtin sees temp assignment", "/tmp",
+		getcwd(new_cwd, sizeof(new_cwd)));
+	/* exec_builtin restored HOME after the builtin returned */
+	MU_ASSERT_STR("temp assignment restored after builtin", "/",
+		var_get_value(&shell, "HOME"));
 
-	free(assign_str);
+	/* expand_assignments() replaced the node content and expand_argv()
+	 * replaced argv; free what the structure points to now. */
+	free(ast.data.cmd->assignments->content);
 	free(ast.data.cmd->assignments);
 	free(ast.data.cmd->argv[0]);
 	free(ast.data.cmd->argv);
 	free(ast.data.cmd);
-	stub_set_builtin(NULL, NULL);
 	stub_shell_cleanup(&shell);
+	if (saved_cwd[0] && chdir(saved_cwd) != 0)
+		perror("chdir");
 }
-#endif
 
 /* ================================================================
  * 14. Pipeline with heredoc
@@ -1686,11 +1642,9 @@ void	test_executor_suite(void)
 	test_split_assignment();
 
 	/* 2. Command search */
-	/* TODO: uncomment when var_set/var_get_value are implemented */
-	/* test_find_command(); */
+	test_find_command();
 
-	/* 3. Heredoc */
-	//test_heredoc();
+	/* 3. Heredoc: covered by test_parser.c */
 
 	/* 4. Redirections */
 	test_redirections_output();
@@ -1708,8 +1662,7 @@ void	test_executor_suite(void)
 	/* 6. Simple commands */
 	test_execute_external_command();
 	test_execute_builtin_command();
-	/* TODO: uncomment when var_set/var_get_value are implemented */
-	/* test_execute_assignment_only(); */
+	test_execute_assignment_only();
 
 	/* 7. Pipelines */
 	test_execute_pipeline();
@@ -1719,7 +1672,7 @@ void	test_executor_suite(void)
 	/* 8. Subshell, block, background */
 	test_execute_subshell();
 	test_execute_subshell_isolation();
-	/* test_execute_block();  // FIXME: flaky in CI (stdio-after-fork) */
+	test_execute_block();
 	test_execute_background();
 
 	/* 9. Dispatch & edge cases */
@@ -1728,7 +1681,7 @@ void	test_executor_suite(void)
 	/* 10. Complex scenarios */
 	test_complex_logical_chains();
 	/* TODO: uncomment when var_set/var_get_value are implemented */
-	/* test_builtin_temp_assignments(); */
+	test_builtin_temp_assignments();
 	test_pipeline_with_heredoc();
 	test_sequence_mixed();
 
