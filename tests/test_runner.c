@@ -48,19 +48,6 @@ int	main(void)
 {
 	printf("\033[1;35m=== 42sh Unit Tests ===\033[0m\n");
 
-	// MU_RUN(test_dlist_suite);
-	// MU_RUN(test_list_suite);
-	// MU_RUN(test_history_suite);
-	// MU_RUN(test_executor_suite);
-	// MU_RUN(test_lexer_suite);
-	// MU_RUN(test_btree_suite);
-	// MU_RUN(test_parser_suite);
-	// MU_RUN(test_builtin_echo_suite);
-	// MU_RUN(test_job_control_suite);
-	// MU_RUN(test_builtin_exit_suite);
-	// MU_RUN(test_builtin_type_suite);
-	// MU_RUN(test_heredoc_bugs_suite);
-	MU_RUN(test_variables_suite);
 	MU_RUN(test_dlist_suite);
 	MU_RUN(test_list_suite);
 	MU_RUN(test_history_suite);

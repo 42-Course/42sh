@@ -22,7 +22,6 @@
 #define EXPANDER_H
 
 #include "ast.h"
-#include "42sh.h"
 #include <stddef.h>
 
 struct s_shell;
@@ -148,20 +147,5 @@ int expand_tilde_at(struct s_shell *shell, const char *input, size_t *pos,
  *         allocation failure.
  */
 char **field_split(struct s_shell *shell, const t_xbuf *expanded);
-
-
-/**
- * TODO the whole function
- */
-char * expand_tilde(t_shell * shell, char * input, size_t pos);
-
-/**
- * TODO the whole function
- */
-char *expand_braced_variable(t_shell * shell, char *input, size_t pos, bool in_double_quote);
-
-char *expand_word_internal(t_shell *shell, char *input);
-
-char *expand_arithmetic(t_shell *shell, char *input, size_t pos);
 
 #endif

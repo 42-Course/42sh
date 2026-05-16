@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jspitz <jspitz@student.42.fr>              +#+  +:+       +#+        */
+/*   By: zweng <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/09 11:44:47 by zweng             #+#    #+#             */
 /*   Updated: 2026/04/28 15:36:56 by jguillem         ###   ########.fr       */
@@ -28,7 +28,7 @@
 # define FUN_EXT(a)	(a == 0 ? 1 : 0)
 # define ABS(a,b)	(a > b ? a : b)
 
-# define bool unsigned char
+typedef unsigned char bool;
 
 typedef struct s_list
 {

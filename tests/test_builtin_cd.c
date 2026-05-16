@@ -14,8 +14,6 @@
 # include "sys/stat.h"
 # include "limits.h"
 # include "string.h"
-#include <linux/limits.h>
-#include <bits/posix1_lim.h>
 
 /**
  * @brief Seed a fresh shell with HOME/PWD/OLDPWD from the calling
