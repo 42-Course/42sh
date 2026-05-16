@@ -8,6 +8,7 @@
 #include "variables.h"
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 /**
  * @brief Initialize a fresh shell for testing
@@ -16,6 +17,36 @@ static void	export_test_init(t_shell *shell)
 {
 	memset(shell, 0, sizeof(*shell));
 	shell->env_dirty = 1;
+}
+
+/**
+ * @brief Run builtin_export capturing one fd (1 = stdout, 2 = stderr).
+ * @return The builtin's return value; `buf` receives the captured output.
+ */
+static int	capture_export_fd(t_shell *shell, int argc, char **argv,
+		char *buf, size_t buf_size, int which_fd)
+{
+	int		pipefd[2];
+	int		saved;
+	int		ret;
+	ssize_t	n;
+	ssize_t	total;
+
+	total = 0;
+	memset(buf, 0, buf_size);
+	if (pipe(pipefd) == -1)
+		return (-1);
+	saved = dup(which_fd);
+	dup2(pipefd[1], which_fd);
+	close(pipefd[1]);
+	ret = builtin_export(shell, argc, argv);
+	dup2(saved, which_fd);
+	close(saved);
+	while ((n = read(pipefd[0], buf + total, buf_size - 1 - total)) > 0)
+		total += n;
+	buf[total] = '\0';
+	close(pipefd[0]);
+	return (ret);
 }
 
 /**
@@ -212,6 +243,7 @@ static void	test_export_marks_as_exported(void)
 	ret = builtin_export(&shell, 2, argv);
 	var = var_get(&shell, "UNEXPORTED");
 	MU_ASSERT_INT(0, ret);
+	MU_ASSERT_INT(1, var->exported);
 }
 
 /**
@@ -240,6 +272,55 @@ static void	test_export_null_argv(void)
 }
 
 /**
+ * @brief Test `export -p` lists exported variables (subject: export [-p]).
+ */
+static void	test_export_p_lists_exported(void)
+{
+	t_shell	shell;
+	char	buf[1024];
+	int		ret;
+	char	*argv[] = {"export", "-p", NULL};
+
+	export_test_init(&shell);
+	var_set(&shell, "EXP_P_VAR", "pval");
+	var_export(&shell, "EXP_P_VAR");
+	ret = capture_export_fd(&shell, 2, argv, buf, sizeof(buf), 1);
+	MU_ASSERT_INT(0, ret);
+	MU_ASSERT("export -p lists exported variables",
+		strstr(buf, "export EXP_P_VAR=pval") != NULL);
+}
+
+/**
+ * @brief Test the invalid-name error echoes the rejected token.
+ */
+static void	test_export_invalid_name_echoes_token(void)
+{
+	t_shell	shell;
+	char	buf[256];
+	char	*argv[] = {"export", "2BADNAME", NULL};
+
+	export_test_init(&shell);
+	capture_export_fd(&shell, 2, argv, buf, sizeof(buf), 2);
+	MU_ASSERT("export error names the rejected token",
+		strstr(buf, "2BADNAME") != NULL);
+}
+
+/**
+ * @brief Test the invalid-assignment error echoes the rejected token.
+ */
+static void	test_export_invalid_assign_echoes_token(void)
+{
+	t_shell	shell;
+	char	buf[256];
+	char	*argv[] = {"export", "1BAD=value", NULL};
+
+	export_test_init(&shell);
+	capture_export_fd(&shell, 2, argv, buf, sizeof(buf), 2);
+	MU_ASSERT("export assignment error names the rejected token",
+		strstr(buf, "1BAD") != NULL);
+}
+
+/**
  * @brief Run the full test suite for the export builtin
  */
 void	test_builtin_export_suite(void)
@@ -257,4 +338,7 @@ void	test_builtin_export_suite(void)
 	test_export_marks_as_exported();
 	test_export_null_shell();
 	test_export_null_argv();
+	test_export_p_lists_exported();
+	test_export_invalid_name_echoes_token();
+	test_export_invalid_assign_echoes_token();
 }

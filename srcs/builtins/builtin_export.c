@@ -12,47 +12,14 @@
 #include <stdlib.h>
 
 /**
- * @brief Check if a string contains the format "NAME=VALUE"
- * @param str The string to check
- * @param eq_pos Pointer to store the position of '=' (output parameter)
- * @return 1 if valid format, 0 otherwise
+ * @brief Print the "not a valid identifier" diagnostic for a token.
+ * @param token The rejected argument, echoed in the message.
  */
-static int	is_assignment(const char *str, size_t *eq_pos)
+static void	export_error(const char *token)
 {
-	size_t	i;
-
-	if (!str || !eq_pos)
-		return (0);
-	i = 0;
-	while (str[i] && str[i] != '=')
-		i++;
-	if (i == 0 || str[i] != '=')
-		return (0);
-	*eq_pos = i;
-	return (1);
-}
-
-/**
- * @brief Check if a string is a valid identifier (variable name).
- * @param name The string to check
- * @return 1 if valid identifier, 0 otherwise
- */
-static int	is_valid_identifier(const char *name)
-{
-	size_t	i;
-
-	if (!name || !*name)
-		return (0);
-	if (!ft_isalpha((unsigned char)name[0]) && name[0] != '_')
-		return (0);
-	i = 1;
-	while (name[i])
-	{
-		if (!ft_isalnum((unsigned char)name[i]) && name[i] != '_')
-			return (0);
-		i++;
-	}
-	return (1);
+	ft_putstr_fd("42sh: export: `", 2);
+	ft_putstr_fd(token, 2);
+	ft_putendl_fd("': not a valid identifier", 2);
 }
 
 /**
@@ -98,7 +65,7 @@ static int	export_variable_from_assignment(t_shell *shell, const char *assignmen
 	char	*value;
 	int		result;
 
-	if (!shell || !is_assignment(assignment, &eq_pos))
+	if (!shell || !var_is_assignment(assignment, &eq_pos))
 		return (1);
 	name = ft_strsub(assignment, 0, eq_pos);
 	if (!name)
@@ -116,7 +83,7 @@ static int	export_variable_from_assignment(t_shell *shell, const char *assignmen
 	free(value);
 	if (result != 0)
 	{
-		ft_putendl_fd("42sh: export: invalid variable name", 2);
+		export_error(assignment);
 		return (1);
 	}
 	return (0);
@@ -130,13 +97,15 @@ static int	export_variable_from_assignment(t_shell *shell, const char *assignmen
  */
 static int	export_variable_by_name(t_shell *shell, const char *name)
 {
-	if (!shell || !is_valid_identifier(name))
+	if (!shell)
 		return (1);
-	if (var_export(shell, name) != 0)
+	if (!var_is_valid_identifier(name))
 	{
-		ft_putendl_fd("42sh: export: invalid variable name", 2);
+		export_error(name);
 		return (1);
 	}
+	if (var_export(shell, name) != 0)
+		return (1);
 	return (0);
 }
 
@@ -149,6 +118,8 @@ int	builtin_export(struct s_shell *shell, int argc, char **argv)
 	if (!shell || !argv)
 		return (1);
 	if (argc == 1)
+		return (print_exported_variables(shell));
+	if (argc == 2 && ft_strcmp(argv[1], "-p") == 0)
 		return (print_exported_variables(shell));
 	result = 0;
 	i = 1;

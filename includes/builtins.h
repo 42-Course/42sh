@@ -168,24 +168,6 @@ int builtin_exit(struct s_shell *shell, int argc, char **argv);
 int builtin_type(struct s_shell *shell, int argc, char **argv);
 
 /**
- * @brief Set or export shell variables. (Stub - not implemented.)
- * @return 0 on success, non-zero on usage error.
- */
-int builtin_export(struct s_shell *shell, int argc, char **argv);
-
-/**
- * @brief Remove shell variables. (Stub - not implemented.)
- * @return 0 on success, non-zero on usage error.
- */
-int builtin_unset(struct s_shell *shell, int argc, char **argv);
-
-/**
- * @brief Set shell options or positional parameters. (Stub - not implemented.)
- * @return 0 on success, non-zero on usage error.
- */
-int builtin_set(struct s_shell *shell, int argc, char **argv);
-
-/**
  * @brief List active jobs known to the shell.
  * @return Always 0.
  *

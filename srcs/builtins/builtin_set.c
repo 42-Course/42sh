@@ -13,27 +13,6 @@
 #include <stdlib.h>
 
 /**
- * @brief Check if a string contains the format "NAME=VALUE"
- * @param str The string to check
- * @param eq_pos Pointer to store the position of '=' (output parameter)
- * @return 1 if valid format, 0 otherwise
- */
-static int	is_assignment(const char *str, size_t *eq_pos)
-{
-	size_t	i;
-
-	if (!str || !eq_pos)
-		return (0);
-	i = 0;
-	while (str[i] && str[i] != '=')
-		i++;
-	if (i == 0 || str[i] != '=')
-		return (0);
-	*eq_pos = i;
-	return (1);
-}
-
-/**
  * @brief Display all variables in the format "NAME=VALUE" in alphabetical order.
  * @param shell Pointer to the shell state
  * @return 0 on success
@@ -117,7 +96,7 @@ static int	set_variable_from_assignment(t_shell *shell, const char *assignment)
 	char	*value;
 	int		result;
 
-	if (!shell || !is_assignment(assignment, &eq_pos))
+	if (!shell || !var_is_assignment(assignment, &eq_pos))
 		return (1);
 	name = ft_strsub(assignment, 0, eq_pos);
 	if (!name)

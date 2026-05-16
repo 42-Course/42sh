@@ -12,29 +12,6 @@
 #include <stdlib.h>
 
 /**
- * @brief Check if a string is a valid identifier (variable name).
- * @param name The string to check
- * @return 1 if valid identifier, 0 otherwise
- */
-static int	is_valid_identifier(const char *name)
-{
-	size_t	i;
-
-	if (!name || !*name)
-		return (0);
-	if (!ft_isalpha((unsigned char)name[0]) && name[0] != '_')
-		return (0);
-	i = 1;
-	while (name[i])
-	{
-		if (!ft_isalnum((unsigned char)name[i]) && name[i] != '_')
-			return (0);
-		i++;
-	}
-	return (1);
-}
-
-/**
  * @brief The unset builtin command.
  *
  * **Usage**: `unset name [name ...]`
@@ -72,7 +49,7 @@ int	builtin_unset(struct s_shell *shell, int argc, char **argv)
 	i = 1;
 	while (i < argc)
 	{
-		if (!is_valid_identifier(argv[i]))
+		if (!var_is_valid_identifier(argv[i]))
 		{
 			ft_putstr_fd("42sh: unset: `", 2);
 			ft_putstr_fd(argv[i], 2);

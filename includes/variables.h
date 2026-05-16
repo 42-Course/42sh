@@ -16,6 +16,8 @@
 #ifndef VARIABLES_H
 #define VARIABLES_H
 
+#include <stddef.h>
+
 /** Forward declaration to avoid circular dependency with 42sh.h. */
 typedef struct s_shell t_shell;
 
@@ -71,5 +73,11 @@ char **var_get_environ(t_shell *shell);
 
 /** Populate `shell->variables` from the process's initial `envp`. */
 void var_init_from_environ(t_shell *shell, char **envp);
+
+/** True if `name` is a valid shell identifier (export/unset/set validation). */
+int var_is_valid_identifier(const char *name);
+
+/** True if `str` has the form "NAME=VALUE"; on success `*eq_pos` is the '='. */
+int var_is_assignment(const char *str, size_t *eq_pos);
 
 #endif
