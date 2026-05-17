@@ -67,6 +67,20 @@ cleanup() {
 }
 trap cleanup EXIT
 
+# Canonicalise a shell's stderr so a diagnostic can be compared across
+# shells: strip the shell-name prefix (`bash:` / `42sh:`) and the bash-only
+# `-c:` and `line N:` decorations. What remains is the actual diagnostic
+# text the two shells are expected to share -- a shell MUST identify itself
+# by its own name, so a byte-exact match against bash is unachievable and
+# wrong to require. Normalised output is written to $TMP/e.bash and
+# $TMP/e.sh for the caller to diff. Returns 0 when the diagnostics match.
+err_match() {
+	local re='s/^(bash|42sh): //; s/^-c: //; s/^line [0-9]+: //'
+	sed -E "$re" "$1" >"$TMP/e.bash"
+	sed -E "$re" "$2" >"$TMP/e.sh"
+	cmp -s "$TMP/e.bash" "$TMP/e.sh"
+}
+
 pass=0; fail=0; vg_fail=0; total=0
 failed_cases=""
 vg_failed_cases=""
@@ -101,10 +115,10 @@ while IFS= read -r raw || [ -n "$raw" ]; do
 		report+="    stdout differs (- bash, + 42sh):"$'\n'
 		report+="$(diff -u "$bash_out" "$sh_out" | sed 's/^/      /')"$'\n'
 	fi
-	if ! cmp -s "$bash_err" "$sh_err"; then
+	if ! err_match "$bash_err" "$sh_err"; then
 		ok=0
-		report+="    stderr differs (- bash, + 42sh):"$'\n'
-		report+="$(diff -u "$bash_err" "$sh_err" | sed 's/^/      /')"$'\n'
+		report+="    stderr differs (- bash, + 42sh; shell-name prefix normalised):"$'\n'
+		report+="$(diff -u "$TMP/e.bash" "$TMP/e.sh" | sed 's/^/      /')"$'\n'
 	fi
 
 	if [ "$ok" = "1" ]; then
@@ -177,10 +191,10 @@ hd_case() {
 			report+="    stdout differs (- bash, + 42sh):"$'\n'
 			report+="$(diff -u "$bash_out" "$sh_out" | sed 's/^/      /')"$'\n'
 		fi
-		if ! cmp -s "$bash_err" "$sh_err"; then
+		if ! err_match "$bash_err" "$sh_err"; then
 			ok=0
-			report+="    stderr differs (- bash, + 42sh):"$'\n'
-			report+="$(diff -u "$bash_err" "$sh_err" | sed 's/^/      /')"$'\n'
+			report+="    stderr differs (- bash, + 42sh; shell-name prefix normalised):"$'\n'
+			report+="$(diff -u "$TMP/e.bash" "$TMP/e.sh" | sed 's/^/      /')"$'\n'
 		fi
 		if [ "$ok" = "1" ]; then
 			pass=$((pass + 1))
