@@ -237,6 +237,78 @@ hd_case "quoted delim no expand" $'cat << \'EOF\'\n$HOME\nEOF\n'
 hd_case "multiple heredocs"      $'cat << A\nfromA\nA\ncat << B\nfromB\nB\necho TAIL\n'
 hd_case "heredoc in pipeline"    $'cat << EOF | wc -l\nl1\nl2\nl3\nEOF\n'
 
+# ── SIGPIPE / broken-pipe phase ─────────────────────────────────────────
+# `producer | head`: head takes what it needs, exits, and closes the pipe,
+# so the (infinite) producer upstream must be terminated -- the shell must
+# reap it and not hang. stderr is deliberately NOT compared: a producer
+# killed by SIGPIPE is silent, but where SIGPIPE is ignored it prints
+# "write error: Broken pipe" instead -- environment-dependent by nature
+# (this is exactly why such a pipeline cannot be a normal cases.txt entry).
+# What IS deterministic -- and what this phase asserts -- is stdout, exit
+# status, and that the pipeline terminates. Each run is wrapped in
+# `timeout`; a 124 exit means 42sh hung.
+sigpipe_case() {
+	local label cmd
+	label="$1"
+	cmd="$2"
+	total=$((total + 1))
+	bash_out="$TMP/sp.bash.out"
+	sh_out="$TMP/sp.sh.out"
+	timeout 10 bash --posix -c "$cmd" >"$bash_out" 2>/dev/null
+	bash_rc=$?
+	timeout 10 "$SHELL_BIN" -c "$cmd" >"$sh_out" 2>/dev/null
+	sh_rc=$?
+	ok=1
+	report=""
+	if [ "$sh_rc" = "124" ]; then
+		ok=0
+		report+="    42sh HUNG (timeout) -- pipeline did not terminate"$'\n'
+	fi
+	if [ "$bash_rc" != "$sh_rc" ]; then
+		ok=0
+		report+="    exit:   bash=$bash_rc 42sh=$sh_rc"$'\n'
+	fi
+	if ! cmp -s "$bash_out" "$sh_out"; then
+		ok=0
+		report+="    stdout differs (- bash, + 42sh):"$'\n'
+		report+="$(diff -u "$bash_out" "$sh_out" | sed 's/^/      /')"$'\n'
+	fi
+	if [ "$ok" = "1" ]; then
+		pass=$((pass + 1))
+		printf "%sPASS%s [sp] %s\n" "$GREEN" "$RESET" "$label"
+	else
+		fail=$((fail + 1))
+		failed_cases+="sp:$label "
+		printf "%sFAIL%s [sp] %s\n%s" "$RED" "$RESET" "$label" "$report"
+	fi
+	if [ "$USE_VALGRIND" = "1" ]; then
+		vg_log="$TMP/sp.vg.log"
+		vg_args=(--error-exitcode=99
+			--leak-check=full
+			--show-leak-kinds=definite,indirect
+			--errors-for-leak-kinds=definite,indirect
+			--track-fds=yes
+			--log-file="$vg_log")
+		[ -r "$SUPP" ] && vg_args+=(--suppressions="$SUPP")
+		timeout 30 valgrind "${vg_args[@]}" "$SHELL_BIN" -c "$cmd" \
+			>/dev/null 2>&1
+		if [ "$?" = "99" ]; then
+			vg_fail=$((vg_fail + 1))
+			vg_failed_cases+="sp:$label "
+			printf "  %sVG  [sp] %s valgrind reported errors:%s\n" \
+				"$YELLOW" "$label" "$RESET"
+			sed 's/^/    /' "$vg_log"
+		fi
+	fi
+}
+
+echo
+printf "%s-- SIGPIPE / broken-pipe phase --%s\n" "$CYAN" "$RESET"
+sigpipe_case "infinite producer, head -n 1" 'yes | head -n 1'
+sigpipe_case "infinite producer, head -n 5" 'yes | head -n 5'
+sigpipe_case "SIGPIPE through middle stage" 'yes | cat | head -n 3'
+sigpipe_case "infinite binary src, head -c" 'cat /dev/zero | head -c 16 | wc -c'
+
 echo
 printf "%sintegration:%s total=%d %spass=%d%s %sfail=%d%s" \
 	"$CYAN" "$RESET" "$total" "$GREEN" "$pass" "$RESET" "$RED" "$fail" "$RESET"
