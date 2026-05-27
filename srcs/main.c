@@ -161,7 +161,7 @@ static void process_line(t_shell *shell, char *line)
 	tokens = lexer_tokenize(line);
 	if (!tokens)
 	{
-		fprintf(stderr, "Error: Failed to tokenize input.\n");
+		shell->last_exit_status = 1;
 		return;
 	}
 	alias_expand_tokens(shell, &tokens);
