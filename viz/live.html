@@ -9,8 +9,11 @@
        SharedArrayBuffer is available on hosts (like github.io) that can't
        set HTTP headers themselves. Must be the FIRST script on the page.
        The first page load registers the SW and reloads automatically;
-       all subsequent loads are cross-origin isolated. -->
-  <script src="coi-serviceworker.js"></script>
+       all subsequent loads are cross-origin isolated.
+       Loaded from the site root (one directory up from /viz/) so its
+       scope covers /wasm/dist/* — emscripten spawns Web Workers from
+       there and they need COEP-stamped responses to load in COI mode. -->
+  <script src="../coi-serviceworker.js"></script>
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@xterm/xterm@5.5.0/css/xterm.min.css" />
   <style>
