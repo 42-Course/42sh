@@ -64,10 +64,182 @@
       border-bottom: 1px solid var(--border);
       flex-shrink: 0;
     }
-    #terminal-container {
+    #terminal-host {
       flex: 1;
+      position: relative;     /* anchor for the absolutely-positioned curtain */
+      overflow: hidden;
+      background: #000;
+    }
+    #terminal-container {
+      width: 100%;
+      height: 100%;
       overflow: hidden;
     }
+
+    /* ─── Boot curtain ─────────────────────────────────────────────── */
+    #boot-curtain {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 10;
+    }
+    #boot-curtain[hidden] { display: none; }
+
+    /* The two halves — slide out to left/right when the shell is ready */
+    .curtain-panel {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 50.5%;     /* tiny overlap to avoid seam flicker */
+      background:
+        linear-gradient(135deg,
+          rgba(88,166,255,.06) 0%,
+          rgba(13,17,23,.98) 40%,
+          rgba(13,17,23,1) 100%);
+      transition: transform 1.1s cubic-bezier(.6,.04,.3,.98), opacity .8s ease;
+    }
+    .curtain-left  { left:  0; border-right: 1px solid rgba(88,166,255,.18); }
+    .curtain-right { right: 0; border-left:  1px solid rgba(88,166,255,.18); }
+
+    /* Subtle scan-line texture */
+    .curtain-panel::before {
+      content: "";
+      position: absolute; inset: 0;
+      background-image: repeating-linear-gradient(
+        0deg,
+        rgba(88,166,255,.03) 0 1px,
+        transparent 1px 4px
+      );
+      mix-blend-mode: screen;
+      pointer-events: none;
+    }
+
+    /* Center column with logo / spinner / messages */
+    .curtain-content {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1.2rem;
+      padding: 2rem;
+      text-align: center;
+      transition: opacity .55s ease;
+    }
+    .curtain-logo {
+      font-family: 'Fira Code', 'Cascadia Code', monospace;
+      font-size: 2.8rem;
+      font-weight: 800;
+      letter-spacing: .04em;
+      color: var(--text);
+      text-shadow: 0 0 18px rgba(88,166,255,.25);
+    }
+    .curtain-logo .curtain-2 {
+      color: var(--accent);
+      animation: glow 2.2s ease-in-out infinite;
+    }
+    @keyframes glow {
+      0%, 100% { text-shadow: 0 0 6px rgba(88,166,255,.4); }
+      50%      { text-shadow: 0 0 22px rgba(88,166,255,.95); }
+    }
+    .curtain-tag {
+      display: block;
+      font-size: .7rem;
+      letter-spacing: .35em;
+      color: var(--muted);
+      margin-top: .3rem;
+      font-weight: 500;
+      text-transform: uppercase;
+    }
+
+    /* Lemniscate-ish dotted spinner */
+    .curtain-spinner {
+      position: relative;
+      width: 64px;
+      height: 16px;
+    }
+    .curtain-spinner div {
+      position: absolute;
+      top: 4px;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: curtain-bounce 1.4s ease-in-out infinite;
+    }
+    .curtain-spinner div:nth-child(1) { left: 0;  animation-delay: 0s; }
+    .curtain-spinner div:nth-child(2) { left: 18px; animation-delay: .15s; }
+    .curtain-spinner div:nth-child(3) { left: 36px; animation-delay: .3s;  }
+    .curtain-spinner div:nth-child(4) { left: 54px; animation-delay: .45s; }
+    @keyframes curtain-bounce {
+      0%, 80%, 100% { transform: scale(.4); opacity: .35; }
+      40%           { transform: scale(1);  opacity: 1;   }
+    }
+
+    .curtain-message {
+      font-family: 'Fira Code', monospace;
+      font-size: .9rem;
+      color: var(--accent);
+      min-height: 1.4em;
+      transition: opacity .35s ease;
+    }
+    .curtain-message.fading { opacity: 0; }
+
+    /* Indeterminate progress strip (turns determinate when c2w reports bytes) */
+    .curtain-progress {
+      width: min(360px, 80%);
+      display: flex;
+      flex-direction: column;
+      gap: .35rem;
+    }
+    .curtain-progress-bar {
+      height: 4px;
+      border-radius: 2px;
+      background: rgba(88,166,255,.12);
+      position: relative;
+      overflow: hidden;
+    }
+    .curtain-progress-bar::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg,
+        transparent 0%,
+        var(--accent) 50%,
+        transparent 100%);
+      transform: translateX(-100%);
+      animation: curtain-shimmer 1.6s ease-in-out infinite;
+    }
+    .curtain-progress[data-determinate="1"] .curtain-progress-bar::after {
+      animation: none;
+      background: var(--accent);
+      width: var(--progress, 0%);
+      transform: none;
+    }
+    @keyframes curtain-shimmer {
+      0%   { transform: translateX(-100%); }
+      100% { transform: translateX(200%); }
+    }
+    .curtain-progress-text {
+      font-family: 'Fira Code', monospace;
+      font-size: .68rem;
+      color: var(--muted);
+      letter-spacing: .04em;
+    }
+
+    .curtain-hint {
+      max-width: 360px;
+      font-size: .72rem;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-top: .3rem;
+    }
+
+    /* The grand reveal — split open + fade out */
+    #boot-curtain.opening .curtain-left  { transform: translateX(-100%); }
+    #boot-curtain.opening .curtain-right { transform: translateX( 100%); }
+    #boot-curtain.opening .curtain-content { opacity: 0; transition-delay: 0s; }
+    #boot-curtain.gone { opacity: 0; pointer-events: none; }
 
     /* --- Right: Visualizer --- */
     #viz-pane {
@@ -299,7 +471,29 @@
     <!-- Left: Terminal (always shown) -->
     <div id="terminal-pane">
       <h2>42sh Terminal</h2>
-      <div id="terminal-container"></div>
+      <div id="terminal-host">
+        <div id="terminal-container"></div>
+        <!-- Boot curtain (only shown in Wasm mode, hidden in WS mode) -->
+        <div id="boot-curtain" class="no-viz" hidden>
+          <div class="curtain-panel curtain-left"></div>
+          <div class="curtain-panel curtain-right"></div>
+          <div class="curtain-content">
+            <div class="curtain-logo">
+              4<span class="curtain-2">2</span>sh
+              <span class="curtain-tag">WebAssembly</span>
+            </div>
+            <div class="curtain-spinner">
+              <div></div><div></div><div></div><div></div>
+            </div>
+            <div class="curtain-message" id="boot-msg">Initializing…</div>
+            <div class="curtain-progress" id="boot-progress">
+              <div class="curtain-progress-bar" id="boot-progress-bar"></div>
+              <div class="curtain-progress-text" id="boot-progress-text"></div>
+            </div>
+            <div class="curtain-hint">A full Linux kernel is booting in your browser. First load downloads ~190&nbsp;MB and may take a minute.</div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Right: Visualizer (only when ?ws= is given) -->
@@ -614,14 +808,71 @@ if (wsPort) {
   /* ── Wasm mode (container2wasm, default) ───────────────────────── */
   setStatus('busy', 'Booting 42sh in WebAssembly... (downloading ~190MB on first load)');
 
+  /* ── Boot curtain ────────────────────────────────────────────── */
+  const curtain     = document.getElementById('boot-curtain');
+  const bootMsg     = document.getElementById('boot-msg');
+  const bootProg    = document.getElementById('boot-progress');
+  const bootBar     = document.getElementById('boot-progress-bar');
+  const bootProgTxt = document.getElementById('boot-progress-text');
+  curtain.hidden = false;
+
+  /* Rotating messages while we wait. They cycle every ~2s; once a real
+   * status (download bytes, kernel boot) arrives, that takes priority. */
+  const flavorMessages = [
+    'Initializing wasm runtime…',
+    'Teaching electrons to run Linux…',
+    'Materializing /dev/null…',
+    'Mounting / on a JavaScript engine…',
+    'Asking the kernel nicely to boot…',
+    'Convincing your browser this is a real terminal…',
+    'Negotiating with the VFS…',
+    'Loading 148 MB of Linux into a tab…',
+    'Polishing the prompt…',
+    'Spawning init…',
+    'Almost there…',
+  ];
+  let flavorIdx = 0;
+  let lockedMsg = null;     // when set, flavor rotation pauses
+  function setCurtainMsg(text, lock = false) {
+    if (lock) lockedMsg = text;
+    bootMsg.classList.add('fading');
+    setTimeout(() => {
+      bootMsg.textContent = text;
+      bootMsg.classList.remove('fading');
+    }, 280);
+  }
+  const flavorTimer = setInterval(() => {
+    if (lockedMsg) return;
+    setCurtainMsg(flavorMessages[flavorIdx % flavorMessages.length]);
+    flavorIdx++;
+  }, 2200);
+  setCurtainMsg(flavorMessages[flavorIdx++]);
+
   const { master, slave } = openpty();
   term.loadAddon(master);
 
   Module.pty = slave;
   Module.mainScriptUrlOrBlob = new URL('../wasm/dist/out.js', location.href).href;
-  /* c2w's load.js calls Module.setStatus while downloading the data file —
-   * keep dot amber, only update text. */
-  Module.setStatus = (text) => { if (text) statusText.textContent = text; };
+  /* c2w's load.js calls Module.setStatus during data file fetch. We parse
+   * "Downloading data... (N/M)" to drive the progress bar. */
+  Module.setStatus = (text) => {
+    if (!text) return;
+    statusText.textContent = text;
+    const m = text.match(/\((\d+)\/(\d+)\)/);
+    if (m) {
+      const loaded = +m[1], total = +m[2];
+      const pct = total ? (loaded / total * 100) : 0;
+      bootProg.dataset.determinate = '1';
+      bootBar.style.setProperty('--progress', pct.toFixed(1) + '%');
+      bootProgTxt.textContent =
+        `${(loaded/1048576).toFixed(1)} / ${(total/1048576).toFixed(1)} MB · ${pct.toFixed(0)}%`;
+      setCurtainMsg('Downloading kernel image…', true);
+      if (loaded >= total) {
+        // Once download is complete, free the locked message for next phase.
+        lockedMsg = null;
+      }
+    }
+  };
   Module.print = (t) => console.log('[qemu]', t);
   Module.printErr = (t) => console.warn('[qemu]', t);
 
@@ -651,28 +902,48 @@ if (wsPort) {
   });
 
   /* The first byte QEMU emits to the PTY is the most reliable signal
-   * that the VM is alive — flip to green then. Monkey-patch slave.write
-   * because xterm-pty doesn't expose an output-side event. */
+   * that the VM is alive — flip to green and open the curtain. */
   const origWrite = slave.write.bind(slave);
   let firstByteSeen = false;
   slave.write = function (data) {
     if (!firstByteSeen && data && (data.length || data.byteLength)) {
       firstByteSeen = true;
       setStatus('ready', '42sh running (Wasm)');
+      revealCurtain();
     }
     return origWrite(data);
   };
+
+  function revealCurtain() {
+    clearInterval(flavorTimer);
+    setCurtainMsg('Welcome to 42sh.', true);
+    /* Brief delay so the user sees the final message before the split */
+    setTimeout(() => {
+      curtain.classList.add('opening');
+      /* After the animation completes, fully remove the curtain so it
+       * stops blocking pointer events and frees its layer. */
+      setTimeout(() => {
+        curtain.classList.add('gone');
+        setTimeout(() => { curtain.hidden = true; }, 600);
+      }, 1200);
+    }, 450);
+  }
 
   try {
     await import('../wasm/dist/arg-module.js');
     const { default: initEmscriptenModule } = await import('../wasm/dist/out.js');
     setStatus('busy', 'Booting Linux kernel...');
+    setCurtainMsg('Booting Linux kernel…', true);
     await initEmscriptenModule(Module);
     /* initEmscriptenModule resolves once the wasm runtime is up; the kernel
      * is still booting from here. The firstByteSeen hook above will flip to
-     * 'ready' as soon as the VM produces output. */
+     * 'ready' and reveal the curtain as soon as the VM produces output. */
+    lockedMsg = null; // resume flavor messages during the kernel-boot wait
   } catch (err) {
     setStatus('error', `Failed to boot Wasm: ${err.message}`);
+    clearInterval(flavorTimer);
+    setCurtainMsg('Boot failed: ' + err.message, true);
+    bootMsg.style.color = '#f85149';
     console.error('[boot]', err);
   }
 }
