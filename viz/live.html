@@ -4,6 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>42sh Live Visualizer</title>
+  <!-- COI service worker: stamps Cross-Origin-Opener-Policy /
+       Cross-Origin-Embedder-Policy headers onto every response so that
+       SharedArrayBuffer is available on hosts (like github.io) that can't
+       set HTTP headers themselves. Must be the FIRST script on the page.
+       The first page load registers the SW and reloads automatically;
+       all subsequent loads are cross-origin isolated. -->
+  <script src="coi-serviceworker.js"></script>
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@xterm/xterm@5.5.0/css/xterm.min.css" />
   <style>
@@ -329,14 +336,15 @@
        Small JS files (load.js, out.js, arg-module.js) are tracked in
        git and served from ../wasm/dist/.
        The two heavy blobs (qemu-system-x86_64.data, .wasm) are too big
-       for GitHub (>100MB rule), so they live on a GitHub Release.
-       Set WASM_BLOB_URL below if you want to override the default. -->
+       for GitHub (>100MB rule), so they live on a Cloudflare R2 bucket
+       with CORS allowing github.io. Set WASM_BLOB_URL below to override. -->
   <script>
-    // Auto-detect: if served from github.io, fetch blobs from the Release.
-    // Otherwise (local dev), serve from ../wasm/dist/ alongside the JS.
+    // Auto-detect: if served from github.io, fetch heavy blobs through
+    // a Cloudflare Worker that proxies R2 with proper CORS+CORP headers.
+    // (The raw r2.dev URL doesn't honor CORS.) For local dev, ../wasm/dist/.
     const WASM_BLOB_URL =
       location.hostname.endsWith('github.io')
-        ? 'https://github.com/leowz/42sh/releases/download/wasm-latest/'
+        ? 'https://42sh-wasm-cors.pulgamecanica11.workers.dev/'
         : '../wasm/dist/';
 
     const WASM_HEAVY_FILES = new Set([
