@@ -47,6 +47,7 @@ typedef struct s_shell {
   int    env_dirty;        /**< 1 when `env` needs rebuild before next execve. */
   int    exit_confirmed;   /**< Double-exit guard when stopped jobs exist. */
   char   *history_file;    /**< Path from $HISTFILE or $HOME/.sh_history. */
+  t_list *heredoc_body_queue; /**< Pre-collected heredoc bodies (FIFO of `char *`); populated by `shell_read_logical_line`, drained by the heredoc collector. NULL outside REPL pre-collection. */
   int    interactive;      /**< 1 if stdin is a TTY (prompt + readline active). */
   t_list *jobs;            /**< `t_job*` list; all known jobs. */
   int    last_exit_status; /**< Value of `$?`. */
@@ -66,5 +67,12 @@ typedef struct s_shell {
  * @return Heap-allocated line without trailing newline, or NULL on EOF.
  */
 char	*shell_read_line(t_shell *shell, const char *prompt);
+
+/**
+ * @brief Read a logical line, joining physical lines on unclosed quotes or
+ *        trailing-backslash line-continuation (REPL only, not heredoc).
+ * @return Heap-allocated buffer, or NULL on EOF before any input.
+ */
+char	*shell_read_logical_line(t_shell *shell, const char *primary);
 
 #endif
