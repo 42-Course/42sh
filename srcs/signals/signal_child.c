@@ -11,6 +11,13 @@
  * @details After fork the child inherits the parent's signal dispositions (SIG_IGN
  *          for interactive mode).  We must reset them to SIG_DFL so the executed
  *          program responds to signals normally.
+ *          SIGPIPE is intentionally NOT reset here: POSIX says SIG_IGN inherited
+ *          across exec must be preserved, and bash matches that. Forcing SIG_DFL
+ *          here would diverge on hosts that ignore SIGPIPE upstream (notably the
+ *          GitHub Actions runner, written in node.js, which sets SIG_IGN before
+ *          spawning user steps), making coreutils-9.x children die silently here
+ *          while bash's children emit "Broken pipe" -- breaking pipeline tests
+ *          that diff our stderr against bash's.
  */
 void	signals_setup_child(void)
 {
@@ -24,5 +31,4 @@ void	signals_setup_child(void)
 	sigaction(SIGTSTP, &sa, NULL);
 	sigaction(SIGTTIN, &sa, NULL);
 	sigaction(SIGTTOU, &sa, NULL);
-	sigaction(SIGPIPE, &sa, NULL);
 }
