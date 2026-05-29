@@ -44,15 +44,27 @@ total=0; pass=0; fail=0; failed=""
 
 # b_case LABEL SCRIPT -- run SCRIPT under 42sh and bash --posix in a fresh
 # scratch directory; compare stdout, exit status, and stderr presence.
+# The perl trampoline (`-e '$SIG{PIPE}="DEFAULT"; exec @ARGV'`) forces
+# SIGPIPE=SIG_DFL upstream of the shell-under-test. Without it, when this
+# script is launched from a parent that ignores SIGPIPE (VSCode terminal,
+# GitHub Actions runner -- node.js -- ignores it for its own reasons), bash
+# faithfully passes SIG_IGN to its pipeline children and coreutils-9.x
+# producers (yes, base64) emit a "Broken pipe" diagnostic to stderr. 42sh
+# resets SIGPIPE to SIG_DFL in children, so its producers die silently. The
+# resulting stderr-presence mismatch is environmental, not a 42sh defect;
+# canonicalising SIGPIPE up front removes that environment sensitivity so
+# bash and 42sh are compared under identical signal conditions.
 b_case() {
 	local label="$1" script="$2" brc src wd report ok
 	total=$((total + 1))
 	wd="$TMP/case$total"
 	rm -rf "$wd"; mkdir -p "$wd"
-	(cd "$wd" && bash --posix -c "$script") >"$TMP/b.out" 2>"$TMP/b.err"
+	(cd "$wd" && perl -e '$SIG{PIPE}="DEFAULT"; exec @ARGV' \
+		bash --posix -c "$script") >"$TMP/b.out" 2>"$TMP/b.err"
 	brc=$?
 	rm -rf "$wd"; mkdir -p "$wd"
-	(cd "$wd" && "$SH" -c "$script") >"$TMP/s.out" 2>"$TMP/s.err"
+	(cd "$wd" && perl -e '$SIG{PIPE}="DEFAULT"; exec @ARGV' \
+		"$SH" -c "$script") >"$TMP/s.out" 2>"$TMP/s.err"
 	src=$?
 	ok=1; report=""
 	if [ "$brc" != "$src" ]; then
