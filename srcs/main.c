@@ -181,7 +181,7 @@ static void process_line(t_shell *shell, char *line)
 
 	executor_execute(shell, ast);
 
-	ast_free(ast); //this will leak!!!
+	ast_free(ast);
 }
 
 
