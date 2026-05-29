@@ -37,13 +37,23 @@ total=0; pass=0; fail=0; failed=""
 
 # sig_case NAME NUMBER -- a child kills itself with NUMBER; 42sh must survive
 # and report the child's status as 128+NUMBER.
+#
+# The perl trampoline (`-e '$SIG{PIPE}="DEFAULT"; exec @ARGV'`) is required for
+# the SIGPIPE case to be meaningful: when this script is launched from a parent
+# that ignores SIGPIPE (the GitHub Actions runner -- node.js -- does; so do many
+# IDE-embedded terminals), POSIX mandates that the inherited SIG_IGN survives
+# exec, so any `kill -PIPE` against a child of `sh` would be a no-op and the
+# test would spuriously report rc=0. Bash exhibits the same behavior in the
+# same environment -- this isn't shell-specific. Forcing SIG_DFL upstream of
+# the shell-under-test makes the probe portable.
 sig_case() {
 	local name="$1" num="$2" want out shrc ok why msg
 	total=$((total + 1))
 	want="rc=$((128 + num))"
 	# The child is a plain `sh` that signals itself; 42sh then runs `echo`,
 	# so a surviving shell exits 0 and prints the child's status via $?.
-	out="$(timeout 10 "$SH" -c "sh -c 'kill -$num \$\$'; echo rc=\$?" \
+	out="$(timeout 10 perl -e '$SIG{PIPE}="DEFAULT"; exec @ARGV' \
+		"$SH" -c "sh -c 'kill -$num \$\$'; echo rc=\$?" \
 		2>"$TMP/err")"
 	shrc=$?
 	ok=1
