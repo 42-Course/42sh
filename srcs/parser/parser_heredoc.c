@@ -95,6 +95,17 @@ static int	read_heredoc(t_redir *redir, t_shell *shell, int fd)
 
 	if (shell->heredoc_body_queue)
 		return (pop_queued_heredoc(shell, fd));
+	/* In `-c` mode the script is the -c string, not stdin -- so when no body
+	 * was pre-queued, do NOT block reading stdin (which on a TTY would hang
+	 * forever waiting for an EOF the user never types). Match bash --posix:
+	 * emit the warning and proceed with an empty body. */
+	if (shell->cmd_entrypoint)
+	{
+		fprintf(stderr,
+			"\nwarning: here-document delimited by end-of-file (wanted`%s')\n",
+			redir->heredoc_delim);
+		return (0);
+	}
 	convert_line = NULL;
 	while (!g_sigint_heredoc)
 	{
