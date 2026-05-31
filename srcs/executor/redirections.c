@@ -21,14 +21,15 @@ static int	redir_get_fd(t_redir *redir)
 static int	redir_open_file(t_redir *redir)
 {
 	int	fd;
+	int fd_in;
 
+	fd_in = -1;
 	// verify if STDIN IS OPEN, else OPEN STDIN
-  if (fcntl(STDIN_FILENO, F_GETFD) == -1 && errno == EBADF) {
-		int fd = open("/dev/null", O_RDONLY);
-		if (fd != 0) {
-			dup2(fd, STDIN_FILENO);
-			close(fd);
-		}
+	if (fcntl(STDIN_FILENO, F_GETFD) == -1 && errno == EBADF)
+	{
+		fd_in = open("/dev/null", O_RDONLY);
+		if (fd_in != 0)
+			dup2(fd_in, STDIN_FILENO);
 	}
 	if (redir->type == TOK_REDIR_IN)
 		fd = open(redir->target, O_RDONLY);
@@ -36,8 +37,11 @@ static int	redir_open_file(t_redir *redir)
 		fd = open(redir->target, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	else if (redir->type == TOK_REDIR_APPEND)
 		fd = open(redir->target, O_WRONLY | O_CREAT | O_APPEND, 0644);
-	else
+	else {
+		if (fd_in > 0)
+			close(fd_in);
 		return (-2);
+	}
 	if (fd == -1)
 	{
 		ft_putstr_fd("42sh: ", 2);
@@ -45,7 +49,8 @@ static int	redir_open_file(t_redir *redir)
 		ft_putstr_fd(": ", 2);
 		ft_putendl_fd(strerror(errno), 2);
 	}
-	printf("OPENED fd:[%s]\n", redir->target);
+	if (fd_in > 0)
+		close(fd_in);
 	return (fd);
 }
 
@@ -57,7 +62,6 @@ static int	apply_dup_redir(t_redir *redir, int target_fd)
 	if (ft_strcmp(redir->target, "-") == 0)
 	{
 		close(src_fd);
-		printf("CLOSED fd:[%d]\n", src_fd);
 		return (0);
 	}
 	if (!ft_isdigit(redir->target[0]))
