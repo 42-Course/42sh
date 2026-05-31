@@ -9,8 +9,6 @@ obj/*
 .DS_Store
 tokenizations
 tokenizations/*
-viz/ast/
-viz/tokenizations/
 valgrind-out.txt
 42sh
 42sh_test
