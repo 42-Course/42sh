@@ -1633,6 +1633,167 @@ static void	test_b4_missing_path_is_127(void)
 }
 
 /* ================================================================
+ * 12. Scripting: `42sh FILE`, `source`/`.`, and `#` comments
+ * ================================================================ */
+
+/**
+ * @brief Run `./42sh <path>` (script mode), stdin from /dev/null, capture
+ *        stdout into @p out. Returns the script's exit code, or -1.
+ */
+static int	run_script_file(const char *path, char *out, size_t outsz)
+{
+	int		cap_pipe[2];
+	pid_t	pid;
+	int		wstatus;
+	ssize_t	n;
+	size_t	total;
+	int		devnull;
+
+	out[0] = '\0';
+	if (pipe(cap_pipe) == -1)
+		return (-1);
+	fflush(stdout);
+	fflush(stderr);
+	pid = fork();
+	if (pid == -1)
+		return (-1);
+	if (pid == 0)
+	{
+		devnull = open("/dev/null", O_RDONLY);
+		dup2(devnull, STDIN_FILENO);
+		close(devnull);
+		dup2(cap_pipe[1], STDOUT_FILENO);
+		close(cap_pipe[0]);
+		close(cap_pipe[1]);
+		execl("./42sh", "42sh", path, (char *)NULL);
+		_exit(127);
+	}
+	close(cap_pipe[1]);
+	total = 0;
+	while (total + 1 < outsz
+		&& (n = read(cap_pipe[0], out + total, outsz - 1 - total)) > 0)
+		total += (size_t)n;
+	out[total] = '\0';
+	close(cap_pipe[0]);
+	waitpid(pid, &wstatus, 0);
+	if (WIFEXITED(wstatus))
+		return (WEXITSTATUS(wstatus));
+	return (-1);
+}
+
+/**
+ * @brief Write @p content to @p path (test fixture helper).
+ */
+static void	write_file(const char *path, const char *content)
+{
+	int	fd;
+
+	fd = open(path, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	if (fd < 0)
+		return ;
+	write(fd, content, strlen(content));
+	close(fd);
+}
+
+#define SCRIPT_PATH "/tmp/42sh_script_test.sh"
+#define SOURCE_PATH "/tmp/42sh_source_test.sh"
+
+/**
+ * @brief `42sh FILE` runs the file as a script and returns its exit status.
+ */
+static void	test_script_file_runs(void)
+{
+	char	out[256];
+	int		code;
+
+	write_file(SCRIPT_PATH,
+		"# a comment\necho script_line_a\necho script_line_b\nexit 3\n");
+	code = run_script_file(SCRIPT_PATH, out, sizeof(out));
+	MU_ASSERT_STR("script runs each line",
+		"script_line_a\nscript_line_b\n", out);
+	MU_ASSERT_INT(3, code);
+	unlink(SCRIPT_PATH);
+}
+
+/**
+ * @brief A missing script file is reported and exits 127.
+ */
+static void	test_script_file_missing(void)
+{
+	char	out[256];
+	int		code;
+
+	code = run_script_file("/tmp/42sh_no_such_script_zz", out, sizeof(out));
+	MU_ASSERT_INT(127, code);
+}
+
+/**
+ * @brief `source FILE` runs the file in the current shell, so a variable it
+ *        sets is visible to a later command.
+ */
+static void	test_source_affects_current_shell(void)
+{
+	char	out[256];
+
+	write_file(SOURCE_PATH, "SRCVAR=p2src_zqx\n");
+	run_shell("source " SOURCE_PATH "\necho V=$SRCVAR\n", 1,
+		out, sizeof(out));
+	MU_ASSERT("source sets a var in the current shell",
+		strstr(out, "V=p2src_zqx") != NULL);
+	unlink(SOURCE_PATH);
+}
+
+/**
+ * @brief `.` is an accepted synonym for `source`.
+ */
+static void	test_dot_is_source_synonym(void)
+{
+	char	out[256];
+
+	write_file(SOURCE_PATH, "DOTVAR=p2dot_zqx\n");
+	run_shell(". " SOURCE_PATH "\necho V=$DOTVAR\n", 1, out, sizeof(out));
+	MU_ASSERT("`.` sources like `source`",
+		strstr(out, "V=p2dot_zqx") != NULL);
+	unlink(SOURCE_PATH);
+}
+
+/**
+ * @brief `source` with no filename is a usage error (exit 2).
+ */
+static void	test_source_no_arg(void)
+{
+	char	out[256];
+	int		code;
+
+	code = run_shell("source\n", 2, out, sizeof(out));
+	MU_ASSERT_INT(2, code);
+}
+
+/**
+ * @brief A full-line `#` comment is ignored without a syntax error.
+ */
+static void	test_comment_only_line_ignored(void)
+{
+	char	out[256];
+
+	run_shell("# just a comment\necho after_comment\n", 1,
+		out, sizeof(out));
+	MU_ASSERT_STR("comment-only line is a no-op",
+		"after_comment\n", out);
+}
+
+/**
+ * @brief `#` only starts a comment at a word boundary, not mid-word.
+ */
+static void	test_comment_not_midword(void)
+{
+	char	out[256];
+
+	run_shell("echo a#b\n", 1, out, sizeof(out));
+	MU_ASSERT_STR("mid-word # is literal", "a#b\n", out);
+}
+
+/* ================================================================
  * Master test suite entry point
  * ================================================================ */
 
@@ -1692,6 +1853,15 @@ void	test_executor_suite(void)
 	test_b2_assignment_reaches_pipeline();
 	test_b4_not_executable_is_126();
 	test_b4_missing_path_is_127();
+
+	/* 12. Scripting: script files, source/., comments */
+	test_script_file_runs();
+	test_script_file_missing();
+	test_source_affects_current_shell();
+	test_dot_is_source_synonym();
+	test_source_no_arg();
+	test_comment_only_line_ignored();
+	test_comment_not_midword();
 }
 
 #else

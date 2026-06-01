@@ -423,4 +423,18 @@ int	builtin_unalias(struct s_shell *shell, int argc, char **argv);
  */
 int	builtin_test(struct s_shell *shell, int argc, char **argv);
 
+/**
+ * @brief The `source` / `.` builtin: read and execute a file in the
+ *        current shell environment.
+ *
+ * **Usage**: `source filename` or `. filename`
+ *
+ * The file's commands run in the current shell, so variable, alias and
+ * function changes persist. An `exit` in the file exits the shell.
+ *
+ * @return The exit status of the last command in the file; 2 if no filename
+ *         was given; 1 if the file cannot be opened.
+ */
+int	builtin_source(struct s_shell *shell, int argc, char **argv);
+
 #endif
