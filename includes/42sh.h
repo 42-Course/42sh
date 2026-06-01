@@ -48,7 +48,9 @@ typedef struct s_shell {
   int    exit_confirmed;   /**< Double-exit guard when stopped jobs exist. */
   char   *history_file;    /**< Path from $HISTFILE or $HOME/.sh_history. */
   t_list *heredoc_body_queue; /**< Pre-collected heredoc bodies (FIFO of `char *`); populated by `shell_read_logical_line`, drained by the heredoc collector. NULL outside REPL pre-collection. */
+  FILE   *input;           /**< When non-NULL, input is read from this stream (script file / `source`) instead of stdin or readline. */
   int    interactive;      /**< 1 if stdin is a TTY (prompt + readline active). */
+  char   *script_path;     /**< Path of the script file given as `42sh FILE`, or NULL. */
   t_list *jobs;            /**< `t_job*` list; all known jobs. */
   int    last_exit_status; /**< Value of `$?`. */
   struct termios
@@ -74,5 +76,36 @@ char	*shell_read_line(t_shell *shell, const char *prompt);
  * @return Heap-allocated buffer, or NULL on EOF before any input.
  */
 char	*shell_read_logical_line(t_shell *shell, const char *primary);
+
+/**
+ * @brief Lex, parse and execute a single logical command line.
+ * @details Shared by the REPL, `source`, and script execution. A blank or
+ *          comment-only line is a no-op.
+ */
+void	process_line(t_shell *shell, char *line);
+
+/**
+ * @brief Drive every logical line of @p f through the shell, in the current
+ *        shell context (variables, functions and aliases persist).
+ * @details Temporarily points @c shell->input at @p f and restores the
+ *          previous stream on return, so nested sourcing works. Does not
+ *          prompt, record history, or close @p f. Stops at EOF or when a
+ *          command clears @c shell->running (e.g. `exit`).
+ * @return The shell's last exit status.
+ */
+int		shell_run_stream(t_shell *shell, FILE *f);
+
+/**
+ * @brief Open @p path and run it as a script via @c shell_run_stream.
+ * @return The script's last exit status, or 127 if @p path cannot be opened.
+ */
+int		shell_run_script(t_shell *shell, const char *path);
+
+/**
+ * @brief Source the startup rc file on interactive launch.
+ * @details Uses @c $ENV when set (bash --posix style), otherwise falls back
+ *          to @c $HOME/.42shrc. A missing file is silently ignored.
+ */
+void	shell_source_rc(t_shell *shell);
 
 #endif

@@ -11,7 +11,7 @@
  */
 static void	resolve_interactive(t_shell *shell, int force_interactive)
 {
-	if (shell->cmd_entrypoint)
+	if (shell->cmd_entrypoint || shell->script_path)
 		shell->interactive = 0;
 	else if (force_interactive)
 		shell->interactive = 1;
@@ -103,7 +103,7 @@ static void	parse_options(int argc, char *argv[], t_shell *shell,
 	int	opt;
 
 	*force_interactive = 0;
-	while ((opt = getopt(argc, argv, "hic:")) != -1)
+	while ((opt = getopt(argc, argv, "+hic:")) != -1)
 	{
 		if (opt == 'c')
 		{
@@ -118,70 +118,15 @@ static void	parse_options(int argc, char *argv[], t_shell *shell,
 			*force_interactive = 1;
 		else if (opt == 'h')
 		{
-			printf("Usage: %s [-i] [-c command]\n", argv[0]);
+			printf("Usage: %s [-i] [-c command] [script]\n", argv[0]);
 			exit(0);
 		}
 		else
 		{
-			fprintf(stderr, "Usage: %s [-i] [-c command]\n", argv[0]);
+			fprintf(stderr, "Usage: %s [-i] [-c command] [script]\n", argv[0]);
 			exit(2);
 		}
 	}
-}
-
-#ifdef FT_EXTRA_VERBOSE
-static void _display(t_list *tokens, t_ast *ast, char *line)
-{
-	char	*tok_json;
-	char	*ast_json;
-
-	lexer_display(tokens, line);
-	tok_json = lexer_to_json(tokens, line);
-	if (tok_json)
-		printf("  \033[2mJSON → %s\033[0m\n", tok_json);
-	ast_display(ast, line);
-	ast_json = ast_to_json(ast, line, tok_json);
-	if (ast_json)
-	{
-		printf("  \033[2mAST  → %s\033[0m\n", ast_json);
-		free(ast_json);
-	}
-	free(tok_json);
-}
-#endif
-
-static void process_line(t_shell *shell, char *line)
-{
-	t_list		*tokens;
-	t_ast		*ast;
-	const char	*scan;
-
-	scan = line;
-	while (*scan == ' ' || *scan == '\t' || *scan == '\n')
-		scan++;
-	if (*scan == '\0')
-		return ;
-	tokens = lexer_tokenize(line);
-	if (!tokens)
-	{
-		shell->last_exit_status = 1;
-		return;
-	}
-	alias_expand_tokens(shell, &tokens);
-
-	ast = parser_parse(tokens, shell);
-
-#ifdef FT_EXTRA_VERBOSE
-	_display(tokens, ast, line);
-#endif
-
-	lexer_free_tokens(tokens);
-	if (!ast)
-		return;
-
-	executor_execute(shell, ast);
-
-	ast_free(ast);
 }
 
 
@@ -232,11 +177,19 @@ int	main(int argc, char *argv[], char *envp[])
 
 	ft_bzero(&shell, sizeof(t_shell));
 	parse_options(argc, argv, &shell, &force_interactive);
+	if (!shell.cmd_entrypoint && optind < argc)
+		shell.script_path = argv[optind];
 	shell_init(&shell, envp, force_interactive);
 	if (shell.cmd_entrypoint)
 		process_line(&shell, shell.cmd_entrypoint);
+	else if (shell.script_path)
+		shell_run_script(&shell, shell.script_path);
 	else
+	{
+		if (shell.interactive)
+			shell_source_rc(&shell);
 		repl_loop(&shell);
+	}
 	shell_cleanup(&shell);
 	return (shell.last_exit_status);
 }

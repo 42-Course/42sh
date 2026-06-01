@@ -28,6 +28,12 @@ t_list	*lexer_tokenize(const char *input)
 			input++;
 		if (!*input)
 			break ;
+		if (*input == '#')
+		{
+			while (*input && *input != '\n')
+				input++;
+			continue ;
+		}
 		if (is_operator_start(input))
 			token = read_operator(&input);
 		else

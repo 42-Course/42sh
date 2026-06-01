@@ -48,12 +48,16 @@ char	*shell_read_line(t_shell *shell, const char *prompt)
 	char	*line;
 	size_t	len;
 	ssize_t	n;
+	FILE	*stream;
 
-	if (shell->interactive)
+	if (!shell->input && shell->interactive)
 		return (readline(prompt));
+	stream = shell->input;
+	if (!stream)
+		stream = stdin;
 	line = NULL;
 	len = 0;
-	n = getline(&line, &len, stdin);
+	n = getline(&line, &len, stream);
 	if (n <= 0)
 	{
 		free(line);
